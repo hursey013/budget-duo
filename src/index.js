@@ -1,12 +1,16 @@
 import styles from './styles.scss'
+import Inputmask from "inputmask";
 import rangesliderJs from 'rangeslider-js'
 
 var defaultExpenses = [
-  {item: 'Rent', cost: 1000},
-  {item: 'Cable', cost: 40},
-  {item: 'Electricity', cost: 100},
-  {item: 'Water', cost: 50},
-  {item: 'Insurance', cost: 150}
+  {item: 'Electricity', cost: 104},
+  {item: 'Insurance', cost: 95},
+  {item: 'Internet', cost: 29.99},
+  {item: 'Gym', cost: 86},
+  {item: 'Mortgage', cost: 1848.32},
+  {item: 'Savings', cost: 200.00},
+  {item: 'Water', cost: 60},
+
 ];
 
 var formatter = new Intl.NumberFormat('en-US', {
@@ -26,6 +30,7 @@ $(function() {
 
     addExpense(context);
   }
+  Inputmask({ alias: 'currency', 'autoUnmask': true }).mask(document.querySelectorAll('.js-cost'));
 });
 
 $('.add').on('click', function(e) {
@@ -33,16 +38,18 @@ $('.add').on('click', function(e) {
   addExpense();
 });
 
+$('.expenses').on('change paste keyup', '.js-cost', function(e) {
+  updateTotals();
+});
+
 $('.expenses').on('click', '.remove', function(e) {
   e.preventDefault();
-  var target = $( this );
+  var target = $(this);
 
   removeExpense(target);
 });
 
-// $("#myelement").on("input change", function() { doSomething(); });
-
-$( ".salaries input[type='range']" ).change(function() {
+$( ".salaries input[type='range']" ).on('input', function() {
   updateSalaries();
   updateTotals();
 });
@@ -61,16 +68,17 @@ function removeExpense (target) {
 }
 
 function updateSalaries() {
-  var yourSalary = Number($('.your-share').val());
+  var yourSalary = Number($('#income-yours').val());
+  var partnerSalary = Number($('#income-partner').val());
 
-  $('.js-your-salary').html(formatter.format(yourSalary));
-
+  $('.show-income-yours').html(formatter.format(yourSalary));
+  $('.show-income-partner').html(formatter.format(partnerSalary));
 }
 
 function updateTotals() {
   var total = 0;
-  var yourSalary = Number($('.your-share').val());
-  var partnerSalary = Number($('.partner-share').val());
+  var yourSalary = Number($('#income-yours').val());
+  var partnerSalary = Number($('#income-partner').val());
   var totalSalary = yourSalary + partnerSalary;
   var yourShare = yourSalary / totalSalary;
   var partnerShare = partnerSalary / totalSalary;
@@ -80,6 +88,8 @@ function updateTotals() {
   });
 
   $('.js-total').html(formatter.format(total));
+  $('.js-your-share').html((yourShare * 100).toFixed(0) + '%');
   $('.js-your-total').html(formatter.format(total * yourShare));
+  $('.js-partner-share').html((partnerShare * 100).toFixed(0) + '%');
   $('.js-partner-total').html(formatter.format(total * partnerShare));
 }

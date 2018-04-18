@@ -8,45 +8,44 @@
   <link rel="stylesheet" type="text/css" href="./public/styles.css">
 </head>
 <body>
-  <div class="container max-w-md mx-auto my-8 px-2">
-    <div class="salaries py-4">
-      <h2 class="mb-4">Tell us about your income</h2>
-      <label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="grid-first-name">
-        Your Salary
-      </label>
-      <input class="your-share" type="range" min="0" max="1000000" value="40000" step="100">
-      <h4 class="js-your-salary"></h4>
-
-      <label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="grid-first-name">
-        Partner's Salary
-      </label>
-      <input class="partner-share" id="js-partner-salary" type="range" min="0" max="1000000" value="60000" step="100">
-    </div>
-    <div class="py-4">
-      <h2 class="mb-4">...and your shared expenses:</h2>
-      <div class="expenses"></div>
-      <div class="flex w-full items-center -mx-2 mb-2">
-        <div class="w-1/2 px-2">
-          <input id="item" class="w-full appearance-none inline-block bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4" type="text">
+  <div class="container max-w-lg mx-auto my-8 px-2">
+    <div class="flex -mx-2">
+      <div class="w-1/4 px-2">
+  
+        <div class="salaries mb-8">
+          <h2 class="mb-2">Income</h2>
+          <label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="income-yours">
+            Your Salary
+          </label>
+          <h4 class="show-income-yours"></h4>
+          <input id="income-yours" type="range" min="0" max="250000" value="40000" step="500">
+          <label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="income-partner">
+            Partner's Salary
+          </label>
+          <h4 class="show-income-partner"></h4>
+          <input id="income-partner" type="range" min="0" max="250000" value="60000" step="500">
         </div>
-        <div class="w-1/4 px-2">
-          <input class="js-cost w-full appearance-none inline-block bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4" type="text">
-        </div>
-        <div class="w-1/4 px-2">
-          <a href="#" class="add">
-            <svg class="stroke-current text-purple inline-block h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="8" x2="12" y2="16"></line>
-              <line x1="8" y1="12" x2="16" y2="12"></line>
-            </svg>
-          </a>
-        </div>
+  
+        <h3 class="mb-2">The breakdown</h3>
+        <ul class="list-reset">
+          <li class="mb-2">
+            <h5>Total expenses:</h5>
+            <span class="js-total"></span>
+          </li>
+          <li class="mb-2">
+            <h5>Your share:</h5>
+            <span class="js-your-share"></span> or <span class="js-your-total"></span>
+          </li>
+          <li class="mb-2">
+            <h5>Partner's share:</h5>
+             <span class="js-partner-share"></span> or <span class="js-partner-total"></span>
+          </li>
+        </ul>
       </div>
-    </div>
-    <div class="py-4">
-      <h3>Total: <span class="js-total"></span></h3>
-      <h4>Your share: <span class="js-your-total"></span></h4>
-      <h4>Partner's share: <span class="js-partner-total"></span></h4>
+      <div class="w-3/4 px-2">
+        <h2 class="mb-4">Shared monthly expenses</h2>
+        <div class="expenses"></div>
+      </div>
     </div>
   </div>
   <script src="./public/app.js"></script>

@@ -12,9 +12,10 @@
   "license": "ISC",
   "dependencies": {
     "handlebars-loader": "^1.7.0",
+    "inputmask": "^3.3.11",
     "jquery": "^3.3.1",
     "rangeslider-js": "^3.0.2",
-    "rangeslider.js": "^2.3.2"
+    "simple-mask-money": "^0.1.2"
   },
   "devDependencies": {
     "autoprefixer": "^8.3.0",
