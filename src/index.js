@@ -48,9 +48,6 @@ function init () {
 
     addExpense(context);
   }
-
-  // Apply input masks to currency fields
-
 }
 
 $(function() {
