@@ -1,4 +1,4 @@
-import './styles.scss'
+import './stylesheets/styles.scss'
 
 import Chart from 'chart.js';
 import Inputmask from 'inputmask';
@@ -85,7 +85,7 @@ function init () {
 }
 
 function addExpense (context) {
-  const template = require('./expenses.handlebars');
+  const template = require('./templates/expenses.handlebars');
   const div = document.createElement('div');
   const expenseContainer = document.querySelector('.expenses');
 

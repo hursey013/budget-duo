@@ -1,7 +1,3 @@
-@tailwind preflight;
-
-@tailwind components;
-
 .input {
   @apply .w-full .appearance-none .bg-white .text-grey-darker .border .shadow .rounded .py-3 .px-4;
 }
@@ -12,12 +8,4 @@
 
 .row {
   @apply .flex .border-b .py-4 .text-sm
-}
-
-@tailwind utilities;
-
-@import '~basscss-input-range/index.css';
-
-a > svg {
-  pointer-events: none;
 }
