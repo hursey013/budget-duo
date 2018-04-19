@@ -3,8 +3,9 @@ import './styles.scss'
 import Chart from 'chart.js';
 import Inputmask from 'inputmask';
 
-var ctx = document.getElementById("duoChart");
-var chart = new Chart(ctx, {
+// Global vars
+const ctx = document.getElementById('chart');
+const chart = new Chart(ctx, {
   type: 'pie',
   data: {
     labels: ['Your share', 'Partner\'s share'],
@@ -13,118 +14,139 @@ var chart = new Chart(ctx, {
   options: {
     legend: { display: false},
     responsive: true,
-    maintainAspectRatio: true
+    maintainAspectRatio: true,
+    tooltips: { enabled: false },
+    hover: { mode: null }
   }
 });
 
-var defaultExpenses = [
+const defaultExpenses = [
   {item: 'Electricity', cost: 104},
   {item: 'Insurance', cost: 95},
   {item: 'Internet', cost: 29.99},
   {item: 'Gym', cost: 86},
   {item: 'Mortgage', cost: 1848.32},
   {item: 'Savings', cost: 200.00},
-  {item: 'Water', cost: 60},
-
+  {item: 'Water', cost: 60}
 ];
 
-var formatter = new Intl.NumberFormat('en-US', {
+const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
   minimumFractionDigits: 2,
 });
 
+const partnerSalaryInput = document.querySelector('#income-partner');
+const partnerSalaryDisplay = document.querySelector('.display-income-partner')
+const yourSalaryInput = document.querySelector('#income-yours');
+const yourSalaryDisplay = document.querySelector('.display-income-yours')
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', init());
+
+document.addEventListener('click', function (e) {
+  if (e.target.matches('.add')) {
+    e.preventDefault();
+    addExpense();
+  }
+
+  if (e.target.matches('.remove')) {
+    e.preventDefault();
+    removeExpense(e.target);
+  }
+});
+
+document.addEventListener('input', function (e) {
+  if (e.target.matches("input[type='range']")) {
+    updateSalaries();
+  }
+});
+
+addListenerMulti(document, 'change paste keyup', function(e){
+  if (e.target.matches('.cost')) {
+    updateTotals();
+  }
+});
+
+// Functions
 function init () {
 
   // Initalize salary sliders
   updateSalaries();
 
   // Populate default expenses
-  for(var expense in defaultExpenses){
-    var context = {
+  for(let expense in defaultExpenses){
+    let context = {
       item: defaultExpenses[expense].item,
       cost: defaultExpenses[expense].cost
     };
-
     addExpense(context);
   }
 }
 
-$(function() {
-  init();
-});
-
-$('.add').on('click', function(e) {
-  e.preventDefault();
-  addExpense();
-});
-
-$('.expenses').on('change paste keyup', '.js-cost', function(e) {
-  updateTotals();
-});
-
-$('.expenses').on('click', '.remove', function(e) {
-  e.preventDefault();
-  removeExpense($(this));
-});
-
-$("input[type='range']").on('input', function() {
-  updateSalaries();
-});
-
 function addExpense (context) {
-  var template = require('./expenses.handlebars');
-  var newListItemHTML = template(context);
-  
-  $('.expenses').append(newListItemHTML);
-  
+  const template = require('./expenses.handlebars');
+  const div = document.createElement('div');
+  const expenseContainer = document.querySelector('.expenses');
+
+	div.innerHTML = template(context);
+	expenseContainer.appendChild(div);
+
+  // Apply input mask
+  const costInputs = document.querySelectorAll('.cost');
   Inputmask({
     alias: 'currency',
     'autoUnmask': true
-  }).mask($(".expenses .js-cost:last"));
-  
+  }).mask(costInputs[costInputs.length - 1]);
+
   updateTotals();
 }
 
+function addListenerMulti(el, s, fn) {
+  s.split(' ').forEach(e => el.addEventListener(e, fn, false));
+}
+
 function removeExpense (target) {
-  target.closest('.expense').remove();
+  const expenseRow = target.closest('.expense');
+
+  expenseRow.parentNode.removeChild(expenseRow);
+
   updateTotals();
 }
 
 function updateChart(data) {
-    chart.data.datasets[0].data = data;
-    chart.update();
+  chart.data.datasets[0].data = data;
+  chart.update();
 }
 
 function updateSalaries() {
-  var yourSalary = Number($('#income-yours').val());
-  var partnerSalary = Number($('#income-partner').val());
-
-  $('.show-income-yours').html(formatter.format(yourSalary));
-  $('.show-income-partner').html(formatter.format(partnerSalary));
+  yourSalaryDisplay.innerHTML = formatter.format(yourSalaryInput.value);
+  partnerSalaryDisplay.innerHTML = formatter.format(partnerSalaryInput.value);
 
   updateTotals();
 }
 
 function updateTotals() {
-  var total = 0;
-  var yourSalary = Number($('#income-yours').val());
-  var partnerSalary = Number($('#income-partner').val());
-  var totalSalary = yourSalary + partnerSalary;
-  var yourShare = yourSalary / totalSalary;
-  var partnerShare = partnerSalary / totalSalary;
-  var data = [yourShare, partnerShare];
+  const yourSalary = Number(yourSalaryInput.value)
+  const partnerSalary = Number(partnerSalaryInput.value)
+  const totalIncome = yourSalary + partnerSalary;
+  const yourShare = yourSalary / totalIncome;
+  const partnerShare = partnerSalary / totalIncome;
+  const costInputs = document.querySelectorAll('.cost');
 
-  $('.js-cost').each(function() {
-    total += Number($(this).val());
-  });
+  let total = 0;
+  for (let input of costInputs) {
+    total += Number(input.value);
+  };
 
-  $('.js-total').html(formatter.format(total));
-  $('.js-your-share').html((yourShare * 100).toFixed(0) + '%');
-  $('.js-your-total').html(formatter.format(total * yourShare));
-  $('.js-partner-share').html((partnerShare * 100).toFixed(0) + '%');
-  $('.js-partner-total').html(formatter.format(total * partnerShare));
-  $('.js-emergency').html(formatter.format(total * 3));
+  document.querySelector('.breakdown-total').innerHTML = formatter.format(total);
+  document.querySelector('.breakdown-your-share').innerHTML = (yourShare * 100).toFixed(0) + '%';
+  document.querySelector('.breakdown-your-total').innerHTML = formatter.format(total * yourShare);
+  document.querySelector('.breakdown-partner-share').innerHTML = (partnerShare * 100).toFixed(0) + '%';
+  document.querySelector('.breakdown-partner-total').innerHTML = formatter.format(total * partnerShare);
+  document.querySelector('.breakdown-annual-income').innerHTML = formatter.format(totalIncome);
+  document.querySelector('.breakdown-annual-expenses').innerHTML = formatter.format(total * 12);
+  document.querySelector('.breakdown-emergency').innerHTML = formatter.format(total * 3);
 
-  updateChart(data);
+  updateChart([yourShare, partnerShare]);
 }

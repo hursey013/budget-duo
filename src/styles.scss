@@ -11,9 +11,13 @@
 }
 
 .row {
-  @apply .flex .border-b .py-4
+  @apply .flex .border-b .py-4 .text-sm
 }
 
 @tailwind utilities;
 
 @import '~basscss-input-range/index.css';
+
+a > svg {
+  pointer-events: none;
+}
