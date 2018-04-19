@@ -4,58 +4,41 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>FairShare</title>
+  <title>BudgetDuo</title>
   <link rel="stylesheet" type="text/css" href="./public/styles.css">
 </head>
 <body class="bg-grey-lighter">
-
-  <div class="px-4 sm:px-8 py-8">
+  <div class="p-4 lg:p-8">
     <h1 class="flex items-center text-lg">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stroke-current h-6 w-6 mr-2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
-      Fair<span class="text-grey-darkest">Share</span>
+      Budget<span class="text-grey-darkest">Duo</span>
     </h1>
   </div>
-
-  <div class="container mx-auto p-4">
+  <div class="container mx-auto p-4 lg:p-8 overflow-hidden">
     <div class="flex flex-wrap -mx-8">
-      <div class="w-full md:w-1/2 px-8">
-
-        <div class="salaries pt-8 mb-4">
-          <h2 class="mb-4">Annual Income</h2>
-          <div class="mb-4">
-            <label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="income-yours">Your Salary</label>
-            <h4 class="show-income-yours"></h4>
-            <input id="income-yours" type="range" min="0" max="250000" value="40000" step="500" class="input-range text-blue w-full">
-          </div>
-          <div class="mb-4">
-            <label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="income-partner">Partner's Salary</label>
-            <h4 class="show-income-partner"></h4>
-            <input id="income-partner" type="range" min="0" max="250000" value="60000" step="500" class="input-range text-blue w-full">
-          </div>
+      <div class="w-full lg:w-1/2 px-8">
+        <h2 class="mb-4">Annual Income</h2>
+        <div class="mb-4">
+          <label class="label text-grey-darker" for="income-yours">Your Salary</label>
+          <h4 class="show-income-yours"></h4>
+          <input id="income-yours" type="range" min="0" max="250000" value="40000" step="500" class="input-range text-blue w-full">
         </div>
-
-        <div class="">
-          <h3 class="mb-4">Monthly Expenses</h3>
-          <div class="expenses mb-4"></div>
-          <button class="add w-full md:w-auto bg-blue hover:bg-blue-dark text-white font-semibold hover:text-white py-2 px-4 rounded inline-flex items-center mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stroke-current text-white h-4 w-4 mr-2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            <span>Add another expense</span>
-          </button>
+        <div class="mb-4">
+          <label class="label text-grey-darker" for="income-partner">Partner's Salary</label>
+          <h4 class="show-income-partner"></h4>
+          <input id="income-partner" type="range" min="0" max="250000" value="60000" step="500" class="input-range text-blue w-full">
         </div>
-
+        <h3 class="mb-4">Monthly Expenses</h3>
+        <div class="expenses mb-4"></div>
+        <button class="add w-full lg:w-auto bg-blue hover:bg-blue-dark text-white font-semibold hover:text-white py-2 px-4 rounded inline-flex items-center mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stroke-current text-white h-4 w-4 mr-2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Add another expense
+        </button>
       </div>
-      <div class="w-full md:w-1/2 px-8">
+      <div class="w-full lg:w-1/2 px-8">
         <div class="bg-white rounded border shadow p-4 sm:p-8">
-
-          <div class="flex items-center justify-between mb-4">
-            <h2>The Breakdown</h2>
-            <a href="#" class="split flex items-center uppercase tracking-wide text-blue hover:text-blue-dark text-xs font-bold no-underline">
-              <span>Switch to <span>50/50</span> split</span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stroke-current h-4 w-4 ml-1"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-            </a>
-          </div>
-
-          <div class="flex border-b py-4 uppercase tracking-wide text-xs text-grey-darker">
+          <h2 class="mb-4">The Breakdown</h2>
+          <div class="row">
             <div class="w-1/2">
               Total monthly expenses:
             </div>
@@ -66,9 +49,8 @@
               <span class="js-total"></span>
             </div>
           </div>
-
-          <div class="flex border-b py-4 uppercase tracking-wide text-xs text-grey-darker">
-            <div class="w-1/2 text-grey-darker pl-4">
+          <div class="row">
+            <div class="w-1/2 pl-4">
               Your contribution:
             </div>
             <div class="w-1/4 text-right font-bold">
@@ -78,9 +60,8 @@
               <span class="js-your-total"></span>
             </div>
           </div>
-
-          <div class="flex border-b py-4 uppercase tracking-wide text-xs  text-grey-darker">
-            <div class="w-1/2 text-grey-darker pl-4">
+          <div class="row">
+            <div class="w-1/2 pl-4">
               Partner's contribution:
             </div>
             <div class="w-1/4 text-right font-bold">
@@ -90,12 +71,14 @@
               <span class="js-partner-total"></span>
             </div>
           </div>
-
-          <canvas id="myChart" class="my-8"></canvas>
-
-          <h3>More number crunching</h3>
-          <div class="flex justify-between border-b py-4 uppercase tracking-wide text-xs text-grey-darker ">
-            <span>Emergency fund goal (3 months):</span>
+          <canvas id="duoChart" class="my-8"></canvas>
+          <h3 class="mb-2">More Number Crunching</h3>
+          <div class="row justify-between">
+            <span>Annual expenses:</span>
+            <span class="js-annual font-bold"></span>
+          </div>
+          <div class="row justify-between border-b-0">
+            <span>Emergency fund (3 months):</span>
             <span class="js-emergency font-bold"></span>
           </div>
         </div>

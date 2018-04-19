@@ -3,7 +3,7 @@ import './styles.scss'
 import Chart from 'chart.js';
 import Inputmask from 'inputmask';
 
-var ctx = document.getElementById("myChart");
+var ctx = document.getElementById("duoChart");
 var chart = new Chart(ctx, {
   type: 'pie',
   data: {
@@ -34,8 +34,6 @@ var formatter = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2,
 });
 
-var split = false;
-
 function init () {
 
   // Initalize salary sliders
@@ -52,10 +50,7 @@ function init () {
   }
 
   // Apply input masks to currency fields
-  Inputmask({
-    alias: 'currency',
-    'autoUnmask': true
-  }).mask(document.querySelectorAll('.js-cost'));
+
 }
 
 $(function() {
@@ -80,22 +75,17 @@ $("input[type='range']").on('input', function() {
   updateSalaries();
 });
 
-$('.split').on('click', function(e) {
-  e.preventDefault();
-
-  var text = $(this).find('span').find('span');
-
-  split = !split;
-  split ? text.html("income based") : text.html("50/50");
-
-  updateTotals();
-});
-
 function addExpense (context) {
   var template = require('./expenses.handlebars');
   var newListItemHTML = template(context);
-
+  
   $('.expenses').append(newListItemHTML);
+  
+  Inputmask({
+    alias: 'currency',
+    'autoUnmask': true
+  }).mask($(".expenses .js-cost:last"));
+  
   updateTotals();
 }
 
@@ -124,8 +114,8 @@ function updateTotals() {
   var yourSalary = Number($('#income-yours').val());
   var partnerSalary = Number($('#income-partner').val());
   var totalSalary = yourSalary + partnerSalary;
-  var yourShare = split ? .5 : (yourSalary / totalSalary);
-  var partnerShare = split ? .5 : (partnerSalary / totalSalary);
+  var yourShare = yourSalary / totalSalary;
+  var partnerShare = partnerSalary / totalSalary;
   var data = [yourShare, partnerShare];
 
   $('.js-cost').each(function() {

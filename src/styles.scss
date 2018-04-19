@@ -1,5 +1,19 @@
 @tailwind preflight;
+
 @tailwind components;
+
+.input {
+  @apply .w-full .appearance-none .bg-white .text-grey-darker .border .shadow .rounded .py-3 .px-4;
+}
+
+.label {
+  @apply .block .uppercase .tracking-wide .text-xs .font-bold .mb-2;
+}
+
+.row {
+  @apply .flex .border-b .py-4
+}
+
 @tailwind utilities;
 
 @import '~basscss-input-range/index.css';

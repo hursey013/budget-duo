@@ -1,21 +1,16 @@
 {
-  "name": "fairshare",
-  "version": "1.0.0",
-  "description": "",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=webpack.config.js",
     "watch": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=webpack.config.js",
     "prod": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=webpack.config.js"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "basscss-input-range": "^3.0.0",
     "chart.js": "^2.7.2",
-    "handlebars-loader": "^1.7.0",
     "inputmask": "^3.3.11",
-    "jquery": "^3.3.1"
+    "jquery": "^3.3.1",
+    "tailwindcss": "^0.5.1"
   },
   "devDependencies": {
     "autoprefixer": "^8.3.0",
@@ -27,12 +22,12 @@
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.11",
     "handlebars": "^4.0.11",
+    "handlebars-loader": "^1.7.0",
     "node-sass": "^4.8.3",
     "postcss": "^6.0.14",
     "postcss-loader": "^2.0.8",
     "sass-loader": "^7.0.1",
     "style-loader": "^0.20.3",
-    "tailwindcss": "^0.5.1",
     "url-loader": "^1.0.1",
     "webpack": "^3.8.1"
   }
