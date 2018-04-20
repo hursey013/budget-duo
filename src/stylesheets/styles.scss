@@ -1,8 +1,20 @@
 @tailwind preflight;
 @tailwind components;
 @import 'components/custom';
+
+$ph-bg:                   #F1F5F8;
+$ph-color:                #ced4da;
+$ph-border-radius:        0;
+
+$ph-gutter:               0;
+$ph-spacer:               0;
+
+$ph-avatar-border-radius: 50%;
+
+@import '~basscss-input-range/index';
+@import "~placeholder-loading/src/scss/placeholder-loading";
 @tailwind utilities;
 
-@import '~basscss-input-range/index.css';
+
 
 @import 'custom'

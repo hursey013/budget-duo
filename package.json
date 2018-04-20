@@ -10,6 +10,7 @@
     "chart.js": "^2.7.2",
     "firebase": "^4.12.1",
     "inputmask": "^3.3.11",
+    "query-string": "^6.0.0",
     "tailwindcss": "^0.5.1"
   },
   "devDependencies": {
