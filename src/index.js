@@ -1,9 +1,26 @@
 import './stylesheets/styles.scss'
 
 import Chart from 'chart.js';
+import { colors } from '../tailwind.js';
 import * as firebase from 'firebase';
 import Inputmask from 'inputmask';
 import queryString from 'query-string';
+
+// DOM elements
+const breakdownTotal = document.querySelector('.breakdown-total');
+const breakdownYourShare = document.querySelector('.breakdown-your-share');
+const breakdownYourTotal = document.querySelector('.breakdown-your-total');
+const breakdownPartnerShare = document.querySelector('.breakdown-partner-share');
+const breakdownPartnerTotal = document.querySelector('.breakdown-partner-total');
+const breakdownAnnualIncome = document.querySelector('.breakdown-annual-income');
+const breakdownAnnualExpenses = document.querySelector('.breakdown-annual-expenses');
+const breakdownEmergency = document.querySelector('.breakdown-emergency');
+const ctx = document.getElementById('chart');
+const expenseContainer = document.querySelector('.expenses');
+const partnerSalaryInput = document.querySelector('#income-partner');
+const partnerSalaryDisplay = document.querySelector('.display-income-partner')
+const yourSalaryInput = document.querySelector('#income-yours');
+const yourSalaryDisplay = document.querySelector('.display-income-yours')
 
 // Global vars
 const config = {
@@ -14,16 +31,15 @@ const config = {
   storageBucket: "budgetduo.appspot.com",
   messagingSenderId: "726238323023"
 };
-
 firebase.initializeApp(config);
+
 const database = firebase.database();
 
-const ctx = document.getElementById('chart');
 const chart = new Chart(ctx, {
   type: 'pie',
   data: {
     labels: ['Your share', 'Partner\'s share'],
-    datasets: [{ backgroundColor: ['#3490DC', '#6CB2EB'] }]
+    datasets: [{ backgroundColor: [colors['blue'], colors['blue-light']] }]
   },
   options: {
     legend: { display: false},
@@ -34,15 +50,19 @@ const chart = new Chart(ctx, {
   }
 });
 
-const defaultExpenses = [
-  {item: 'Electricity', cost: 104},
-  {item: 'Insurance', cost: 95},
-  {item: 'Internet', cost: 29.99},
-  {item: 'Gym', cost: 86},
-  {item: 'Mortgage', cost: 1848.32},
-  {item: 'Savings', cost: 200.00},
-  {item: 'Water', cost: 60}
-];
+const budgetDefault = {
+  yourSalary: 40000,
+  partnerSalary: 60000,
+  expenses: [
+    {item: 'Electricity', cost: 104},
+    {item: 'Insurance', cost: 95},
+    {item: 'Internet', cost: 29.99},
+    {item: 'Gym', cost: 86},
+    {item: 'Mortgage', cost: 1848.32},
+    {item: 'Savings', cost: 200.00},
+    {item: 'Water', cost: 60}
+  ]
+};
 
 const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -50,21 +70,134 @@ const formatter = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2,
 });
 
-const breakdownTotal = document.querySelector('.breakdown-total');
-const breakdownYourShare = document.querySelector('.breakdown-your-share');
-const breakdownYourTotal = document.querySelector('.breakdown-your-total');
-const breakdownPartnerShare = document.querySelector('.breakdown-partner-share');
-const breakdownPartnerTotal = document.querySelector('.breakdown-partner-total');
-const breakdownAnnualIncome = document.querySelector('.breakdown-annual-income');
-const breakdownAnnualExpenses = document.querySelector('.breakdown-annual-expenses');
-const breakdownEmergency = document.querySelector('.breakdown-emergency');
-const partnerSalaryInput = document.querySelector('#income-partner');
-const partnerSalaryDisplay = document.querySelector('.display-income-partner')
-const yourSalaryInput = document.querySelector('#income-yours');
-const yourSalaryDisplay = document.querySelector('.display-income-yours')
+const parsedHash = queryString.parse(location.hash);
 
-// Event listeners
-document.addEventListener('DOMContentLoaded', init());
+// Functions
+(function () {
+  const budget = {};
+
+  if (parsedHash.token) {
+    database.ref().child('budgets').child(parsedHash.token).once('value').then(function(snapshot) {
+      budget.yourSalary = snapshot.val().yourSalary;
+      budget.partnerSalary = snapshot.val().partnerSalary;
+      budget.expenses = snapshot.val().expenses;
+
+      init(budget);
+    });
+  } else {
+    budget.yourSalary = budgetDefault.yourSalary;
+    budget.partnerSalary = budgetDefault.partnerSalary;
+
+    const push = database.ref().child('budgets').push(budget);
+    const token = push.key;
+    const newHash = queryString.stringify({token: token});
+    location.hash = newHash;
+
+    budget.expenses = budgetDefault.expenses;
+
+    init(budget, token);
+  }
+})();
+
+function init (budget, token) {
+  const expenses = budget.expenses;
+
+  // Set salary range inputs
+  yourSalaryInput.value = budget.yourSalary;
+  partnerSalaryInput.value = budget.partnerSalary;
+
+  // Set salary labels
+  updateSalaries(budget);
+
+  // Set expenses
+  for(let expense in expenses){
+    addExpense(expense, token);
+  }
+}
+
+function addExpense (expense, token) {
+  const template = require('./templates/expenses.handlebars');
+  const div = document.createElement('div');
+
+  if (token) {
+    const push = database.ref().child('budgets').child(token).child('expenses').push(expense);
+    // expense.id = push.key;
+    console.log(push.key);
+  }
+
+	div.innerHTML = template(expense);
+	expenseContainer.appendChild(div);
+
+  // Apply input mask
+  const costInputs = document.querySelectorAll('.cost');
+  Inputmask({
+    alias: 'currency',
+    autoUnmask: true,
+    prefix: "$"
+  }).mask(costInputs[costInputs.length - 1]);
+
+  updateTotals();
+}
+
+function addListenerMulti(el, s, fn) {
+  s.split(' ').forEach(e => el.addEventListener(e, fn, false));
+}
+
+function removeExpense (target) {
+  const expenseRow = target.closest('.expense');
+  const id = expenseRow.getAttribute('data-id');
+
+  budget.expenses.splice(id, 1)
+  expenseRow.parentNode.removeChild(expenseRow);
+
+  updateTotals();
+}
+
+function updateChart(data) {
+  chart.data.datasets[0].data = data;
+  chart.update();
+}
+
+function updateSalaries(budget) {
+  budget.yourSalary = yourSalaryInput.value;
+  budget.partnerSalary = partnerSalaryInput.value;
+
+  yourSalaryDisplay.innerHTML = formatter.format(budget.yourSalary);
+  partnerSalaryDisplay.innerHTML = formatter.format(budget.partnerSalary);
+
+  updateTotals();
+}
+
+function updateTotals() {
+  const yourSalary = Number(yourSalaryInput.value);
+  const partnerSalary = Number(partnerSalaryInput.value);
+  const totalIncome = yourSalary + partnerSalary;
+  const yourShare = yourSalary / totalIncome;
+  const partnerShare = partnerSalary / totalIncome;
+  const costInputs = document.querySelectorAll('.cost');
+
+  let total = 0;
+  for (let input of costInputs) {
+    total += Number(input.value);
+  };
+
+  breakdownTotal.innerHTML = formatter.format(total);
+  breakdownYourShare.innerHTML = (yourShare * 100).toFixed(0) + '%';
+  breakdownYourTotal.innerHTML = formatter.format(total * yourShare);
+  breakdownPartnerShare.innerHTML = (partnerShare * 100).toFixed(0) + '%';
+  breakdownPartnerTotal.innerHTML = formatter.format(total * partnerShare);
+  breakdownAnnualIncome.innerHTML = formatter.format(totalIncome);
+  breakdownAnnualExpenses.innerHTML = formatter.format(total * 12);
+  breakdownEmergency.innerHTML = formatter.format(total * 3);
+
+  updateChart([yourShare, partnerShare]);
+}
+
+function outputJSON() {
+  let push = database.ref().push(budget);
+  const stringified = queryString.stringify({token: push.key});
+  location.hash = stringified;
+}
 
 document.addEventListener('click', function (e) {
   if (e.target.matches('.add')) {
@@ -91,145 +224,7 @@ document.addEventListener('input', function (e) {
 
 addListenerMulti(document, 'change paste keyup', function(e){
   if (e.target.matches('.cost')) {
+    updateExpense(e.target);
     updateTotals();
   }
 });
-
-// Functions
-function init () {
-  const parsedHash = queryString.parse(location.hash);
-
-  let savedYourSalary = false;
-  let savedPartnerSalary = false;
-
-  if (parsedHash.token) {
-    database.ref('/' + parsedHash.token).once('value').then(function(snapshot) {
-      savedYourSalary = snapshot.val().yourSalary;
-      savedPartnerSalary = snapshot.val().partnerSalary;
-      
-      console.log(savedYourSalary);
-      console.log(savedPartnerSalary);
-      
-      // Initalize salary sliders
-      updateSalaries(savedYourSalary, savedPartnerSalary);
-    });
-  } else {
-    // Initalize salary sliders
-    updateSalaries(savedYourSalary, savedPartnerSalary);
-  }
-
-
-
-  // Populate default expenses
-  for(let expense in defaultExpenses){
-    let context = {
-      item: defaultExpenses[expense].item,
-      cost: defaultExpenses[expense].cost
-    };
-    addExpense(context);
-  }
-}
-
-function addExpense (context) {
-  const template = require('./templates/expenses.handlebars');
-  const div = document.createElement('div');
-  const expenseContainer = document.querySelector('.expenses');
-
-	div.innerHTML = template(context);
-	expenseContainer.appendChild(div);
-
-  // Apply input mask
-  const costInputs = document.querySelectorAll('.cost');
-  Inputmask({
-    alias: 'currency',
-    autoUnmask: true,
-    prefix: "$"
-  }).mask(costInputs[costInputs.length - 1]);
-
-  updateTotals();
-}
-
-function addListenerMulti(el, s, fn) {
-  s.split(' ').forEach(e => el.addEventListener(e, fn, false));
-}
-
-function removeExpense (target) {
-  const expenseRow = target.closest('.expense');
-
-  expenseRow.parentNode.removeChild(expenseRow);
-
-  updateTotals();
-}
-
-function updateChart(data) {
-  chart.data.datasets[0].data = data;
-  chart.update();
-}
-
-function updateSalaries(savedYourSalary, savedPartnerSalary) {
-  
-  if (savedYourSalary && savedPartnerSalary) {
-    yourSalaryInput.value = savedYourSalary;
-    partnerSalaryInput.value = savedPartnerSalary;
-  }
-  
-  yourSalaryDisplay.innerHTML = formatter.format(savedYourSalary || yourSalaryInput.value);
-  partnerSalaryDisplay.innerHTML = formatter.format(savedPartnerSalary || partnerSalaryInput.value);
-
-  updateTotals();
-}
-
-function updateTotals() {
-  const yourSalary = Number(yourSalaryInput.value)
-  const partnerSalary = Number(partnerSalaryInput.value)
-  const totalIncome = yourSalary + partnerSalary;
-  const yourShare = yourSalary / totalIncome;
-  const partnerShare = partnerSalary / totalIncome;
-  const costInputs = document.querySelectorAll('.cost');
-
-  let total = 0;
-  for (let input of costInputs) {
-    total += Number(input.value);
-  };
-
-  breakdownTotal.innerHTML = formatter.format(total);
-  breakdownYourShare.innerHTML = (yourShare * 100).toFixed(0) + '%';
-  breakdownYourTotal.innerHTML = formatter.format(total * yourShare);
-  breakdownPartnerShare.innerHTML = (partnerShare * 100).toFixed(0) + '%';
-  breakdownPartnerTotal.innerHTML = formatter.format(total * partnerShare);
-  breakdownAnnualIncome.innerHTML = formatter.format(totalIncome);
-  breakdownAnnualExpenses.innerHTML = formatter.format(total * 12);
-  breakdownEmergency.innerHTML = formatter.format(total * 3);
-
-  updateChart([yourShare, partnerShare]);
-}
-
-function outputJSON() {
-
-  const expenses = document.querySelectorAll('.expense');
-  const yourSalary = Number(yourSalaryInput.value)
-  const partnerSalary = Number(partnerSalaryInput.value)
-  
-  let expensesArray = [];
-  
-  for (let i = 0; i < expenses.length; i++) {
-    let item =  expenses[i].querySelector('.input').value;
-    let cost =  expenses[i].querySelector('.cost').value;
-    let expense = {
-      item: item,
-      cost: cost
-    }
-    
-    expensesArray.push(expense);
-  }
-  
-  let data = {
-    yourSalary: yourSalary,
-    partnerSalary: partnerSalary,
-    expenses: expensesArray
-  }
-
-  let push = database.ref().push(data);
-  const stringified = queryString.stringify({token: push.key});
-  location.hash = stringified;
-}
