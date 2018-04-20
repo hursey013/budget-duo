@@ -3,6 +3,7 @@ import './stylesheets/styles.scss'
 import Chart from 'chart.js';
 import * as firebase from 'firebase';
 import Inputmask from 'inputmask';
+import queryString from 'query-string';
 
 // Global vars
 const config = {
@@ -13,7 +14,9 @@ const config = {
   storageBucket: "budgetduo.appspot.com",
   messagingSenderId: "726238323023"
 };
+
 firebase.initializeApp(config);
+const database = firebase.database();
 
 const ctx = document.getElementById('chart');
 const chart = new Chart(ctx, {
@@ -47,6 +50,14 @@ const formatter = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2,
 });
 
+const breakdownTotal = document.querySelector('.breakdown-total');
+const breakdownYourShare = document.querySelector('.breakdown-your-share');
+const breakdownYourTotal = document.querySelector('.breakdown-your-total');
+const breakdownPartnerShare = document.querySelector('.breakdown-partner-share');
+const breakdownPartnerTotal = document.querySelector('.breakdown-partner-total');
+const breakdownAnnualIncome = document.querySelector('.breakdown-annual-income');
+const breakdownAnnualExpenses = document.querySelector('.breakdown-annual-expenses');
+const breakdownEmergency = document.querySelector('.breakdown-emergency');
 const partnerSalaryInput = document.querySelector('#income-partner');
 const partnerSalaryDisplay = document.querySelector('.display-income-partner')
 const yourSalaryInput = document.querySelector('#income-yours');
@@ -86,9 +97,28 @@ addListenerMulti(document, 'change paste keyup', function(e){
 
 // Functions
 function init () {
+  const parsedHash = queryString.parse(location.hash);
 
-  // Initalize salary sliders
-  updateSalaries();
+  let savedYourSalary = false;
+  let savedPartnerSalary = false;
+
+  if (parsedHash.token) {
+    database.ref('/' + parsedHash.token).once('value').then(function(snapshot) {
+      savedYourSalary = snapshot.val().yourSalary;
+      savedPartnerSalary = snapshot.val().partnerSalary;
+      
+      console.log(savedYourSalary);
+      console.log(savedPartnerSalary);
+      
+      // Initalize salary sliders
+      updateSalaries(savedYourSalary, savedPartnerSalary);
+    });
+  } else {
+    // Initalize salary sliders
+    updateSalaries(savedYourSalary, savedPartnerSalary);
+  }
+
+
 
   // Populate default expenses
   for(let expense in defaultExpenses){
@@ -136,9 +166,15 @@ function updateChart(data) {
   chart.update();
 }
 
-function updateSalaries() {
-  yourSalaryDisplay.innerHTML = formatter.format(yourSalaryInput.value);
-  partnerSalaryDisplay.innerHTML = formatter.format(partnerSalaryInput.value);
+function updateSalaries(savedYourSalary, savedPartnerSalary) {
+  
+  if (savedYourSalary && savedPartnerSalary) {
+    yourSalaryInput.value = savedYourSalary;
+    partnerSalaryInput.value = savedPartnerSalary;
+  }
+  
+  yourSalaryDisplay.innerHTML = formatter.format(savedYourSalary || yourSalaryInput.value);
+  partnerSalaryDisplay.innerHTML = formatter.format(savedPartnerSalary || partnerSalaryInput.value);
 
   updateTotals();
 }
@@ -156,36 +192,44 @@ function updateTotals() {
     total += Number(input.value);
   };
 
-  document.querySelector('.breakdown-total').innerHTML = formatter.format(total);
-  document.querySelector('.breakdown-your-share').innerHTML = (yourShare * 100).toFixed(0) + '%';
-  document.querySelector('.breakdown-your-total').innerHTML = formatter.format(total * yourShare);
-  document.querySelector('.breakdown-partner-share').innerHTML = (partnerShare * 100).toFixed(0) + '%';
-  document.querySelector('.breakdown-partner-total').innerHTML = formatter.format(total * partnerShare);
-  document.querySelector('.breakdown-annual-income').innerHTML = formatter.format(totalIncome);
-  document.querySelector('.breakdown-annual-expenses').innerHTML = formatter.format(total * 12);
-  document.querySelector('.breakdown-emergency').innerHTML = formatter.format(total * 3);
+  breakdownTotal.innerHTML = formatter.format(total);
+  breakdownYourShare.innerHTML = (yourShare * 100).toFixed(0) + '%';
+  breakdownYourTotal.innerHTML = formatter.format(total * yourShare);
+  breakdownPartnerShare.innerHTML = (partnerShare * 100).toFixed(0) + '%';
+  breakdownPartnerTotal.innerHTML = formatter.format(total * partnerShare);
+  breakdownAnnualIncome.innerHTML = formatter.format(totalIncome);
+  breakdownAnnualExpenses.innerHTML = formatter.format(total * 12);
+  breakdownEmergency.innerHTML = formatter.format(total * 3);
 
   updateChart([yourShare, partnerShare]);
 }
 
 function outputJSON() {
-  const dbRef = firebase.database().ref();
-  const budgetsRef = dbRef.child('budgets');
-  const addBudgetsInputsUI = document.getElementsByClassName("expense");
+
+  const expenses = document.querySelectorAll('.expense');
   const yourSalary = Number(yourSalaryInput.value)
   const partnerSalary = Number(partnerSalaryInput.value)
-
-  var budget = {
-    your_salary: yourSalary,
-    partner_salary: partnerSalary,
-    expenses: []
-  };
-
-  for (let i = 0; i < addBudgetsInputsUI.length; i++) {
-    console.log(addBudgetsInputsUI[i]);
+  
+  let expensesArray = [];
+  
+  for (let i = 0; i < expenses.length; i++) {
+    let item =  expenses[i].querySelector('.input').value;
+    let cost =  expenses[i].querySelector('.cost').value;
+    let expense = {
+      item: item,
+      cost: cost
+    }
+    
+    expensesArray.push(expense);
+  }
+  
+  let data = {
+    yourSalary: yourSalary,
+    partnerSalary: partnerSalary,
+    expenses: expensesArray
   }
 
-  // budgetsRef.push(budget, function(){
-  //   console.log("data has been inserted");
-  // })
+  let push = database.ref().push(data);
+  const stringified = queryString.stringify({token: push.key});
+  location.hash = stringified;
 }

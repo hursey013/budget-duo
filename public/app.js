@@ -35705,11 +35705,11 @@ var _exception = __webpack_require__(31);
 
 var _exception2 = _interopRequireDefault(_exception);
 
-var _helpers = __webpack_require__(369);
+var _helpers = __webpack_require__(372);
 
-var _decorators = __webpack_require__(377);
+var _decorators = __webpack_require__(380);
 
-var _logger = __webpack_require__(379);
+var _logger = __webpack_require__(382);
 
 var _logger2 = _interopRequireDefault(_logger);
 
@@ -35811,6 +35811,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_firebase___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_firebase__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_inputmask__ = __webpack_require__(361);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_inputmask___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_inputmask__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_query_string__ = __webpack_require__(366);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_query_string___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_query_string__);
+
 
 
 
@@ -35826,7 +35829,9 @@ var config = {
   storageBucket: "budgetduo.appspot.com",
   messagingSenderId: "726238323023"
 };
+
 __WEBPACK_IMPORTED_MODULE_2_firebase__["initializeApp"](config);
+var database = __WEBPACK_IMPORTED_MODULE_2_firebase__["database"]();
 
 var ctx = document.getElementById('chart');
 var chart = new __WEBPACK_IMPORTED_MODULE_1_chart_js___default.a(ctx, {
@@ -35852,6 +35857,14 @@ var formatter = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2
 });
 
+var breakdownTotal = document.querySelector('.breakdown-total');
+var breakdownYourShare = document.querySelector('.breakdown-your-share');
+var breakdownYourTotal = document.querySelector('.breakdown-your-total');
+var breakdownPartnerShare = document.querySelector('.breakdown-partner-share');
+var breakdownPartnerTotal = document.querySelector('.breakdown-partner-total');
+var breakdownAnnualIncome = document.querySelector('.breakdown-annual-income');
+var breakdownAnnualExpenses = document.querySelector('.breakdown-annual-expenses');
+var breakdownEmergency = document.querySelector('.breakdown-emergency');
 var partnerSalaryInput = document.querySelector('#income-partner');
 var partnerSalaryDisplay = document.querySelector('.display-income-partner');
 var yourSalaryInput = document.querySelector('#income-yours');
@@ -35891,9 +35904,26 @@ addListenerMulti(document, 'change paste keyup', function (e) {
 
 // Functions
 function init() {
+  var parsedHash = __WEBPACK_IMPORTED_MODULE_4_query_string___default.a.parse(location.hash);
 
-  // Initalize salary sliders
-  updateSalaries();
+  var savedYourSalary = false;
+  var savedPartnerSalary = false;
+
+  if (parsedHash.token) {
+    database.ref('/' + parsedHash.token).once('value').then(function (snapshot) {
+      savedYourSalary = snapshot.val().yourSalary;
+      savedPartnerSalary = snapshot.val().partnerSalary;
+
+      console.log(savedYourSalary);
+      console.log(savedPartnerSalary);
+
+      // Initalize salary sliders
+      updateSalaries(savedYourSalary, savedPartnerSalary);
+    });
+  } else {
+    // Initalize salary sliders
+    updateSalaries(savedYourSalary, savedPartnerSalary);
+  }
 
   // Populate default expenses
   for (var expense in defaultExpenses) {
@@ -35906,7 +35936,7 @@ function init() {
 }
 
 function addExpense(context) {
-  var template = __webpack_require__(366);
+  var template = __webpack_require__(369);
   var div = document.createElement('div');
   var expenseContainer = document.querySelector('.expenses');
 
@@ -35943,9 +35973,15 @@ function updateChart(data) {
   chart.update();
 }
 
-function updateSalaries() {
-  yourSalaryDisplay.innerHTML = formatter.format(yourSalaryInput.value);
-  partnerSalaryDisplay.innerHTML = formatter.format(partnerSalaryInput.value);
+function updateSalaries(savedYourSalary, savedPartnerSalary) {
+
+  if (savedYourSalary && savedPartnerSalary) {
+    yourSalaryInput.value = savedYourSalary;
+    partnerSalaryInput.value = savedPartnerSalary;
+  }
+
+  yourSalaryDisplay.innerHTML = formatter.format(savedYourSalary || yourSalaryInput.value);
+  partnerSalaryDisplay.innerHTML = formatter.format(savedPartnerSalary || partnerSalaryInput.value);
 
   updateTotals();
 }
@@ -35986,38 +36022,46 @@ function updateTotals() {
 
   ;
 
-  document.querySelector('.breakdown-total').innerHTML = formatter.format(total);
-  document.querySelector('.breakdown-your-share').innerHTML = (yourShare * 100).toFixed(0) + '%';
-  document.querySelector('.breakdown-your-total').innerHTML = formatter.format(total * yourShare);
-  document.querySelector('.breakdown-partner-share').innerHTML = (partnerShare * 100).toFixed(0) + '%';
-  document.querySelector('.breakdown-partner-total').innerHTML = formatter.format(total * partnerShare);
-  document.querySelector('.breakdown-annual-income').innerHTML = formatter.format(totalIncome);
-  document.querySelector('.breakdown-annual-expenses').innerHTML = formatter.format(total * 12);
-  document.querySelector('.breakdown-emergency').innerHTML = formatter.format(total * 3);
+  breakdownTotal.innerHTML = formatter.format(total);
+  breakdownYourShare.innerHTML = (yourShare * 100).toFixed(0) + '%';
+  breakdownYourTotal.innerHTML = formatter.format(total * yourShare);
+  breakdownPartnerShare.innerHTML = (partnerShare * 100).toFixed(0) + '%';
+  breakdownPartnerTotal.innerHTML = formatter.format(total * partnerShare);
+  breakdownAnnualIncome.innerHTML = formatter.format(totalIncome);
+  breakdownAnnualExpenses.innerHTML = formatter.format(total * 12);
+  breakdownEmergency.innerHTML = formatter.format(total * 3);
 
   updateChart([yourShare, partnerShare]);
 }
 
 function outputJSON() {
-  var dbRef = __WEBPACK_IMPORTED_MODULE_2_firebase__["database"]().ref();
-  var budgetsRef = dbRef.child('budgets');
-  var addBudgetsInputsUI = document.getElementsByClassName("expense");
+
+  var expenses = document.querySelectorAll('.expense');
   var yourSalary = Number(yourSalaryInput.value);
   var partnerSalary = Number(partnerSalaryInput.value);
 
-  var budget = {
-    your_salary: yourSalary,
-    partner_salary: partnerSalary,
-    expenses: []
-  };
+  var expensesArray = [];
 
-  for (var i = 0; i < addBudgetsInputsUI.length; i++) {
-    console.log(addBudgetsInputsUI[i]);
+  for (var i = 0; i < expenses.length; i++) {
+    var item = expenses[i].querySelector('.input').value;
+    var cost = expenses[i].querySelector('.cost').value;
+    var expense = {
+      item: item,
+      cost: cost
+    };
+
+    expensesArray.push(expense);
   }
 
-  // budgetsRef.push(budget, function(){
-  //   console.log("data has been inserted");
-  // })
+  var data = {
+    yourSalary: yourSalary,
+    partnerSalary: partnerSalary,
+    expenses: expensesArray
+  };
+
+  var push = database.ref().push(data);
+  var stringified = __WEBPACK_IMPORTED_MODULE_4_query_string___default.a.stringify({ token: push.key });
+  location.hash = stringified;
 }
 
 /***/ }),
@@ -62060,7 +62104,338 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /* 366 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Handlebars = __webpack_require__(367);
+"use strict";
+
+const strictUriEncode = __webpack_require__(367);
+const decodeComponent = __webpack_require__(368);
+
+function encoderForArrayFormat(options) {
+	switch (options.arrayFormat) {
+		case 'index':
+			return (key, value, index) => {
+				return value === null ? [
+					encode(key, options),
+					'[',
+					index,
+					']'
+				].join('') : [
+					encode(key, options),
+					'[',
+					encode(index, options),
+					']=',
+					encode(value, options)
+				].join('');
+			};
+		case 'bracket':
+			return (key, value) => {
+				return value === null ? encode(key, options) : [
+					encode(key, options),
+					'[]=',
+					encode(value, options)
+				].join('');
+			};
+		default:
+			return (key, value) => {
+				return value === null ? encode(key, options) : [
+					encode(key, options),
+					'=',
+					encode(value, options)
+				].join('');
+			};
+	}
+}
+
+function parserForArrayFormat(options) {
+	let result;
+
+	switch (options.arrayFormat) {
+		case 'index':
+			return (key, value, accumulator) => {
+				result = /\[(\d*)\]$/.exec(key);
+
+				key = key.replace(/\[\d*\]$/, '');
+
+				if (!result) {
+					accumulator[key] = value;
+					return;
+				}
+
+				if (accumulator[key] === undefined) {
+					accumulator[key] = {};
+				}
+
+				accumulator[key][result[1]] = value;
+			};
+		case 'bracket':
+			return (key, value, accumulator) => {
+				result = /(\[\])$/.exec(key);
+				key = key.replace(/\[\]$/, '');
+
+				if (!result) {
+					accumulator[key] = value;
+					return;
+				}
+
+				if (accumulator[key] === undefined) {
+					accumulator[key] = [value];
+					return;
+				}
+
+				accumulator[key] = [].concat(accumulator[key], value);
+			};
+		default:
+			return (key, value, accumulator) => {
+				if (accumulator[key] === undefined) {
+					accumulator[key] = value;
+					return;
+				}
+
+				accumulator[key] = [].concat(accumulator[key], value);
+			};
+	}
+}
+
+function encode(value, options) {
+	if (options.encode) {
+		return options.strict ? strictUriEncode(value) : encodeURIComponent(value);
+	}
+
+	return value;
+}
+
+function keysSorter(input) {
+	if (Array.isArray(input)) {
+		return input.sort();
+	}
+
+	if (typeof input === 'object') {
+		return keysSorter(Object.keys(input))
+			.sort((a, b) => Number(a) - Number(b))
+			.map(key => input[key]);
+	}
+
+	return input;
+}
+
+function extract(input) {
+	const queryStart = input.indexOf('?');
+	if (queryStart === -1) {
+		return '';
+	}
+	return input.slice(queryStart + 1);
+}
+
+function parse(input, options) {
+	options = Object.assign({arrayFormat: 'none'}, options);
+
+	const formatter = parserForArrayFormat(options);
+
+	// Create an object with no prototype
+	const ret = Object.create(null);
+
+	if (typeof input !== 'string') {
+		return ret;
+	}
+
+	input = input.trim().replace(/^[?#&]/, '');
+
+	if (!input) {
+		return ret;
+	}
+
+	for (const param of input.split('&')) {
+		let [key, value] = param.replace(/\+/g, ' ').split('=');
+
+		// Missing `=` should be `null`:
+		// http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
+		value = value === undefined ? null : decodeComponent(value);
+
+		formatter(decodeComponent(key), value, ret);
+	}
+
+	return Object.keys(ret).sort().reduce((result, key) => {
+		const value = ret[key];
+		if (Boolean(value) && typeof value === 'object' && !Array.isArray(value)) {
+			// Sort object keys, not values
+			result[key] = keysSorter(value);
+		} else {
+			result[key] = value;
+		}
+
+		return result;
+	}, Object.create(null));
+}
+
+exports.extract = extract;
+exports.parse = parse;
+
+exports.stringify = (obj, options) => {
+	const defaults = {
+		encode: true,
+		strict: true,
+		arrayFormat: 'none'
+	};
+
+	options = Object.assign(defaults, options);
+
+	if (options.sort === false) {
+		options.sort = () => {};
+	}
+
+	const formatter = encoderForArrayFormat(options);
+
+	return obj ? Object.keys(obj).sort(options.sort).map(key => {
+		const value = obj[key];
+
+		if (value === undefined) {
+			return '';
+		}
+
+		if (value === null) {
+			return encode(key, options);
+		}
+
+		if (Array.isArray(value)) {
+			const result = [];
+
+			for (const value2 of value.slice()) {
+				if (value2 === undefined) {
+					continue;
+				}
+
+				result.push(formatter(key, value2, result.length));
+			}
+
+			return result.join('&');
+		}
+
+		return encode(key, options) + '=' + encode(value, options);
+	}).filter(x => x.length > 0).join('&') : '';
+};
+
+exports.parseUrl = (input, options) => {
+	return {
+		url: input.split('?')[0] || '',
+		query: parse(extract(input), options)
+	};
+};
+
+
+/***/ }),
+/* 367 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+module.exports = str => encodeURIComponent(str).replace(/[!'()*]/g, x => `%${x.charCodeAt(0).toString(16).toUpperCase()}`);
+
+
+/***/ }),
+/* 368 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var token = '%[a-f0-9]{2}';
+var singleMatcher = new RegExp(token, 'gi');
+var multiMatcher = new RegExp('(' + token + ')+', 'gi');
+
+function decodeComponents(components, split) {
+	try {
+		// Try to decode the entire string first
+		return decodeURIComponent(components.join(''));
+	} catch (err) {
+		// Do nothing
+	}
+
+	if (components.length === 1) {
+		return components;
+	}
+
+	split = split || 1;
+
+	// Split the array in 2 parts
+	var left = components.slice(0, split);
+	var right = components.slice(split);
+
+	return Array.prototype.concat.call([], decodeComponents(left), decodeComponents(right));
+}
+
+function decode(input) {
+	try {
+		return decodeURIComponent(input);
+	} catch (err) {
+		var tokens = input.match(singleMatcher);
+
+		for (var i = 1; i < tokens.length; i++) {
+			input = decodeComponents(tokens, i).join('');
+
+			tokens = input.match(singleMatcher);
+		}
+
+		return input;
+	}
+}
+
+function customDecodeURIComponent(input) {
+	// Keep track of all the replacements and prefill the map with the `BOM`
+	var replaceMap = {
+		'%FE%FF': '\uFFFD\uFFFD',
+		'%FF%FE': '\uFFFD\uFFFD'
+	};
+
+	var match = multiMatcher.exec(input);
+	while (match) {
+		try {
+			// Decode as big chunks as possible
+			replaceMap[match[0]] = decodeURIComponent(match[0]);
+		} catch (err) {
+			var result = decode(match[0]);
+
+			if (result !== match[0]) {
+				replaceMap[match[0]] = result;
+			}
+		}
+
+		match = multiMatcher.exec(input);
+	}
+
+	// Add `%C2` at the end of the map to make sure it does not replace the combinator before everything else
+	replaceMap['%C2'] = '\uFFFD';
+
+	var entries = Object.keys(replaceMap);
+
+	for (var i = 0; i < entries.length; i++) {
+		// Replace all decoded components
+		var key = entries[i];
+		input = input.replace(new RegExp(key, 'g'), replaceMap[key]);
+	}
+
+	return input;
+}
+
+module.exports = function (encodedURI) {
+	if (typeof encodedURI !== 'string') {
+		throw new TypeError('Expected `encodedURI` to be of type `string`, got `' + typeof encodedURI + '`');
+	}
+
+	try {
+		encodedURI = encodedURI.replace(/\+/g, ' ');
+
+		// Try the built in decoder first
+		return decodeURIComponent(encodedURI);
+	} catch (err) {
+		// Fallback to a more advanced decoder
+		return customDecodeURIComponent(encodedURI);
+	}
+};
+
+
+/***/ }),
+/* 369 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Handlebars = __webpack_require__(370);
 function __default(obj) { return obj && (obj.__esModule ? obj["default"] : obj); }
 module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
@@ -62073,16 +62448,16 @@ module.exports = (Handlebars["default"] || Handlebars).template({"compiler":[7,"
 },"useData":true});
 
 /***/ }),
-/* 367 */
+/* 370 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
-module.exports = __webpack_require__(368)['default'];
+module.exports = __webpack_require__(371)['default'];
 
 
 /***/ }),
-/* 368 */
+/* 371 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62104,7 +62479,7 @@ var base = _interopRequireWildcard(_handlebarsBase);
 // Each of these augment the Handlebars object. No need to setup here.
 // (This is done to easily share code between commonjs and browse envs)
 
-var _handlebarsSafeString = __webpack_require__(380);
+var _handlebarsSafeString = __webpack_require__(383);
 
 var _handlebarsSafeString2 = _interopRequireDefault(_handlebarsSafeString);
 
@@ -62116,11 +62491,11 @@ var _handlebarsUtils = __webpack_require__(13);
 
 var Utils = _interopRequireWildcard(_handlebarsUtils);
 
-var _handlebarsRuntime = __webpack_require__(381);
+var _handlebarsRuntime = __webpack_require__(384);
 
 var runtime = _interopRequireWildcard(_handlebarsRuntime);
 
-var _handlebarsNoConflict = __webpack_require__(382);
+var _handlebarsNoConflict = __webpack_require__(385);
 
 var _handlebarsNoConflict2 = _interopRequireDefault(_handlebarsNoConflict);
 
@@ -62155,7 +62530,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 369 */
+/* 372 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62167,31 +62542,31 @@ exports.registerDefaultHelpers = registerDefaultHelpers;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _helpersBlockHelperMissing = __webpack_require__(370);
+var _helpersBlockHelperMissing = __webpack_require__(373);
 
 var _helpersBlockHelperMissing2 = _interopRequireDefault(_helpersBlockHelperMissing);
 
-var _helpersEach = __webpack_require__(371);
+var _helpersEach = __webpack_require__(374);
 
 var _helpersEach2 = _interopRequireDefault(_helpersEach);
 
-var _helpersHelperMissing = __webpack_require__(372);
+var _helpersHelperMissing = __webpack_require__(375);
 
 var _helpersHelperMissing2 = _interopRequireDefault(_helpersHelperMissing);
 
-var _helpersIf = __webpack_require__(373);
+var _helpersIf = __webpack_require__(376);
 
 var _helpersIf2 = _interopRequireDefault(_helpersIf);
 
-var _helpersLog = __webpack_require__(374);
+var _helpersLog = __webpack_require__(377);
 
 var _helpersLog2 = _interopRequireDefault(_helpersLog);
 
-var _helpersLookup = __webpack_require__(375);
+var _helpersLookup = __webpack_require__(378);
 
 var _helpersLookup2 = _interopRequireDefault(_helpersLookup);
 
-var _helpersWith = __webpack_require__(376);
+var _helpersWith = __webpack_require__(379);
 
 var _helpersWith2 = _interopRequireDefault(_helpersWith);
 
@@ -62208,7 +62583,7 @@ function registerDefaultHelpers(instance) {
 
 
 /***/ }),
-/* 370 */
+/* 373 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62254,7 +62629,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 371 */
+/* 374 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62355,7 +62730,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 372 */
+/* 375 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62387,7 +62762,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 373 */
+/* 376 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62423,7 +62798,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 374 */
+/* 377 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62456,7 +62831,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 375 */
+/* 378 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62475,7 +62850,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 376 */
+/* 379 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62515,7 +62890,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 377 */
+/* 380 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62527,7 +62902,7 @@ exports.registerDefaultDecorators = registerDefaultDecorators;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _decoratorsInline = __webpack_require__(378);
+var _decoratorsInline = __webpack_require__(381);
 
 var _decoratorsInline2 = _interopRequireDefault(_decoratorsInline);
 
@@ -62538,7 +62913,7 @@ function registerDefaultDecorators(instance) {
 
 
 /***/ }),
-/* 378 */
+/* 381 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62574,7 +62949,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 379 */
+/* 382 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62628,7 +63003,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 380 */
+/* 383 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62650,7 +63025,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 381 */
+/* 384 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62964,7 +63339,7 @@ function executeDecorators(fn, prog, container, depths, data, blockParams) {
 
 
 /***/ }),
-/* 382 */
+/* 385 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
