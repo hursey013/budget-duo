@@ -1,9 +1,20 @@
 import './stylesheets/styles.scss'
 
 import Chart from 'chart.js';
+import * as firebase from 'firebase';
 import Inputmask from 'inputmask';
 
 // Global vars
+const config = {
+  apiKey: "AIzaSyDf1-oIWKTncDjyR17WC6BN_9xNInLPIfU",
+  authDomain: "budgetduo.firebaseapp.com",
+  databaseURL: "https://budgetduo.firebaseio.com",
+  projectId: "budgetduo",
+  storageBucket: "budgetduo.appspot.com",
+  messagingSenderId: "726238323023"
+};
+firebase.initializeApp(config);
+
 const ctx = document.getElementById('chart');
 const chart = new Chart(ctx, {
   type: 'pie',
@@ -54,6 +65,11 @@ document.addEventListener('click', function (e) {
     e.preventDefault();
     removeExpense(e.target);
   }
+
+  if (e.target.matches('.test')) {
+    e.preventDefault();
+    outputJSON();
+  }
 });
 
 document.addEventListener('input', function (e) {
@@ -96,7 +112,8 @@ function addExpense (context) {
   const costInputs = document.querySelectorAll('.cost');
   Inputmask({
     alias: 'currency',
-    'autoUnmask': true
+    autoUnmask: true,
+    prefix: "$"
   }).mask(costInputs[costInputs.length - 1]);
 
   updateTotals();
@@ -149,4 +166,26 @@ function updateTotals() {
   document.querySelector('.breakdown-emergency').innerHTML = formatter.format(total * 3);
 
   updateChart([yourShare, partnerShare]);
+}
+
+function outputJSON() {
+  const dbRef = firebase.database().ref();
+  const budgetsRef = dbRef.child('budgets');
+  const addBudgetsInputsUI = document.getElementsByClassName("expense");
+  const yourSalary = Number(yourSalaryInput.value)
+  const partnerSalary = Number(partnerSalaryInput.value)
+
+  var budget = {
+    your_salary: yourSalary,
+    partner_salary: partnerSalary,
+    expenses: []
+  };
+
+  for (let i = 0; i < addBudgetsInputsUI.length; i++) {
+    console.log(addBudgetsInputsUI[i]);
+  }
+
+  // budgetsRef.push(budget, function(){
+  //   console.log("data has been inserted");
+  // })
 }
