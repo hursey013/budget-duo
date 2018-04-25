@@ -1,0 +1,13 @@
+{
+  "yourSalary": 40000,
+  "partnerSalary": 60000,
+  "expenses": [
+    {"item": "Electricity", "cost": 104},
+    {"item": "Insurance", "cost": 95},
+    {"item": "Internet", "cost": 29.99},
+    {"item": "Gym", "cost": 86},
+    {"item": "Mortgage", "cost": 1848.32},
+    {"item": "Savings", "cost": 200.00},
+    {"item": "Water", "cost": 60}
+  ]
+}

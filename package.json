@@ -8,6 +8,7 @@
   "dependencies": {
     "basscss-input-range": "^3.0.0",
     "chart.js": "^2.7.2",
+    "debounce": "^1.1.0",
     "firebase": "^4.12.1",
     "inputmask": "^3.3.11",
     "query-string": "^6.0.0",
