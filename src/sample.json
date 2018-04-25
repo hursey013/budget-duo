@@ -2,12 +2,12 @@
   "yourSalary": 40000,
   "partnerSalary": 60000,
   "expenses": [
-    {"item": "Electricity", "cost": 104},
+    {"item": "Electricity", "cost": 100},
     {"item": "Insurance", "cost": 95},
-    {"item": "Internet", "cost": 29.99},
-    {"item": "Gym", "cost": 86},
-    {"item": "Mortgage", "cost": 1848.32},
-    {"item": "Savings", "cost": 200.00},
+    {"item": "Internet", "cost": 45},
+    {"item": "Gym", "cost": 65},
+    {"item": "Mortgage", "cost": 1800},
+    {"item": "Savings", "cost": 200},
     {"item": "Water", "cost": 60}
   ]
 }
