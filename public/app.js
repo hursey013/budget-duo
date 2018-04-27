@@ -35882,7 +35882,9 @@ var config = {
   messagingSenderId: "726238323023"
 };
 __WEBPACK_IMPORTED_MODULE_4_firebase__["initializeApp"](config);
-var budgetsRef = __WEBPACK_IMPORTED_MODULE_4_firebase__["database"]().ref().child('budgets');
+
+var ref = __WEBPACK_IMPORTED_MODULE_4_firebase__["database"]().ref();
+var usersRef = ref.child('users');
 
 // Chart.js
 var chart = new __WEBPACK_IMPORTED_MODULE_1_chart_js___default.a(chartContainer, {
@@ -35907,22 +35909,26 @@ var formatter = new Intl.NumberFormat('en-US', {
 });
 
 // Initialization functions
-var key = void 0;
 
-init();
+__WEBPACK_IMPORTED_MODULE_4_firebase__["auth"]().signInAnonymously().catch(function (error) {
+  var errorCode = error.code;
+  var errorMessage = error.message;
 
-function init() {
-  getHashKey();
+  console.log(errorCode);
+  console.log(errorMessage);
+});
 
-  if (key) {
-    budgetsRef.child(key).once('value').then(function (snapshot) {
-      var object = snapshot.val();
-      object ? buildUI(object) : newBudget();
-    });
-  } else {
+var uid = void 0;
+
+__WEBPACK_IMPORTED_MODULE_4_firebase__["auth"]().onAuthStateChanged(function (user) {
+  if (user) {
+    uid = user.uid;
+
+    console.log(uid);
+
     newBudget();
   }
-}
+});
 
 function buildUI(budget) {
   var expenses = budget.expenses;
@@ -35939,18 +35945,16 @@ function buildUI(budget) {
 
 // Utility functions
 function newBudget() {
-  var push = budgetsRef.push({
+  var push = usersRef.child(uid).set({
     yourSalary: __WEBPACK_IMPORTED_MODULE_6__sample___default.a.yourSalary,
     partnerSalary: __WEBPACK_IMPORTED_MODULE_6__sample___default.a.partnerSalary
   });
 
-  setHashKey(push.key);
-
   __WEBPACK_IMPORTED_MODULE_6__sample___default.a.expenses.forEach(function (expense) {
-    budgetsRef.child(key).child('expenses').push(expense);
+    usersRef.child(uid).child('expenses').push(expense);
   });
 
-  budgetsRef.child(key).once('value').then(function (snapshot) {
+  usersRef.child(uid).once('value').then(function (snapshot) {
     buildUI(snapshot.val());
   });
 }
@@ -35984,7 +35988,7 @@ function getHashKey() {
 }
 
 function pushExpense(expense) {
-  var push = budgetsRef.child(key).child('expenses').push(expense);
+  var push = usersRef.child(uid).child('expenses').push(expense);
   return push;
 }
 
@@ -35994,7 +35998,7 @@ function removeExpense(target) {
   var expenseKey = expenseRow.id;
 
   if (allExpenseRows.length > 1) {
-    budgetsRef.child(key).child('expenses').child(expenseKey).remove();
+    usersRef.child(uid).child('expenses').child(expenseKey).remove();
     expenseRow.parentNode.removeChild(expenseRow);
 
     updateTotals();
@@ -36024,7 +36028,7 @@ function updateExpense(target) {
   var value = target.value;
 
   object[name] = value;
-  budgetsRef.child(key).child('expenses').child(expenseKey).update(object);
+  usersRef.child(uid).child('expenses').child(expenseKey).update(object);
 }
 
 function updateSalary(target) {
@@ -36033,7 +36037,7 @@ function updateSalary(target) {
   var value = target.value;
 
   object[name] = value;
-  budgetsRef.child(key).update(object);
+  usersRef.child(uid).update(object);
 }
 
 function updateSalaryLabels() {
@@ -66774,8 +66778,8 @@ module.exports = function (options) {
  * Returns a function, that, as long as it continues to be invoked, will not
  * be triggered. The function will be called after it stops being called for
  * N milliseconds. If `immediate` is passed, trigger the function on the
- * leading edge, instead of the trailing. The function also has a property 'clear' 
- * that is a function which will clear the timer to prevent previously scheduled executions. 
+ * leading edge, instead of the trailing. The function also has a property 'clear'
+ * that is a function which will clear the timer to prevent previously scheduled executions.
  *
  * @source underscore.js
  * @see http://unscriptable.com/2009/03/20/debouncing-javascript-methods/
@@ -80241,7 +80245,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /* 371 */
 /***/ (function(module, exports) {
 
-module.exports = {"yourSalary":40000,"partnerSalary":60000,"expenses":[{"item":"Electricity","cost":104},{"item":"Insurance","cost":95},{"item":"Internet","cost":29.99},{"item":"Gym","cost":86},{"item":"Mortgage","cost":1848.32},{"item":"Savings","cost":200},{"item":"Water","cost":60}]}
+module.exports = {"yourSalary":40000,"partnerSalary":60000,"expenses":[{"item":"Electricity","cost":100},{"item":"Insurance","cost":95},{"item":"Internet","cost":45},{"item":"Gym","cost":65},{"item":"Mortgage","cost":1800},{"item":"Savings","cost":200},{"item":"Water","cost":60}]}
 
 /***/ }),
 /* 372 */

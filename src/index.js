@@ -35,7 +35,9 @@ const config = {
   messagingSenderId: "726238323023"
 };
 firebase.initializeApp(config);
-const budgetsRef = firebase.database().ref().child('budgets');
+
+const ref = firebase.database().ref();
+const usersRef = ref.child('users');
 
 // Chart.js
 const chart = new Chart(chartContainer, {
@@ -60,22 +62,27 @@ const formatter = new Intl.NumberFormat('en-US', {
 });
 
 // Initialization functions
-let key;
 
-init();
+firebase.auth().signInAnonymously().catch(function(error) {
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  
+  console.log(errorCode);
+  console.log(errorMessage);
+});
 
-function init () {
-  getHashKey();
+let uid;
 
-  if (key) {
-    budgetsRef.child(key).once('value').then(function(snapshot) {
-      const object = snapshot.val();
-      object ? buildUI(object) : newBudget();
-    });
-  } else {
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    uid = user.uid;
+    
+    console.log(uid);
+    
     newBudget();
+    
   }
-}
+});
 
 function buildUI (budget) {
   const expenses = budget.expenses;
@@ -92,18 +99,16 @@ function buildUI (budget) {
 
 // Utility functions
 function newBudget () {
-  const push = budgetsRef.push({
+  const push = usersRef.child(uid).set({
     yourSalary: sample.yourSalary,
     partnerSalary: sample.partnerSalary
   });
 
-  setHashKey(push.key);
-
   sample.expenses.forEach(function(expense) {
-    budgetsRef.child(key).child('expenses').push(expense);
+    usersRef.child(uid).child('expenses').push(expense);
   });
 
-  budgetsRef.child(key).once('value').then(function(snapshot) {
+  usersRef.child(uid).once('value').then(function(snapshot) {
     buildUI(snapshot.val());
   });
 }
@@ -135,7 +140,7 @@ function getHashKey () {
 }
 
 function pushExpense (expense) {
-  const push = budgetsRef.child(key).child('expenses').push(expense);
+  const push = usersRef.child(uid).child('expenses').push(expense);
   return push;
 }
 
@@ -145,7 +150,7 @@ function removeExpense (target) {
   const expenseKey = expenseRow.id;
 
   if (allExpenseRows.length > 1) {
-    budgetsRef.child(key).child('expenses').child(expenseKey).remove();
+    usersRef.child(uid).child('expenses').child(expenseKey).remove();
     expenseRow.parentNode.removeChild(expenseRow);
 
     updateTotals();
@@ -175,7 +180,7 @@ function updateExpense(target) {
   const value = target.value;
 
   object[name] = value;
-  budgetsRef.child(key).child('expenses').child(expenseKey).update(object);
+  usersRef.child(uid).child('expenses').child(expenseKey).update(object);
 }
 
 function updateSalary(target) {
@@ -184,7 +189,7 @@ function updateSalary(target) {
   const value = target.value;
 
   object[name] = value;
-  budgetsRef.child(key).update(object);
+  usersRef.child(uid).update(object);
 }
 
 function updateSalaryLabels() {
