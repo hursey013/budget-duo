@@ -25,16 +25,7 @@
     <div class="flex flex-wrap -mx-8">
       <div class="w-full lg:w-1/2 px-8">
         <h2 class="mb-4 lg:mt-8">Annual Income</h2>
-        <div class="mb-4">
-          <label class="label text-grey-darker" for="yourSalary">Your Salary</label>
-          <h4 class="display-income-yours mb-2"></h4>
-          <input id="yourSalary" type="range" min="0" max="250000" step="500" class="input-range text-blue w-full">
-        </div>
-        <div class="mb-4">
-          <label class="label text-grey-darker" for="partnerSalary">Partner's Salary</label>
-          <h4 class="display-income-partner mb-2"></h4>
-          <input id="partnerSalary" type="range" min="0" max="250000" step="500" class="input-range text-blue w-full">
-        </div>
+        <div class="incomes"></div>
         <h3 class="mb-4">Monthly Expenses</h3>
         <div class="expenses mb-4"></div>
         <button class="add w-full lg:w-auto bg-transparent hover:bg-blue text-blue-dark font-semibold hover:text-white py-2 px-4 border border-blue hover:border-transparent rounded flex items-center mb-4">
@@ -56,44 +47,8 @@
               <span class="breakdown-total"></span>
             </div>
           </div>
-          <div class="row">
-            <div class="w-1/2 pl-4 flex items-center">
-              <div class="rounded-full w-3 h-3 bg-blue mr-2"></div>
-              Your contribution
-            </div>
-            <div class="w-1/4 text-right font-bold">
-              <span id="test" class="breakdown-your-share"></span>
-            </div>
-            <div class="w-1/4 text-right font-bold">
-              <span class="breakdown-your-total"></span>
-            </div>
-          </div>
-          <div class="row">
-            <div class="w-1/2 pl-4 flex items-center">
-              <div class="rounded-full w-3 h-3 bg-blue-light mr-2"></div>
-              Partner's contribution
-            </div>
-            <div class="w-1/4 text-right font-bold">
-              <span class="breakdown-partner-share"></span>
-            </div>
-            <div class="w-1/4 text-right font-bold">
-              <span class="breakdown-partner-total"></span>
-            </div>
-          </div>
+          <div class="rows"></div>
           <canvas id="chart" class="my-8"></canvas>
-          <h4 class="mb-2">More Number Crunching</h4>
-          <div class="row justify-between">
-            <span>Annual joint income</span>
-            <span class="breakdown-annual-income font-bold"></span>
-          </div>
-          <div class="row justify-between">
-            <span>Annual shared expenses</span>
-            <span class="breakdown-annual-expenses font-bold"></span>
-          </div>
-          <div class="row justify-between border-b-0">
-            <span>Emergency fund (3 months)</span>
-            <span class="breakdown-emergency font-bold"></span>
-          </div>
         </div>
       </div>
     </div>

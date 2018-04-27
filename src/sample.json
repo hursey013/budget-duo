@@ -1,6 +1,4 @@
 {
-  "yourSalary": 40000,
-  "partnerSalary": 60000,
   "expenses": [
     {"item": "Electricity", "cost": 100},
     {"item": "Insurance", "cost": 95},
@@ -9,5 +7,9 @@
     {"item": "Mortgage", "cost": 1800},
     {"item": "Savings", "cost": 200},
     {"item": "Water", "cost": 60}
+  ],
+  "incomes": [
+    {"name": "You", "amount": 40000},
+    {"name": "Partner", "amount": 60000}
   ]
 }
