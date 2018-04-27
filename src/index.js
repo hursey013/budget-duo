@@ -5,60 +5,21 @@ import debounce from 'debounce';
 import * as firebase from 'firebase';
 import Inputmask from 'inputmask';
 
+import { ref, usersRef, buildChart, formatter } from './config'
 import sample from './sample';
-import { colors } from '../tailwind.js';
 
-// DOM elements
 const breakdownTotal = document.querySelector('.breakdown-total');
 const chartContainer = document.getElementById('chart');
 const expenseContainer = document.querySelector('.expenses');
 const incomeContainer = document.querySelector('.incomes');
 const rowContainer = document.querySelector('.rows');
 
-// Global objects
-
-// Firebase
-const config = {
-  apiKey: "AIzaSyDf1-oIWKTncDjyR17WC6BN_9xNInLPIfU",
-  authDomain: "budgetduo.firebaseapp.com",
-  databaseURL: "https://budgetduo.firebaseio.com",
-  projectId: "budgetduo",
-  storageBucket: "budgetduo.appspot.com",
-  messagingSenderId: "726238323023"
-};
-firebase.initializeApp(config);
-
-const ref = firebase.database().ref();
-const usersRef = ref.child('users');
-
-// Chart.js
-const chart = new Chart(chartContainer, {
-  type: 'pie',
-  data: {
-    labels: ['Your share', 'Partner\'s share'],
-    datasets: [{ backgroundColor: [colors['blue'], colors['blue-light']] }]
-  },
-  options: {
-    legend: { display: false},
-    responsive: true,
-    maintainAspectRatio: true,
-    tooltips: { enabled: false },
-    hover: { mode: null }
-  }
-});
-
-const formatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 2,
-});
-
-// Initialization functions
-
+// Initilize
 let uid;
-
+const chart = buildChart(chartContainer);
 buildUI(sample);
 
+// Functions
 function buildUI (budget) {
   const expenses = budget.expenses;
   const incomes = budget.incomes;
@@ -72,17 +33,12 @@ function buildUI (budget) {
   });
 }
 
-// Functions
 function addExpense (expense, expenseKey) {
   const template = require('./templates/expenses.handlebars');
   const div = document.createElement('div');
+  const key = uid ? expenseKey : usersRef.child('expenses').push().key;
 
-  if (uid) {
-    div.id = expenseKey;
-  } else {
-    div.id = usersRef.child('expenses').push().key;
-  }
-
+  div.id = key;
   div.classList.add('expense');
 	div.innerHTML = template(expense);
   Inputmask({
@@ -98,22 +54,15 @@ function addExpense (expense, expenseKey) {
 function addIncome (income, incomeKey) {
   const template = require('./templates/incomes.handlebars');
   const div = document.createElement('div');
-
-  let key;
-
-  if (uid) {
-    key = incomeKey;
-  } else {
-    key = usersRef.child('incomes').push().key;
-  }
+  const key = uid ? incomeKey : usersRef.child('incomes').push().key;
 
   div.id = key;
   div.classList.add('income');
 	div.innerHTML = template(income);
+  updateSalaryLabels(div.querySelector("input[type='range']"));
 	incomeContainer.appendChild(div);
 
   addRow(income, key);
-
   updateTotals();
 }
 
@@ -138,9 +87,7 @@ function removeExpense (target) {
   const expenseKey = expenseRow.id;
 
   if (allExpenseRows.length > 1) {
-    if (uid) {
-      usersRef.child(uid).child('expenses').child(expenseKey).remove()
-    }
+    if (uid) usersRef.child(uid).child('expenses').child(expenseKey).remove();
     expenseRow.parentNode.removeChild(expenseRow);
 
     updateTotals();
