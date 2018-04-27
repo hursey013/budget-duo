@@ -1,11 +1,12 @@
 import './stylesheets/styles.scss'
 
 import Chart from 'chart.js';
-import { colors } from '../tailwind.js';
 import debounce from 'debounce';
 import * as firebase from 'firebase';
 import Inputmask from 'inputmask';
+
 import sample from './sample';
+import { colors } from '../tailwind.js';
 
 // DOM elements
 const breakdownTotal = document.querySelector('.breakdown-total');
@@ -61,7 +62,7 @@ buildUI(sample);
 function buildUI (budget) {
   const expenses = budget.expenses;
   const incomes = budget.incomes;
-  
+
   Object.keys(incomes).forEach(incomeKey => {
     addIncome(incomes[incomeKey], incomeKey);
   });
@@ -105,7 +106,7 @@ function addIncome (income, incomeKey) {
   } else {
     key = usersRef.child('incomes').push().key;
   }
-  
+
   div.id = key;
   div.classList.add('income');
 	div.innerHTML = template(income);
@@ -126,7 +127,6 @@ function addRow (income, key) {
 	div.innerHTML = template(income);
 	rowContainer.appendChild(div);
 }
-
 
 function addListenerMulti(el, s, fn) {
   s.split(' ').forEach(e => el.addEventListener(e, fn, false));
@@ -190,12 +190,12 @@ function updateTotals() {
 
   let incomeTotal = 0;
   for (let incomeInput of incomeInputs) {
-    incomeTotal += Number(incomeInput.value);
+    incomeTotal += +incomeInput.value;
   }
 
   let expenseTotal = 0;
   for (let expenseInput of costInputs) {
-    expenseTotal += Number(expenseInput.value);
+    expenseTotal += +expenseInput.value;
   }
 
   breakdownTotal.innerHTML = formatter.format(expenseTotal);
@@ -204,14 +204,14 @@ function updateTotals() {
   for (let incomeInput of incomeInputs) {
     const incomeRow = incomeInput.closest('.income');
     const incomeKey = incomeRow.id;
-    const share = Number(incomeInput.value) / incomeTotal;
+    const share = +incomeInput.value / incomeTotal;
     const row = document.querySelector(`[data-income-id=${incomeKey}]`);
     const rowShare = row.querySelector('.row-share');
     const rowTotal = row.querySelector('.row-total');
 
     rowShare.innerHTML = (share * 100).toFixed(0) + '%';
     rowTotal.innerHTML = formatter.format(expenseTotal * share);
-    
+
     data.push(share);
   }
 
