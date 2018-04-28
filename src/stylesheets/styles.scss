@@ -1,7 +1,8 @@
+@import '~basscss-input-range/index';
+
 @tailwind preflight;
 @tailwind components;
-@import 'components/custom';
-@import '~basscss-input-range/index';
-@tailwind utilities;
 
-@import 'custom'
+@import 'all';
+
+@tailwind utilities;

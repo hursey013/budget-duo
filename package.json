@@ -1,15 +1,16 @@
 {
   "private": true,
   "scripts": {
-    "dev": "cross-env webpack --progress --hide-modules",
-    "watch": "cross-env webpack --watch --progress --hide-modules",
-    "prod": "cross-env NODE_ENV=production webpack --no-progress --hide-modules"
+    "dev": "webpack --progress --hide-modules",
+    "watch": "webpack --watch --progress --hide-modules",
+    "prod": "NODE_ENV=production webpack --no-progress --hide-modules"
   },
   "dependencies": {
     "basscss-input-range": "^3.0.0",
     "chart.js": "^2.7.2",
     "debounce": "^1.1.0",
     "firebase": "^4.12.1",
+    "handlebars": "^4.0.11",
     "inputmask": "^3.3.11",
     "query-string": "^6.0.0",
     "tailwindcss": "^0.5.1"
@@ -19,11 +20,9 @@
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
     "babel-preset-es2015": "^6.24.1",
-    "cross-env": "^5.1",
     "css-loader": "^0.28.7",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.11",
-    "handlebars": "^4.0.11",
     "handlebars-loader": "^1.7.0",
     "node-sass": "^4.8.3",
     "postcss": "^6.0.14",

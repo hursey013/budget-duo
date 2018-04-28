@@ -1,119 +1,44 @@
 import './stylesheets/styles.scss'
 
 import Chart from 'chart.js';
-import { colors } from '../tailwind.js';
 import debounce from 'debounce';
 import * as firebase from 'firebase';
 import Inputmask from 'inputmask';
+
+import { ref, usersRef, buildChart, formatter } from './config'
 import sample from './sample';
 
-// DOM elements
 const breakdownTotal = document.querySelector('.breakdown-total');
-const breakdownYourShare = document.querySelector('.breakdown-your-share');
-const breakdownYourTotal = document.querySelector('.breakdown-your-total');
-const breakdownPartnerShare = document.querySelector('.breakdown-partner-share');
-const breakdownPartnerTotal = document.querySelector('.breakdown-partner-total');
-const breakdownAnnualIncome = document.querySelector('.breakdown-annual-income');
-const breakdownAnnualExpenses = document.querySelector('.breakdown-annual-expenses');
-const breakdownEmergency = document.querySelector('.breakdown-emergency');
 const chartContainer = document.getElementById('chart');
 const expenseContainer = document.querySelector('.expenses');
-const partnerSalaryInput = document.querySelector('#partnerSalary');
-const partnerSalaryDisplay = document.querySelector('.display-income-partner')
-const yourSalaryInput = document.querySelector('#yourSalary');
-const yourSalaryDisplay = document.querySelector('.display-income-yours')
+const incomeContainer = document.querySelector('.incomes');
+const rowContainer = document.querySelector('.rows');
 
-// Global objects
+// Initilize
+let uid;
+const chart = buildChart(chartContainer);
+buildUI(sample);
 
-// Firebase
-const config = {
-  apiKey: "AIzaSyDf1-oIWKTncDjyR17WC6BN_9xNInLPIfU",
-  authDomain: "budgetduo.firebaseapp.com",
-  databaseURL: "https://budgetduo.firebaseio.com",
-  projectId: "budgetduo",
-  storageBucket: "budgetduo.appspot.com",
-  messagingSenderId: "726238323023"
-};
-firebase.initializeApp(config);
-const budgetsRef = firebase.database().ref().child('budgets');
-
-// Chart.js
-const chart = new Chart(chartContainer, {
-  type: 'pie',
-  data: {
-    labels: ['Your share', 'Partner\'s share'],
-    datasets: [{ backgroundColor: [colors['blue'], colors['blue-light']] }]
-  },
-  options: {
-    legend: { display: false},
-    responsive: true,
-    maintainAspectRatio: true,
-    tooltips: { enabled: false },
-    hover: { mode: null }
-  }
-});
-
-const formatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 2,
-});
-
-// Initialization functions
-let key;
-
-init();
-
-function init () {
-  getHashKey();
-
-  if (key) {
-    budgetsRef.child(key).once('value').then(function(snapshot) {
-      const object = snapshot.val();
-      object ? buildUI(object) : newBudget();
-    });
-  } else {
-    newBudget();
-  }
-}
-
+// Functions
 function buildUI (budget) {
   const expenses = budget.expenses;
+  const incomes = budget.incomes;
 
-  yourSalaryInput.value = budget.yourSalary;
-  partnerSalaryInput.value = budget.partnerSalary;
-
-  updateSalaryLabels();
+  Object.keys(incomes).forEach(incomeKey => {
+    addIncome(incomes[incomeKey], incomeKey);
+  });
 
   Object.keys(expenses).forEach(expenseKey => {
     addExpense(expenses[expenseKey], expenseKey);
   });
 }
 
-// Utility functions
-function newBudget () {
-  const push = budgetsRef.push({
-    yourSalary: sample.yourSalary,
-    partnerSalary: sample.partnerSalary
-  });
-
-  setHashKey(push.key);
-
-  sample.expenses.forEach(function(expense) {
-    budgetsRef.child(key).child('expenses').push(expense);
-  });
-
-  budgetsRef.child(key).once('value').then(function(snapshot) {
-    buildUI(snapshot.val());
-  });
-}
-
-// Functions
 function addExpense (expense, expenseKey) {
   const template = require('./templates/expenses.handlebars');
   const div = document.createElement('div');
+  const key = uid ? expenseKey : usersRef.child('expenses').push().key;
 
-  div.id = expenseKey || pushExpense({item: '', cost: ''}).key;
+  div.id = key;
   div.classList.add('expense');
 	div.innerHTML = template(expense);
   Inputmask({
@@ -126,17 +51,34 @@ function addExpense (expense, expenseKey) {
   updateTotals();
 }
 
+function addIncome (income, incomeKey) {
+  const template = require('./templates/incomes.handlebars');
+  const div = document.createElement('div');
+  const key = uid ? incomeKey : usersRef.child('incomes').push().key;
+
+  div.id = key;
+  div.classList.add('income');
+	div.innerHTML = template(income);
+  updateSalaryLabels(div.querySelector("input[type='range']"));
+	incomeContainer.appendChild(div);
+
+  addRow(income, key);
+  updateTotals();
+}
+
+function addRow (income, key) {
+  const template = require('./templates/row.handlebars');
+  const div = document.createElement('div');
+
+  div.classList.add('row');
+  div.setAttribute('data-income-id', key);
+
+	div.innerHTML = template(income);
+	rowContainer.appendChild(div);
+}
+
 function addListenerMulti(el, s, fn) {
   s.split(' ').forEach(e => el.addEventListener(e, fn, false));
-}
-
-function getHashKey () {
-  key = location.hash.substring(1);
-}
-
-function pushExpense (expense) {
-  const push = budgetsRef.child(key).child('expenses').push(expense);
-  return push;
 }
 
 function removeExpense (target) {
@@ -145,7 +87,7 @@ function removeExpense (target) {
   const expenseKey = expenseRow.id;
 
   if (allExpenseRows.length > 1) {
-    budgetsRef.child(key).child('expenses').child(expenseKey).remove();
+    if (uid) usersRef.child(uid).child('expenses').child(expenseKey).remove();
     expenseRow.parentNode.removeChild(expenseRow);
 
     updateTotals();
@@ -155,11 +97,6 @@ function removeExpense (target) {
 
     updateTotals();
   }
-}
-
-function setHashKey (newKey) {
-  key = newKey;
-  location.hash = key;
 }
 
 function updateChart(data) {
@@ -175,7 +112,7 @@ function updateExpense(target) {
   const value = target.value;
 
   object[name] = value;
-  budgetsRef.child(key).child('expenses').child(expenseKey).update(object);
+  usersRef.child(uid).child('expenses').child(expenseKey).update(object);
 }
 
 function updateSalary(target) {
@@ -184,37 +121,48 @@ function updateSalary(target) {
   const value = target.value;
 
   object[name] = value;
-  budgetsRef.child(key).update(object);
+  usersRef.child(uid).update(object);
 }
 
-function updateSalaryLabels() {
-  yourSalaryDisplay.innerHTML = formatter.format(yourSalaryInput.value);
-  partnerSalaryDisplay.innerHTML = formatter.format(partnerSalaryInput.value);
+function updateSalaryLabels(target) {
+  const incomeRow = target.closest('.income');
+  const incomeLabel = incomeRow.querySelector('h4');
+
+  incomeLabel.innerHTML = formatter.format(target.value);
 }
 
 function updateTotals() {
-  const yourSalary = Number(yourSalaryInput.value);
-  const partnerSalary = Number(partnerSalaryInput.value);
-  const totalIncome = yourSalary + partnerSalary;
-  const yourShare = yourSalary / totalIncome;
-  const partnerShare = partnerSalary / totalIncome;
   const costInputs = document.querySelectorAll("[data-type='cost']");
+  const incomeInputs = document.querySelectorAll("input[type='range']");
 
-  let total = 0;
-  for (let input of costInputs) {
-    total += Number(input.value);
+  let incomeTotal = 0;
+  for (let incomeInput of incomeInputs) {
+    incomeTotal += +incomeInput.value;
   }
 
-  breakdownTotal.innerHTML = formatter.format(total);
-  breakdownYourShare.innerHTML = (yourShare * 100).toFixed(0) + '%';
-  breakdownYourTotal.innerHTML = formatter.format(total * yourShare);
-  breakdownPartnerShare.innerHTML = (partnerShare * 100).toFixed(0) + '%';
-  breakdownPartnerTotal.innerHTML = formatter.format(total * partnerShare);
-  breakdownAnnualIncome.innerHTML = formatter.format(totalIncome);
-  breakdownAnnualExpenses.innerHTML = formatter.format(total * 12);
-  breakdownEmergency.innerHTML = formatter.format(total * 3);
+  let expenseTotal = 0;
+  for (let expenseInput of costInputs) {
+    expenseTotal += +expenseInput.value;
+  }
 
-  updateChart([yourShare, partnerShare]);
+  breakdownTotal.innerHTML = formatter.format(expenseTotal);
+
+  let data = [];
+  for (let incomeInput of incomeInputs) {
+    const incomeRow = incomeInput.closest('.income');
+    const incomeKey = incomeRow.id;
+    const share = +incomeInput.value / incomeTotal;
+    const row = document.querySelector(`[data-income-id=${incomeKey}]`);
+    const rowShare = row.querySelector('.row-share');
+    const rowTotal = row.querySelector('.row-total');
+
+    rowShare.innerHTML = (share * 100).toFixed(0) + '%';
+    rowTotal.innerHTML = formatter.format(expenseTotal * share);
+
+    data.push(share);
+  }
+
+  updateChart(data);
 }
 
 // Event listeners
@@ -230,24 +178,24 @@ document.addEventListener('click', function (e) {
   }
 });
 
-document.addEventListener('input', debounce(function(e){
-  if (e.target.matches("input[type='range']")) {
-    updateSalary(e.target);
-  }
-}, 200));
+// document.addEventListener('input', debounce(function(e){
+//   if (e.target.matches("input[type='range']")) {
+//     if (uid) { updateSalary(e.target); }
+//   }
+// }, 200));
 
 addListenerMulti(document, 'input', function(e){
   if (e.target.matches("input[type='range']")) {
-     updateSalaryLabels();
+     updateSalaryLabels(e.target);
      updateTotals();
   }
 });
 
-addListenerMulti(document, 'change paste keyup', debounce(function(e){
-  if (e.target.matches('[data-type]')) {
-    updateExpense(e.target);
-  }
-}, 200));
+// addListenerMulti(document, 'change paste keyup', debounce(function(e){
+//   if (e.target.matches('[data-type]')) {
+//     if (uid) { updateExpense(e.target); }
+//   }
+// }, 200));
 
 addListenerMulti(document, 'change paste keyup', function(e){
   if (e.target.matches("[data-type='cost']")) {
