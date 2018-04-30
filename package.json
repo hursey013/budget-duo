@@ -3,13 +3,15 @@
   "scripts": {
     "dev": "webpack --progress --hide-modules",
     "watch": "webpack --watch --progress --hide-modules",
-    "prod": "NODE_ENV=production webpack --no-progress --hide-modules"
+    "prod": "NODE_ENV=production webpack --no-progress --hide-modules",
+    "server": "./node_modules/.bin/webpack-dev-server"
   },
   "dependencies": {
     "basscss-input-range": "^3.0.0",
     "chart.js": "^2.7.2",
     "debounce": "^1.1.0",
     "firebase": "^4.12.1",
+    "firebaseui": "^2.7.0",
     "handlebars": "^4.0.11",
     "inputmask": "^3.3.11",
     "query-string": "^6.0.0",
@@ -30,6 +32,7 @@
     "sass-loader": "^7.0.1",
     "style-loader": "^0.20.3",
     "url-loader": "^1.0.1",
-    "webpack": "^3.8.1"
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.0.0"
   }
 }

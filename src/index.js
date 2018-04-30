@@ -1,11 +1,8 @@
 import './stylesheets/styles.scss'
 
-import Chart from 'chart.js';
+import { buildChart, firebaseApp, formatter, usersRef } from './config'
 import debounce from 'debounce';
-import * as firebase from 'firebase';
 import Inputmask from 'inputmask';
-
-import { ref, usersRef, buildChart, formatter } from './config'
 import sample from './sample';
 
 const breakdownTotal = document.querySelector('.breakdown-total');
@@ -15,14 +12,31 @@ const incomeContainer = document.querySelector('.incomes');
 const rowContainer = document.querySelector('.rows');
 
 // Initilize
-let uid;
-const chart = buildChart(chartContainer);
-buildUI(sample);
+let chart, currentUid = null;
 
-// Functions
+firebaseApp.auth().onAuthStateChanged(function(user) {
+  if (user && user.uid != currentUid) {
+    currentUid = user.uid;
+
+    usersRef.child(currentUid).once('value').then(function(snapshot) {
+      const object = snapshot.val();
+
+      object ? buildUI(object) : createUser();
+    });
+  } else {
+    currentUid = null;
+
+    firebaseApp.auth().signInAnonymously().catch(function(error) {
+      console.error(error);
+    });
+  }
+});
+
 function buildUI (budget) {
   const expenses = budget.expenses;
   const incomes = budget.incomes;
+
+  chart = buildChart(chartContainer);
 
   Object.keys(incomes).forEach(incomeKey => {
     addIncome(incomes[incomeKey], incomeKey);
@@ -33,10 +47,26 @@ function buildUI (budget) {
   });
 }
 
+function createUser() {
+  const arrayToObject = (array) =>
+     array.reduce((obj, item) => {
+       obj[usersRef.push().key] = item
+       return obj
+     }, {})
+  const object = {};
+
+  object.incomes = arrayToObject(sample.incomes);
+  object.expenses = arrayToObject(sample.expenses);
+
+  usersRef.child(currentUid).set(object);
+  buildUI(object);
+}
+
+// Functions
 function addExpense (expense, expenseKey) {
   const template = require('./templates/expenses.handlebars');
   const div = document.createElement('div');
-  const key = uid ? expenseKey : usersRef.child('expenses').push().key;
+  const key = expenseKey || usersRef.child(currentUid).child('expenses').push({cost:'', item:''}).key;
 
   div.id = key;
   div.classList.add('expense');
@@ -54,7 +84,7 @@ function addExpense (expense, expenseKey) {
 function addIncome (income, incomeKey) {
   const template = require('./templates/incomes.handlebars');
   const div = document.createElement('div');
-  const key = uid ? incomeKey : usersRef.child('incomes').push().key;
+  const key = incomeKey || usersRef.child(currentUid).child('incomes').push({amount:'', name:''}).key;
 
   div.id = key;
   div.classList.add('income');
@@ -77,17 +107,13 @@ function addRow (income, key) {
 	rowContainer.appendChild(div);
 }
 
-function addListenerMulti(el, s, fn) {
-  s.split(' ').forEach(e => el.addEventListener(e, fn, false));
-}
-
 function removeExpense (target) {
   const allExpenseRows = document.querySelectorAll('.expense');
   const expenseRow = target.closest('.expense');
   const expenseKey = expenseRow.id;
 
   if (allExpenseRows.length > 1) {
-    if (uid) usersRef.child(uid).child('expenses').child(expenseKey).remove();
+    usersRef.child(currentUid).child('expenses').child(expenseKey).remove();
     expenseRow.parentNode.removeChild(expenseRow);
 
     updateTotals();
@@ -112,23 +138,24 @@ function updateExpense(target) {
   const value = target.value;
 
   object[name] = value;
-  usersRef.child(uid).child('expenses').child(expenseKey).update(object);
+  usersRef.child(currentUid).child('expenses').child(expenseKey).update(object);
 }
 
 function updateSalary(target) {
-  const name = target.id;
+  const incomeRow = target.closest('.income');
+  const incomeKey = incomeRow.id;
   const object = {};
   const value = target.value;
 
-  object[name] = value;
-  usersRef.child(uid).update(object);
+  object['amount'] = value;
+  usersRef.child(currentUid).child('incomes').child(incomeKey).update(object);
 }
 
 function updateSalaryLabels(target) {
   const incomeRow = target.closest('.income');
-  const incomeLabel = incomeRow.querySelector('h4');
+  const incomeDisplay = incomeRow.querySelector('h4');
 
-  incomeLabel.innerHTML = formatter.format(target.value);
+  incomeDisplay.innerHTML = formatter.format(target.value);
 }
 
 function updateTotals() {
@@ -166,6 +193,10 @@ function updateTotals() {
 }
 
 // Event listeners
+function addListenerMulti(el, s, fn) {
+  s.split(' ').forEach(e => el.addEventListener(e, fn, false));
+}
+
 document.addEventListener('click', function (e) {
   if (e.target.matches('.add')) {
     e.preventDefault();
@@ -178,11 +209,11 @@ document.addEventListener('click', function (e) {
   }
 });
 
-// document.addEventListener('input', debounce(function(e){
-//   if (e.target.matches("input[type='range']")) {
-//     if (uid) { updateSalary(e.target); }
-//   }
-// }, 200));
+document.addEventListener('input', debounce(function(e){
+  if (e.target.matches("input[type='range']")) {
+    updateSalary(e.target);
+  }
+}, 200));
 
 addListenerMulti(document, 'input', function(e){
   if (e.target.matches("input[type='range']")) {
@@ -191,11 +222,11 @@ addListenerMulti(document, 'input', function(e){
   }
 });
 
-// addListenerMulti(document, 'change paste keyup', debounce(function(e){
-//   if (e.target.matches('[data-type]')) {
-//     if (uid) { updateExpense(e.target); }
-//   }
-// }, 200));
+addListenerMulti(document, 'change paste keyup', debounce(function(e){
+  if (e.target.matches('[data-type]')) {
+    updateExpense(e.target);
+  }
+}, 200));
 
 addListenerMulti(document, 'change paste keyup', function(e){
   if (e.target.matches("[data-type='cost']")) {

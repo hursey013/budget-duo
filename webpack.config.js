@@ -8,6 +8,13 @@ module.exports = {
     filename: 'app.js',
     path: path.resolve(__dirname, 'build')
   },
+  devServer: {
+    compress: true,
+    port: 8080,
+    stats: 'errors-only',
+    open: true
+  },
+  devtool: 'inline-source-map',
   module: {
     rules: [
       {
