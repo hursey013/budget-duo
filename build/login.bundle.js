@@ -21478,7 +21478,7 @@ var config = {
   authDomain: "budget-duo.firebaseapp.com",
   databaseURL: "https://budget-duo.firebaseio.com",
   projectId: "budget-duo",
-  storageBucket: "",
+  storageBucket: "budget-duo.appspot.com",
   messagingSenderId: "190994851509"
 };
 var firebaseApp = __WEBPACK_IMPORTED_MODULE_2_firebase__["initializeApp"](config);
@@ -75136,9 +75136,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
-var ui = new __WEBPACK_IMPORTED_MODULE_2_firebaseui__["auth"].AuthUI(__WEBPACK_IMPORTED_MODULE_0__config__["b" /* firebaseApp */].auth());
 var uiConfig = {
   autoUpgradeAnonymousUsers: true,
+  signInSuccessUrl: '/',
   callbacks: {
     signInSuccessWithAuthResult: function signInSuccessWithAuthResult(authResult, redirectUrl) {
       return true;
@@ -75149,9 +75149,17 @@ var uiConfig = {
       }
     }
   },
-  signInSuccessUrl: 'index.html',
-  signInOptions: [__WEBPACK_IMPORTED_MODULE_1_firebase__["auth"].GoogleAuthProvider.PROVIDER_ID]
+  signInOptions: [__WEBPACK_IMPORTED_MODULE_1_firebase__["auth"].GoogleAuthProvider.PROVIDER_ID, {
+    provider: __WEBPACK_IMPORTED_MODULE_1_firebase__["auth"].EmailAuthProvider.PROVIDER_ID,
+    requireDisplayName: false
+  }]
 };
+
+var ui = new __WEBPACK_IMPORTED_MODULE_2_firebaseui__["auth"].AuthUI(__WEBPACK_IMPORTED_MODULE_0__config__["b" /* firebaseApp */].auth());
+
+if (ui.isPendingRedirect()) {
+  document.getElementById('firebaseui-auth-container').style.display = 'none';
+}
 
 ui.start('#firebaseui-auth-container', uiConfig);
 

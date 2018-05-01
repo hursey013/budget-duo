@@ -23440,7 +23440,7 @@ var config = {
   authDomain: "budget-duo.firebaseapp.com",
   databaseURL: "https://budget-duo.firebaseio.com",
   projectId: "budget-duo",
-  storageBucket: "",
+  storageBucket: "budget-duo.appspot.com",
   messagingSenderId: "190994851509"
 };
 var firebaseApp = __WEBPACK_IMPORTED_MODULE_2_firebase__["initializeApp"](config);

@@ -8,7 +8,7 @@ const config = {
   authDomain: "budget-duo.firebaseapp.com",
   databaseURL: "https://budget-duo.firebaseio.com",
   projectId: "budget-duo",
-  storageBucket: "",
+  storageBucket: "budget-duo.appspot.com",
   messagingSenderId: "190994851509"
 };
 export const firebaseApp = firebase.initializeApp(config);
