@@ -3,9 +3,12 @@ const path = require('path')
 const webpack = require('webpack')
 
 module.exports = {
-  entry: './src/index.js',
+  entry: {
+    app: './src/app.js',
+    login: './src/login.js'
+  },
   output: {
-    filename: 'app.js',
+    filename: "[name].bundle.js",
     path: path.resolve(__dirname, 'build')
   },
   devServer: {
@@ -14,7 +17,6 @@ module.exports = {
     stats: 'errors-only',
     open: true
   },
-  devtool: 'inline-source-map',
   module: {
     rules: [
       {

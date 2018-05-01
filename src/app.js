@@ -11,12 +11,16 @@ const expenseContainer = document.querySelector('.expenses');
 const incomeContainer = document.querySelector('.incomes');
 const rowContainer = document.querySelector('.rows');
 
-// Initilize
-let chart, currentUid = null;
+// Initialize
+let currentUid = null;
 
 firebaseApp.auth().onAuthStateChanged(function(user) {
   if (user && user.uid != currentUid) {
     currentUid = user.uid;
+
+    if (!user.isAnonymous) {
+      document.querySelector('.sign-out').classList.remove('hidden');
+    }
 
     usersRef.child(currentUid).once('value').then(function(snapshot) {
       const object = snapshot.val();
@@ -36,7 +40,7 @@ function buildUI (budget) {
   const expenses = budget.expenses;
   const incomes = budget.incomes;
 
-  chart = buildChart(chartContainer);
+  window.chart = buildChart(chartContainer);
 
   Object.keys(incomes).forEach(incomeKey => {
     addIncome(incomes[incomeKey], incomeKey);
@@ -107,6 +111,15 @@ function addRow (income, key) {
 	rowContainer.appendChild(div);
 }
 
+function clearUI () {
+  chart.destroy();
+  breakdownTotal.innerHTML = "";
+  expenseContainer.innerHTML = "";
+  incomeContainer.innerHTML = "";
+  rowContainer.innerHTML = "";
+  document.querySelector('.sign-out').classList.add('hidden');
+}
+
 function removeExpense (target) {
   const allExpenseRows = document.querySelectorAll('.expense');
   const expenseRow = target.closest('.expense');
@@ -147,7 +160,7 @@ function updateSalary(target) {
   const object = {};
   const value = target.value;
 
-  object['amount'] = value;
+  object.amount = value;
   usersRef.child(currentUid).child('incomes').child(incomeKey).update(object);
 }
 
@@ -233,3 +246,13 @@ addListenerMulti(document, 'change paste keyup', function(e){
      updateTotals();
   }
 });
+
+document.querySelector(".sign-out").addEventListener("click", function(){
+  firebaseApp.auth().signOut().then(function() {
+    clearUI();
+    console.log('Signed Out');
+  }, function(error) {
+    console.error('Sign Out Error', error);
+  });
+});
+
