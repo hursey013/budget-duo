@@ -18,9 +18,9 @@ firebaseApp.auth().onAuthStateChanged(function(user) {
   if (user && user.uid != currentUid) {
     currentUid = user.uid;
 
-    if (!user.isAnonymous) {
-      document.querySelector('.sign-out').classList.remove('hidden');
-    }
+    // if (!user.isAnonymous) {
+    //   document.querySelector('.sign-out').classList.remove('hidden');
+    // }
 
     usersRef.child(currentUid).once('value').then(function(snapshot) {
       const object = snapshot.val();
@@ -247,12 +247,11 @@ addListenerMulti(document, 'change paste keyup', function(e){
   }
 });
 
-document.querySelector(".sign-out").addEventListener("click", function(){
-  firebaseApp.auth().signOut().then(function() {
-    clearUI();
-    console.log('Signed Out');
-  }, function(error) {
-    console.error('Sign Out Error', error);
-  });
-});
-
+// document.querySelector(".sign-out").addEventListener("click", function(){
+//   firebaseApp.auth().signOut().then(function() {
+//     clearUI();
+//     console.log('Signed Out');
+//   }, function(error) {
+//     console.error('Sign Out Error', error);
+//   });
+// });

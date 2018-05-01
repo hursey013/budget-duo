@@ -17,11 +17,7 @@ const uiConfig = {
   },
   signInSuccessUrl: 'index.html',
   signInOptions: [
-    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-    {
-      provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-      requireDisplayName: false
-    }
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID
   ]
 };
 
