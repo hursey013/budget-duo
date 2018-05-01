@@ -12,7 +12,7 @@ const config = {
   messagingSenderId: "190994851509"
 };
 export const firebaseApp = firebase.initializeApp(config);
-const ref = firebaseApp.database().ref();
+export const ref = firebaseApp.database().ref();
 export const usersRef = ref.child('users');
 
 // Chart.js

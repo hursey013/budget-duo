@@ -14,7 +14,6 @@
     "firebaseui": "^2.7.0",
     "handlebars": "^4.0.11",
     "inputmask": "^3.3.11",
-    "query-string": "^6.0.0",
     "tailwindcss": "^0.5.1"
   },
   "devDependencies": {

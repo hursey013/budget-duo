@@ -15,12 +15,7 @@ const uiConfig = {
       }
     }
   },
-  uiShown: function() {
-    // The widget is rendered.
-    // Hide the loader.
-    document.getElementById('loader').style.display = 'none';
-  },
-  signInSuccessUrl: '/',
+  signInSuccessUrl: 'index.html',
   signInOptions: [
     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
     {
