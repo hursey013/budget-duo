@@ -1,20 +1,24 @@
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const webpack = require('webpack')
 
 module.exports = {
+  context: path.resolve(__dirname, 'src'),
   entry: {
-    app: './src/app.js',
-    login: './src/login.js'
+    app: './app.js',
+    login: './login.js'
   },
   output: {
     filename: "[name].bundle.js",
-    path: path.resolve(__dirname, 'build')
+    path: path.resolve(__dirname, 'dist')
   },
   devServer: {
+    contentBase: path.resolve(__dirname, './dist'),
     compress: true,
-    port: 8080,
+    port: 12000,
     stats: 'errors-only',
     open: true
   },
@@ -22,15 +26,14 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        include: path.resolve(__dirname, 'src'),
-        use: [{
+        include: /src/,
+        exclude: /node_modules/,
+        use: {
           loader: 'babel-loader',
           options: {
-            presets: [
-              ['es2015', { modules: false }]
-            ]
+            presets: ['env']
           }
-        }]
+        }
       },
       {
         test: /\.scss$/,
@@ -44,13 +47,19 @@ module.exports = {
         })
       },
       {
+        test: /\.html$/,
+        use: ['html-loader']
+      },
+      {
         test: /\.handlebars$/,
         loader: 'handlebars-loader'
       }
     ]
   },
   plugins: [
+    new CleanWebpackPlugin(['dist']),
     new ExtractTextPlugin('styles.css'),
+    new HtmlWebpackPlugin({template: 'index.html'}),
     new UglifyJsPlugin()
   ]
 };
