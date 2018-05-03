@@ -2,9 +2,18 @@ import { firebaseApp } from './config'
 import * as firebase from 'firebase';
 import * as firebaseui from 'firebaseui'
 
-const uiConfig = {
+const ui = new firebaseui.auth.AuthUI(firebaseApp.auth());
+
+ui.start('#firebaseui-auth-container', {
   autoUpgradeAnonymousUsers: true,
   signInSuccessUrl: '/',
+  signInOptions: [
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    {
+      provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+      requireDisplayName: false
+    }
+  ],
   callbacks: {
     signInSuccessWithAuthResult: function(authResult, redirectUrl) {
       return true;
@@ -13,21 +22,23 @@ const uiConfig = {
       if (error.code != 'firebaseui/anonymous-upgrade-merge-conflict') {
         return Promise.resolve();
       }
+
+      var anon = firebaseApp.auth().currentUser;
+      var cred = error.credential;
+
+      anon.delete().then(function() {
+        firebaseApp.auth().signInWithCredential(cred).then(function() {
+          window.location.assign('/');
+        }).catch(function(error) {
+          console.log(error);
+        });
+      }).catch(function(error) {
+        console.log(error);
+      });
     }
-  },
-  signInOptions: [
-    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-    {
-      provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-      requireDisplayName: false
-    },
-  ]
-};
+  }
+});
 
-const ui = new firebaseui.auth.AuthUI(firebaseApp.auth());
-
-if (ui.isPendingRedirect()) {
-  document.getElementById('firebaseui-auth-container').style.display = 'none';
-}
-
-ui.start('#firebaseui-auth-container', uiConfig);
+// if (ui.isPendingRedirect()) {
+//   document.getElementById('firebaseui-auth-container').style.display = 'none';
+// }

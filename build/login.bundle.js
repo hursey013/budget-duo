@@ -75136,9 +75136,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
-var uiConfig = {
+var ui = new __WEBPACK_IMPORTED_MODULE_2_firebaseui__["auth"].AuthUI(__WEBPACK_IMPORTED_MODULE_0__config__["b" /* firebaseApp */].auth());
+
+ui.start('#firebaseui-auth-container', {
   autoUpgradeAnonymousUsers: true,
   signInSuccessUrl: '/',
+  signInOptions: [__WEBPACK_IMPORTED_MODULE_1_firebase__["auth"].GoogleAuthProvider.PROVIDER_ID, {
+    provider: __WEBPACK_IMPORTED_MODULE_1_firebase__["auth"].EmailAuthProvider.PROVIDER_ID,
+    requireDisplayName: false
+  }],
   callbacks: {
     signInSuccessWithAuthResult: function signInSuccessWithAuthResult(authResult, redirectUrl) {
       return true;
@@ -75147,21 +75153,26 @@ var uiConfig = {
       if (error.code != 'firebaseui/anonymous-upgrade-merge-conflict') {
         return Promise.resolve();
       }
+
+      var anon = __WEBPACK_IMPORTED_MODULE_0__config__["b" /* firebaseApp */].auth().currentUser;
+      var cred = error.credential;
+
+      anon.delete().then(function () {
+        __WEBPACK_IMPORTED_MODULE_0__config__["b" /* firebaseApp */].auth().signInWithCredential(cred).then(function () {
+          window.location.assign('/');
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }).catch(function (error) {
+        console.log(error);
+      });
     }
-  },
-  signInOptions: [__WEBPACK_IMPORTED_MODULE_1_firebase__["auth"].GoogleAuthProvider.PROVIDER_ID, {
-    provider: __WEBPACK_IMPORTED_MODULE_1_firebase__["auth"].EmailAuthProvider.PROVIDER_ID,
-    requireDisplayName: false
-  }]
-};
+  }
+});
 
-var ui = new __WEBPACK_IMPORTED_MODULE_2_firebaseui__["auth"].AuthUI(__WEBPACK_IMPORTED_MODULE_0__config__["b" /* firebaseApp */].auth());
-
-if (ui.isPendingRedirect()) {
-  document.getElementById('firebaseui-auth-container').style.display = 'none';
-}
-
-ui.start('#firebaseui-auth-container', uiConfig);
+// if (ui.isPendingRedirect()) {
+//   document.getElementById('firebaseui-auth-container').style.display = 'none';
+// }
 
 /***/ }),
 /* 245 */

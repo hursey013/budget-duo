@@ -17,10 +17,13 @@ let currentUid = null;
 firebaseApp.auth().onAuthStateChanged(function(user) {
   if (user && user.uid != currentUid) {
     currentUid = user.uid;
+    console.log(currentUid);
 
-    // if (!user.isAnonymous) {
-    //   document.querySelector('.sign-out').classList.remove('hidden');
-    // }
+    if (!user.isAnonymous) {
+      document.querySelector('.account-create').closest('li').classList.add('hidden');
+      document.querySelector('.account-login').closest('li').classList.add('hidden');
+      document.querySelector('.account-signout').closest('li').classList.remove('hidden');
+    }
 
     usersRef.child(currentUid).once('value').then(function(snapshot) {
       const object = snapshot.val();
@@ -29,6 +32,11 @@ firebaseApp.auth().onAuthStateChanged(function(user) {
     });
   } else {
     currentUid = null;
+    console.log(currentUid);
+
+    document.querySelector('.account-create').closest('li').classList.remove('hidden');
+    document.querySelector('.account-login').closest('li').classList.remove('hidden');
+    document.querySelector('.account-signout').closest('li').classList.add('hidden');
 
     firebaseApp.auth().signInAnonymously().catch(function(error) {
       console.error(error);
@@ -117,7 +125,6 @@ function clearUI () {
   expenseContainer.innerHTML = "";
   incomeContainer.innerHTML = "";
   rowContainer.innerHTML = "";
-  document.querySelector('.sign-out').classList.add('hidden');
 }
 
 function removeExpense (target) {
@@ -211,6 +218,16 @@ function addListenerMulti(el, s, fn) {
 }
 
 document.addEventListener('click', function (e) {
+  if (e.target.matches('.account-signout')) {
+    e.preventDefault();
+    firebaseApp.auth().signOut().then(function() {
+      clearUI();
+      console.log('Signed Out');
+    }, function(error) {
+      console.error('Sign Out Error', error);
+    });
+  }
+
   if (e.target.matches('.add')) {
     e.preventDefault();
     addExpense();
@@ -246,12 +263,3 @@ addListenerMulti(document, 'change paste keyup', function(e){
      updateTotals();
   }
 });
-
-// document.querySelector(".sign-out").addEventListener("click", function(){
-//   firebaseApp.auth().signOut().then(function() {
-//     clearUI();
-//     console.log('Signed Out');
-//   }, function(error) {
-//     console.error('Sign Out Error', error);
-//   });
-// });

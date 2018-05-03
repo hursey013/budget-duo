@@ -77232,10 +77232,13 @@ var currentUid = null;
 __WEBPACK_IMPORTED_MODULE_1__config__["b" /* firebaseApp */].auth().onAuthStateChanged(function (user) {
   if (user && user.uid != currentUid) {
     currentUid = user.uid;
+    console.log(currentUid);
 
-    // if (!user.isAnonymous) {
-    //   document.querySelector('.sign-out').classList.remove('hidden');
-    // }
+    if (!user.isAnonymous) {
+      document.querySelector('.account-create').closest('li').classList.add('hidden');
+      document.querySelector('.account-login').closest('li').classList.add('hidden');
+      document.querySelector('.account-signout').closest('li').classList.remove('hidden');
+    }
 
     __WEBPACK_IMPORTED_MODULE_1__config__["d" /* usersRef */].child(currentUid).once('value').then(function (snapshot) {
       var object = snapshot.val();
@@ -77244,6 +77247,11 @@ __WEBPACK_IMPORTED_MODULE_1__config__["b" /* firebaseApp */].auth().onAuthStateC
     });
   } else {
     currentUid = null;
+    console.log(currentUid);
+
+    document.querySelector('.account-create').closest('li').classList.remove('hidden');
+    document.querySelector('.account-login').closest('li').classList.remove('hidden');
+    document.querySelector('.account-signout').closest('li').classList.add('hidden');
 
     __WEBPACK_IMPORTED_MODULE_1__config__["b" /* firebaseApp */].auth().signInAnonymously().catch(function (error) {
       console.error(error);
@@ -77333,7 +77341,6 @@ function clearUI() {
   expenseContainer.innerHTML = "";
   incomeContainer.innerHTML = "";
   rowContainer.innerHTML = "";
-  document.querySelector('.sign-out').classList.add('hidden');
 }
 
 function removeExpense(target) {
@@ -77492,6 +77499,16 @@ function addListenerMulti(el, s, fn) {
 }
 
 document.addEventListener('click', function (e) {
+  if (e.target.matches('.account-signout')) {
+    e.preventDefault();
+    __WEBPACK_IMPORTED_MODULE_1__config__["b" /* firebaseApp */].auth().signOut().then(function () {
+      clearUI();
+      console.log('Signed Out');
+    }, function (error) {
+      console.error('Sign Out Error', error);
+    });
+  }
+
   if (e.target.matches('.add')) {
     e.preventDefault();
     addExpense();
@@ -77527,15 +77544,6 @@ addListenerMulti(document, 'change paste keyup', function (e) {
     updateTotals();
   }
 });
-
-// document.querySelector(".sign-out").addEventListener("click", function(){
-//   firebaseApp.auth().signOut().then(function() {
-//     clearUI();
-//     console.log('Signed Out');
-//   }, function(error) {
-//     console.error('Sign Out Error', error);
-//   });
-// });
 
 /***/ }),
 /* 218 */
