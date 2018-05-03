@@ -17,7 +17,6 @@ let currentUid = null;
 firebaseApp.auth().onAuthStateChanged(function(user) {
   if (user && user.uid != currentUid) {
     currentUid = user.uid;
-    console.log(currentUid);
 
     if (!user.isAnonymous) {
       document.querySelector('.account-create').closest('li').classList.add('hidden');
@@ -32,7 +31,6 @@ firebaseApp.auth().onAuthStateChanged(function(user) {
     });
   } else {
     currentUid = null;
-    console.log(currentUid);
 
     document.querySelector('.account-create').closest('li').classList.remove('hidden');
     document.querySelector('.account-login').closest('li').classList.remove('hidden');
@@ -222,9 +220,8 @@ document.addEventListener('click', function (e) {
     e.preventDefault();
     firebaseApp.auth().signOut().then(function() {
       clearUI();
-      console.log('Signed Out');
     }, function(error) {
-      console.error('Sign Out Error', error);
+      console.error(error);
     });
   }
 

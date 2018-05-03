@@ -1,6 +1,8 @@
 import Chart from 'chart.js';
 import { colors } from '../tailwind.js';
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/database';
 
 // Firebase
 const config = {
@@ -11,8 +13,9 @@ const config = {
   storageBucket: "budget-duo.appspot.com",
   messagingSenderId: "190994851509"
 };
-export const firebaseApp = firebase.initializeApp(config);
-export const ref = firebaseApp.database().ref();
+
+export const firebaseApp = firebase.initializeApp(config)
+export const ref = firebase.database().ref();
 export const usersRef = ref.child('users');
 
 // Chart.js

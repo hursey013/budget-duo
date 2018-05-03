@@ -3,8 +3,7 @@
   "scripts": {
     "dev": "webpack --progress --hide-modules",
     "watch": "webpack --watch --progress --hide-modules",
-    "prod": "NODE_ENV=production webpack --no-progress --hide-modules",
-    "server": "./node_modules/.bin/webpack-dev-server"
+    "prod": "NODE_ENV=production webpack --no-progress --hide-modules"
   },
   "dependencies": {
     "basscss-input-range": "^3.0.0",
@@ -30,8 +29,8 @@
     "postcss-loader": "^2.0.8",
     "sass-loader": "^7.0.1",
     "style-loader": "^0.20.3",
+    "uglifyjs-webpack-plugin": "^1.2.5",
     "url-loader": "^1.0.1",
-    "webpack": "^3.8.1",
-    "webpack-dev-server": "^2.0.0"
+    "webpack": "^3.8.1"
   }
 }
