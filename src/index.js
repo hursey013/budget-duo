@@ -1,7 +1,6 @@
 import './stylesheets/styles.scss'
 
 import { buildChart, firebaseApp, formatter, ui, uiConfig, usersRef } from './config'
-import debounce from 'debounce';
 import Inputmask from 'inputmask';
 import sample from './sample';
 
@@ -294,27 +293,17 @@ document.addEventListener('click', function (e) {
   }
 });
 
-document.addEventListener('input', debounce(function(e){
-  if (e.target.matches("input[type='range']")) {
-    updateSalary(e.target);
-  }
-}, 200));
-
 addListenerMulti(document, 'input', function(e){
   if (e.target.matches("input[type='range']")) {
-     updateSalaryLabels(e.target);
-     updateTotals();
+    updateSalary(e.target);
+    updateSalaryLabels(e.target);
+    updateTotals();
   }
 });
 
-addListenerMulti(document, 'change paste keyup', debounce(function(e){
+addListenerMulti(document, 'change paste keyup', function(e){
   if (e.target.matches('[data-type]')) {
     updateExpense(e.target);
-  }
-}, 200));
-
-addListenerMulti(document, 'change paste keyup', function(e){
-  if (e.target.matches("[data-type='cost']")) {
-     updateTotals();
+    updateTotals();
   }
 });
