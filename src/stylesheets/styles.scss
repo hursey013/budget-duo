@@ -1,5 +1,6 @@
-@import '~basscss-input-range/index';
-@import '~firebaseui/dist/firebaseui.css';
+@import url('../../node_modules/basscss-input-range/index.css');
+@import url('../../node_modules/firebaseui/dist/firebaseui.css');
+@import url('../../node_modules/loaders.css/loaders.min.css');
 
 @tailwind preflight;
 @tailwind components;

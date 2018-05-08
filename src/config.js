@@ -3,6 +3,7 @@ import { colors } from '../tailwind.js';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
+import * as firebaseui from 'firebaseui'
 
 // Firebase
 const config = {
@@ -15,8 +16,31 @@ const config = {
 };
 
 export const firebaseApp = firebase.initializeApp(config)
-export const ref = firebase.database().ref();
+export const ref = firebaseApp.database().ref();
 export const usersRef = ref.child('users');
+export const ui = new firebaseui.auth.AuthUI(firebaseApp.auth());
+export const uiConfig = {
+  callbacks: {
+    signInSuccessWithAuthResult: function() {
+      document.querySelector('.login-container').classList.add('hidden');
+    },
+    signInFailure: function() {
+      console.log("error");
+      document.querySelector('.loader').classList.add('hidden');
+    },
+    uiShown: function() {
+      document.querySelector('.loader').classList.add('hidden');
+    }
+  },
+  signInOptions: [
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    {
+      provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+      requireDisplayName: false
+    },
+  ],
+  credentialHelper: firebaseui.auth.CredentialHelper.NONE
+};
 
 // Chart.js
 export const buildChart = cntnr =>
