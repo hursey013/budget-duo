@@ -5,11 +5,10 @@ const path = require('path')
 const webpack = require('webpack')
 
 module.exports = {
-  context: path.resolve(__dirname, 'src'),
-  entry: './app.js',
+  entry: './src/index.js',
   output: {
-    filename: "[name].bundle.js",
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'dist'),
+    filename: "[name].bundle.js"
   },
   module: {
     rules: [
@@ -45,6 +44,6 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(['dist']),
     new ExtractTextPlugin('styles.css'),
-    new HtmlWebpackPlugin({template: 'index.html'})
+    new HtmlWebpackPlugin({template: './src/index.html'})
   ]
 };

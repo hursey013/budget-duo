@@ -6,7 +6,7 @@ import Inputmask from 'inputmask';
 import sample from './sample';
 
 const accountCreate = document.querySelector('.account-create');
-const accountLogin = document.querySelector('.account-login');
+const accountSignin = document.querySelector('.account-signin');
 const accountSignout = document.querySelector('.account-signout');
 const breakdownTotal = document.querySelector('.breakdown-total');
 const chartContainer = document.getElementById('chart');
@@ -23,9 +23,23 @@ firebaseApp.auth().onAuthStateChanged(function(user) {
   if (ui.isPendingRedirect()) {
     auth(true);
   } else if (user && user.uid != currentUid) {
-    signIn(user);
+    currentUid = user.uid;
+    toggleSignInLinks();
+    loginContainer.classList.add('hidden');
+    usersRef.child(currentUid).once('value').then(function(snapshot) {
+      const budget = snapshot.val();
+
+      if (budget) {
+        localStorage.removeItem('budget');
+        buildUI(budget);
+      } else {
+        buildUI(pushLocalBudget());
+      }
+    });
   } else {
-    signInAnonymously();
+    currentUid = null;
+    localStorage.removeItem('budget');
+    buildUI(setLocalBudget());
   }
 });
 
@@ -35,86 +49,43 @@ function auth(pendingRedirect) {
   if (pendingRedirect) loader.classList.remove('hidden');
 }
 
-function signIn (user) {
-  currentUid = user.uid;
-
-  loginContainer.classList.add('hidden');
-  toggleAccountLinks();
-
-  usersRef.child(currentUid).once('value').then(function(snapshot) {
-    const object = snapshot.val();
-
-    object ? buildUI(object) : buildUI(retrieveLocalObject());
-  });
-}
-
-function retrieveLocalObject () {
-  const object = JSON.parse(localStorage.getItem('budget'));
+function pushLocalBudget () {
+  const budget = JSON.parse(localStorage.getItem('budget'));
 
   localStorage.removeItem('budget');
-  return usersRef.child(currentUid).set(object)
+  usersRef.child(currentUid).set(budget);
+
+  return budget;
 }
 
-function signInAnonymously () {
-  currentUid = null;
-
+function setLocalBudget () {
   const arrayToObject = (array) =>
      array.reduce((obj, item) => {
        obj[usersRef.push().key] = item
        return obj
      }, {})
-  const object = {};
+  const budget = {};
 
-  object.incomes = arrayToObject(sample.incomes);
-  object.expenses = arrayToObject(sample.expenses);
+  budget.incomes = arrayToObject(sample.incomes);
+  budget.expenses = arrayToObject(sample.expenses);
+  localStorage.setItem('budget', JSON.stringify(budget));
 
-  localStorage.setItem('budget', JSON.stringify(object));
-  buildUI(object);
+  return budget;
 }
 
 // Functions
-function buildUI (budget) {
-  const expenses = budget.expenses;
-  const incomes = budget.incomes;
-
-  window.chart = buildChart(chartContainer);
-
-  if (incomes) {
-    Object.keys(incomes).forEach(incomeKey => {
-      addIncome(incomes[incomeKey], incomeKey);
-    });
-  }
-
-  if (expenses) {
-    Object.keys(expenses).forEach(expenseKey => {
-      addExpense(expenses[expenseKey], expenseKey);
-    });
-  }
-}
-
-function updateJson (value, name, type, key) {
+function addBudgetItem (value, name, type, key) {
   if (currentUid) {
-    const object = {};
+    const item = {};
 
-    object[name] = value;
-    usersRef.child(currentUid).child(type).child(key).update(object);
+    item[name] = value;
+    usersRef.child(currentUid).child(type).child(key).update(item);
   } else {
-    const object = JSON.parse(localStorage.getItem('budget'));
+    const item = JSON.parse(localStorage.getItem('budget'));
 
-    object[type][key] = object[type][key] || {};
-    object[type][key][name] = value;
-    localStorage.setItem('budget', JSON.stringify(object));
-  }
-}
-
-function deleteJson (type, key) {
-  if (currentUid) {
-    usersRef.child(currentUid).child(type).child(key).remove();
-  } else {
-    const object = JSON.parse(localStorage.getItem('budget'));
-
-    delete object[type][key];
-    localStorage.setItem('budget', JSON.stringify(object));
+    item[type][key] = item[type][key] || {};
+    item[type][key][name] = value;
+    localStorage.setItem('budget', JSON.stringify(item));
   }
 }
 
@@ -162,8 +133,26 @@ function addRow (income, key) {
 	rowContainer.appendChild(div);
 }
 
+function buildUI (budget) {
+  const expenses = budget.expenses;
+  const incomes = budget.incomes;
+
+  window.chart = buildChart(chartContainer);
+
+  if (incomes) {
+    Object.keys(incomes).forEach(incomeKey => {
+      addIncome(incomes[incomeKey], incomeKey);
+    });
+  }
+
+  if (expenses) {
+    Object.keys(expenses).forEach(expenseKey => {
+      addExpense(expenses[expenseKey], expenseKey);
+    });
+  }
+}
+
 function clearUI () {
-  toggleAccountLinks();
   localStorage.removeItem('budget');
   chart.destroy();
   breakdownTotal.innerHTML = "";
@@ -172,20 +161,31 @@ function clearUI () {
   rowContainer.innerHTML = "";
 }
 
+function removeBudgetItem (type, key) {
+  if (currentUid) {
+    usersRef.child(currentUid).child(type).child(key).remove();
+  } else {
+    const item = JSON.parse(localStorage.getItem('budget'));
+
+    delete item[type][key];
+    localStorage.setItem('budget', JSON.stringify(item));
+  }
+}
+
 function removeExpense (target) {
   const allExpenseRows = document.querySelectorAll('.expense');
   const expenseRow = target.closest('.expense');
   const expenseKey = expenseRow.id;
 
-  deleteJson('expenses', expenseKey);
+  removeBudgetItem('expenses', expenseKey);
   expenseRow.parentNode.removeChild(expenseRow);
 
   updateTotals();
 }
 
-function toggleAccountLinks () {
+function toggleSignInLinks () {
   accountCreate.closest('li').classList.toggle('hidden');
-  accountLogin.closest('li').classList.toggle('hidden');
+  accountSignin.closest('li').classList.toggle('hidden');
   accountSignout.closest('li').classList.toggle('hidden');
 }
 
@@ -200,7 +200,7 @@ function updateExpense(target) {
   const name = target.getAttribute('data-type');
   const value = target.value;
 
-  updateJson(value, name, 'expenses', expenseKey);
+  addBudgetItem(value, name, 'expenses', expenseKey);
 }
 
 function updateSalary(target) {
@@ -208,7 +208,7 @@ function updateSalary(target) {
   const incomeKey = incomeRow.id;
   const value = target.value;
 
-  updateJson(value, 'amount', 'incomes', incomeKey);
+  addBudgetItem(value, 'amount', 'incomes', incomeKey);
 }
 
 function updateSalaryLabels(target) {
@@ -263,9 +263,15 @@ document.addEventListener('click', function (e) {
     auth();
   }
 
+  if (e.target.matches('.account-signin')) {
+    e.preventDefault();
+    auth();
+  }
+
   if (e.target.matches('.account-signout')) {
     e.preventDefault();
     firebaseApp.auth().signOut().then(function() {
+      toggleSignInLinks();
       clearUI();
     }, function(error) {
       console.error(error);

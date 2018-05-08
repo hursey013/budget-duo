@@ -16,18 +16,10 @@ const config = {
 };
 
 export const firebaseApp = firebase.initializeApp(config)
-export const ref = firebaseApp.database().ref();
-export const usersRef = ref.child('users');
+export const usersRef = firebaseApp.database().ref().child('users');
 export const ui = new firebaseui.auth.AuthUI(firebaseApp.auth());
 export const uiConfig = {
   callbacks: {
-    signInSuccessWithAuthResult: function() {
-      document.querySelector('.login-container').classList.add('hidden');
-    },
-    signInFailure: function() {
-      console.log("error");
-      document.querySelector('.loader').classList.add('hidden');
-    },
     uiShown: function() {
       document.querySelector('.loader').classList.add('hidden');
     }
