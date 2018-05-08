@@ -12,7 +12,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>BudgetDuo</title>
-  <link rel="stylesheet" type="text/css" href="./dist/styles.css">
 </head>
 <body class="bg-grey-lighter">
   <div class="flex justify-between pt-4 pr-4 pl-4 lg:pt-8 lg:pr-8 lg:pl-8">
@@ -24,10 +23,10 @@
   <div class="container mx-auto px-4 lg:px-8 flex justify-end">
     <ul class="list-reset flex -mx-2">
       <li class="px-2">
-        <a class="account-login inline-block border border-transparent rounded hover:border-grey-light text-blue-dark hover:bg-grey-light py-2 px-4 no-underline" href="login.html">Login</a>
+        <a class="account-login inline-block border border-transparent rounded hover:border-grey-light text-blue-dark hover:bg-grey-light py-2 px-4 no-underline" href="#">Login</a>
       </li>
       <li class="px-2">
-        <a class="account-create inline-block border border-blue rounded py-2 px-4 bg-blue hover:bg-blue-dark text-white no-underline" href="login.html">Create account</a>
+        <a class="account-create inline-block border border-blue rounded py-2 px-4 bg-blue hover:bg-blue-dark text-white no-underline" href="#">Create account</a>
       </li>
       <li class="px-2 hidden">
         <a class="account-signout inline-block border border-transparent rounded hover:border-grey-light text-blue-dark hover:bg-grey-light py-2 px-4 no-underline" href="#">Sign out</a>
@@ -66,6 +65,11 @@
       </div>
     </div>
   </div>
-  <script src="./dist/app.bundle.js"></script>
+  <div class="login-container hidden">
+    <div class="login-backdrop fixed pin z-50 overflow-auto bg-smoke-darker justify-center flex flex-col">
+      <div class="loader mx-auto"><div class="ball-scale-ripple"><div></div></div></div>
+      <div id="firebaseui-auth-container"></div>
+    </div>
+  </div>
 </body>
 </html>

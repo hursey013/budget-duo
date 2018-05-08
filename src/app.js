@@ -1,63 +1,63 @@
 import './stylesheets/styles.scss'
 
-import { buildChart, firebaseApp, formatter, usersRef } from './config'
+import { buildChart, firebaseApp, formatter, ui, uiConfig, usersRef } from './config'
 import debounce from 'debounce';
 import Inputmask from 'inputmask';
 import sample from './sample';
 
+const accountCreate = document.querySelector('.account-create');
+const accountLogin = document.querySelector('.account-login');
+const accountSignout = document.querySelector('.account-signout');
 const breakdownTotal = document.querySelector('.breakdown-total');
 const chartContainer = document.getElementById('chart');
 const expenseContainer = document.querySelector('.expenses');
 const incomeContainer = document.querySelector('.incomes');
+const loader = document.querySelector('.loader');
+const loginContainer = document.querySelector('.login-container');
 const rowContainer = document.querySelector('.rows');
 
 // Initialize
 let currentUid = null;
 
 firebaseApp.auth().onAuthStateChanged(function(user) {
-  if (user && user.uid != currentUid) {
-    currentUid = user.uid;
-
-    if (!user.isAnonymous) {
-      document.querySelector('.account-create').closest('li').classList.add('hidden');
-      document.querySelector('.account-login').closest('li').classList.add('hidden');
-      document.querySelector('.account-signout').closest('li').classList.remove('hidden');
-    }
-
-    usersRef.child(currentUid).once('value').then(function(snapshot) {
-      const object = snapshot.val();
-
-      object ? buildUI(object) : createUser();
-    });
+  if (ui.isPendingRedirect()) {
+    auth(true);
+  } else if (user && user.uid != currentUid) {
+    signIn(user);
   } else {
-    currentUid = null;
-
-    document.querySelector('.account-create').closest('li').classList.remove('hidden');
-    document.querySelector('.account-login').closest('li').classList.remove('hidden');
-    document.querySelector('.account-signout').closest('li').classList.add('hidden');
-
-    firebaseApp.auth().signInAnonymously().catch(function(error) {
-      console.error(error);
-    });
+    signInAnonymously();
   }
 });
 
-function buildUI (budget) {
-  const expenses = budget.expenses;
-  const incomes = budget.incomes;
+function auth(pendingRedirect) {
+  loginContainer.classList.remove('hidden');
+  ui.start('#firebaseui-auth-container', uiConfig);
+  if (pendingRedirect) loader.classList.remove('hidden');
+}
 
-  window.chart = buildChart(chartContainer);
+function signIn (user) {
+  currentUid = user.uid;
 
-  Object.keys(incomes).forEach(incomeKey => {
-    addIncome(incomes[incomeKey], incomeKey);
-  });
+  loginContainer.classList.add('hidden');
+  toggleAccountLinks();
 
-  Object.keys(expenses).forEach(expenseKey => {
-    addExpense(expenses[expenseKey], expenseKey);
+  usersRef.child(currentUid).once('value').then(function(snapshot) {
+    const object = snapshot.val();
+
+    object ? buildUI(object) : buildUI(retrieveLocalObject());
   });
 }
 
-function createUser() {
+function retrieveLocalObject () {
+  const object = JSON.parse(localStorage.getItem('budget'));
+
+  localStorage.removeItem('budget');
+  return usersRef.child(currentUid).set(object)
+}
+
+function signInAnonymously () {
+  currentUid = null;
+
   const arrayToObject = (array) =>
      array.reduce((obj, item) => {
        obj[usersRef.push().key] = item
@@ -68,15 +68,60 @@ function createUser() {
   object.incomes = arrayToObject(sample.incomes);
   object.expenses = arrayToObject(sample.expenses);
 
-  usersRef.child(currentUid).set(object);
+  localStorage.setItem('budget', JSON.stringify(object));
   buildUI(object);
 }
 
 // Functions
+function buildUI (budget) {
+  const expenses = budget.expenses;
+  const incomes = budget.incomes;
+
+  window.chart = buildChart(chartContainer);
+
+  if (incomes) {
+    Object.keys(incomes).forEach(incomeKey => {
+      addIncome(incomes[incomeKey], incomeKey);
+    });
+  }
+
+  if (expenses) {
+    Object.keys(expenses).forEach(expenseKey => {
+      addExpense(expenses[expenseKey], expenseKey);
+    });
+  }
+}
+
+function updateJson (value, name, type, key) {
+  if (currentUid) {
+    const object = {};
+
+    object[name] = value;
+    usersRef.child(currentUid).child(type).child(key).update(object);
+  } else {
+    const object = JSON.parse(localStorage.getItem('budget'));
+
+    object[type][key] = object[type][key] || {};
+    object[type][key][name] = value;
+    localStorage.setItem('budget', JSON.stringify(object));
+  }
+}
+
+function deleteJson (type, key) {
+  if (currentUid) {
+    usersRef.child(currentUid).child(type).child(key).remove();
+  } else {
+    const object = JSON.parse(localStorage.getItem('budget'));
+
+    delete object[type][key];
+    localStorage.setItem('budget', JSON.stringify(object));
+  }
+}
+
 function addExpense (expense, expenseKey) {
   const template = require('./templates/expenses.handlebars');
   const div = document.createElement('div');
-  const key = expenseKey || usersRef.child(currentUid).child('expenses').push({cost:'', item:''}).key;
+  const key = expenseKey || usersRef.push().key;
 
   div.id = key;
   div.classList.add('expense');
@@ -94,7 +139,7 @@ function addExpense (expense, expenseKey) {
 function addIncome (income, incomeKey) {
   const template = require('./templates/incomes.handlebars');
   const div = document.createElement('div');
-  const key = incomeKey || usersRef.child(currentUid).child('incomes').push({amount:'', name:''}).key;
+  const key = incomeKey || usersRef.push().key;
 
   div.id = key;
   div.classList.add('income');
@@ -118,6 +163,8 @@ function addRow (income, key) {
 }
 
 function clearUI () {
+  toggleAccountLinks();
+  localStorage.removeItem('budget');
   chart.destroy();
   breakdownTotal.innerHTML = "";
   expenseContainer.innerHTML = "";
@@ -130,17 +177,16 @@ function removeExpense (target) {
   const expenseRow = target.closest('.expense');
   const expenseKey = expenseRow.id;
 
-  if (allExpenseRows.length > 1) {
-    usersRef.child(currentUid).child('expenses').child(expenseKey).remove();
-    expenseRow.parentNode.removeChild(expenseRow);
+  deleteJson('expenses', expenseKey);
+  expenseRow.parentNode.removeChild(expenseRow);
 
-    updateTotals();
-  } else {
-    expenseRow.querySelector("[data-type='item']").value='';
-    expenseRow.querySelector("[data-type='cost']").value='';
+  updateTotals();
+}
 
-    updateTotals();
-  }
+function toggleAccountLinks () {
+  accountCreate.closest('li').classList.toggle('hidden');
+  accountLogin.closest('li').classList.toggle('hidden');
+  accountSignout.closest('li').classList.toggle('hidden');
 }
 
 function updateChart(data) {
@@ -152,21 +198,17 @@ function updateExpense(target) {
   const expenseRow = target.closest('.expense');
   const expenseKey = expenseRow.id;
   const name = target.getAttribute('data-type');
-  const object = {};
   const value = target.value;
 
-  object[name] = value;
-  usersRef.child(currentUid).child('expenses').child(expenseKey).update(object);
+  updateJson(value, name, 'expenses', expenseKey);
 }
 
 function updateSalary(target) {
   const incomeRow = target.closest('.income');
   const incomeKey = incomeRow.id;
-  const object = {};
   const value = target.value;
 
-  object.amount = value;
-  usersRef.child(currentUid).child('incomes').child(incomeKey).update(object);
+  updateJson(value, 'amount', 'incomes', incomeKey);
 }
 
 function updateSalaryLabels(target) {
@@ -216,6 +258,11 @@ function addListenerMulti(el, s, fn) {
 }
 
 document.addEventListener('click', function (e) {
+  if (e.target.matches('.account-create')) {
+    e.preventDefault();
+    auth();
+  }
+
   if (e.target.matches('.account-signout')) {
     e.preventDefault();
     firebaseApp.auth().signOut().then(function() {
@@ -233,6 +280,11 @@ document.addEventListener('click', function (e) {
   if (e.target.matches('.remove')) {
     e.preventDefault();
     removeExpense(e.target);
+  }
+
+  if (e.target.matches('.login-backdrop')) {
+    e.preventDefault();
+    loginContainer.classList.add('hidden');
   }
 });
 
