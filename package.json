@@ -7,32 +7,31 @@
   "dependencies": {
     "basscss-input-range": "^3.0.0",
     "chart.js": "^2.7.2",
-    "firebase": "^4.13.1",
-    "firebaseui": "^2.7.0",
+    "firebase": "^5.0.1",
+    "firebaseui": "^3.0.0",
     "handlebars": "^4.0.11",
     "inputmask": "^3.3.11",
     "loaders.css": "^0.1.2",
-    "tailwindcss": "^0.5.1"
+    "tailwindcss": "^0.5.3"
   },
   "devDependencies": {
     "autoprefixer": "^8.4.1",
-    "babel-core": "~6.26.0",
-    "babel-loader": "~7.1.2",
-    "babel-preset-env": "~1.6.0",
-    "clean-webpack-plugin": "~0.1.17",
-    "css-loader": "~0.28.7",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
+    "css-loader": "^0.28.7",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
-    "file-loader": "~1.1.4",
+    "file-loader": "^1.1.4",
     "handlebars-loader": "^1.7.0",
-    "html-loader": "~0.5.1",
-    "html-webpack-plugin": "~3.2.0",
-    "node-sass": "~4.9.0",
+    "html-loader": "^0.5.1",
+    "html-webpack-plugin": "^3.2.0",
+    "node-sass": "^4.9.0",
     "postcss": "^6.0.22",
-    "postcss-loader": "^2.0.8",
-    "sass-loader": "~7.0.1",
-    "style-loader": "~0.21.0",
-    "webpack": "~4.8.1",
+    "postcss-loader": "^2.1.5",
+    "sass-loader": "^7.0.1",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.8.1",
     "webpack-cli": "^2.1.3",
-    "webpack-dev-server": "~3.1.4"
+    "webpack-dev-server": "^3.1.4"
   }
 }
