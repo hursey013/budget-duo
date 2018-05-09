@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "build": "webpack --mode=production",
+    "build": "webpack -p --mode=production",
     "dev": "webpack-dev-server --open --mode=development"
   },
   "dependencies": {
