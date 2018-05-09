@@ -1,5 +1,4 @@
 import Chart from 'chart.js';
-import { colors } from '../tailwind.js';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
@@ -40,7 +39,7 @@ export const buildChart = cntnr =>
     type: 'pie',
     data: {
       labels: ['Your share', "Partner's share"],
-      datasets: [{ backgroundColor: [colors['blue'], colors['blue-light']] }]
+      datasets: [{ backgroundColor: ['#2AD9C2', '#00A1A7'] }]
     },
     options: {
       legend: { display: false },

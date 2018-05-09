@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "build": "webpack --mode=production",
-    "dev": "webpack-dev-server --mode=development --open"
+    "dev": "webpack-dev-server --open --mode=development"
   },
   "dependencies": {
     "basscss-input-range": "^3.0.0",

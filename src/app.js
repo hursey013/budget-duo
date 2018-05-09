@@ -1,6 +1,6 @@
 import './stylesheets/styles.scss'
 
-import { buildChart, firebaseApp, formatter, ui, uiConfig, usersRef } from './config'
+import * as config from './config'
 import Inputmask from 'inputmask';
 import sample from './sample';
 
@@ -18,49 +18,42 @@ const rowContainer = document.querySelector('.rows');
 // Initialize
 let currentUid = null;
 
-firebaseApp.auth().onAuthStateChanged(function(user) {
-  if (ui.isPendingRedirect()) {
+config.firebaseApp.auth().onAuthStateChanged(function(user) {
+  if (config.ui.isPendingRedirect()) {
     auth(true);
   } else if (user && user.uid != currentUid) {
     currentUid = user.uid;
-    toggleSignInLinks();
+    showSignInLinks(false);
     loginContainer.classList.add('hidden');
-    usersRef.child(currentUid).once('value').then(function(snapshot) {
+    config.usersRef.child(currentUid).once('value').then(function(snapshot) {
       const budget = snapshot.val();
 
-      if (budget) {
-        localStorage.removeItem('budget');
-        buildUI(budget);
-      } else {
-        buildUI(pushLocalBudget());
-      }
+      budget ? buildUI(budget) : buildUI(pushLocalBudget());
     });
   } else {
     currentUid = null;
-    localStorage.removeItem('budget');
-    buildUI(setLocalBudget());
+    showSignInLinks(true);
+    buildUI(setLocalBudget(), true);
   }
 });
 
 function auth(pendingRedirect) {
   loginContainer.classList.remove('hidden');
-  ui.start('#firebaseui-auth-container', uiConfig);
+  config.ui.start('#firebaseui-auth-container', config.uiConfig);
   if (pendingRedirect) loader.classList.remove('hidden');
 }
 
 function pushLocalBudget () {
   const budget = JSON.parse(localStorage.getItem('budget'));
 
-  localStorage.removeItem('budget');
-  usersRef.child(currentUid).set(budget);
-
+  config.usersRef.child(currentUid).set(budget);
   return budget;
 }
 
 function setLocalBudget () {
   const arrayToObject = (array) =>
      array.reduce((obj, item) => {
-       obj[usersRef.push().key] = item
+       obj[config.usersRef.push().key] = item
        return obj
      }, {})
   const budget = {};
@@ -68,7 +61,6 @@ function setLocalBudget () {
   budget.incomes = arrayToObject(sample.incomes);
   budget.expenses = arrayToObject(sample.expenses);
   localStorage.setItem('budget', JSON.stringify(budget));
-
   return budget;
 }
 
@@ -78,20 +70,20 @@ function addBudgetItem (value, name, type, key) {
     const item = {};
 
     item[name] = value;
-    usersRef.child(currentUid).child(type).child(key).update(item);
+    config.usersRef.child(currentUid).child(type).child(key).update(item);
   } else {
-    const item = JSON.parse(localStorage.getItem('budget'));
+    const budget = JSON.parse(localStorage.getItem('budget'));
 
-    item[type][key] = item[type][key] || {};
-    item[type][key][name] = value;
-    localStorage.setItem('budget', JSON.stringify(item));
+    !(key in budget[type]) && (budget[type][key] = {})
+    budget[type][key][name] = value;
+    localStorage.setItem('budget', JSON.stringify(budget));
   }
 }
 
 function addExpense (expense, expenseKey) {
   const template = require('./templates/expenses.handlebars');
   const div = document.createElement('div');
-  const key = expenseKey || usersRef.push().key;
+  const key = expenseKey || config.usersRef.push().key;
 
   div.id = key;
   div.classList.add('expense');
@@ -109,12 +101,16 @@ function addExpense (expense, expenseKey) {
 function addIncome (income, incomeKey) {
   const template = require('./templates/incomes.handlebars');
   const div = document.createElement('div');
-  const key = incomeKey || usersRef.push().key;
+  const key = incomeKey || config.usersRef.push().key;
 
   div.id = key;
   div.classList.add('income');
 	div.innerHTML = template(income);
-  updateSalaryLabels(div.querySelector("input[type='range']"));
+  Inputmask({
+    alias: 'currency',
+    autoUnmask: true,
+    prefix: "$"
+  }).mask(div.querySelector(".income-input"));
 	incomeContainer.appendChild(div);
 
   addRow(income, key);
@@ -132,11 +128,14 @@ function addRow (income, key) {
 	rowContainer.appendChild(div);
 }
 
-function buildUI (budget) {
+function buildUI (budget, persistStorage) {
   const expenses = budget.expenses;
   const incomes = budget.incomes;
 
-  window.chart = buildChart(chartContainer);
+  clearUI();
+  if (!persistStorage) localStorage.removeItem('budget');
+
+  window.chart = config.buildChart(chartContainer);
 
   if (incomes) {
     Object.keys(incomes).forEach(incomeKey => {
@@ -152,8 +151,6 @@ function buildUI (budget) {
 }
 
 function clearUI () {
-  localStorage.removeItem('budget');
-  chart.destroy();
   breakdownTotal.innerHTML = "";
   expenseContainer.innerHTML = "";
   incomeContainer.innerHTML = "";
@@ -162,7 +159,7 @@ function clearUI () {
 
 function removeBudgetItem (type, key) {
   if (currentUid) {
-    usersRef.child(currentUid).child(type).child(key).remove();
+    config.usersRef.child(currentUid).child(type).child(key).remove();
   } else {
     const item = JSON.parse(localStorage.getItem('budget'));
 
@@ -182,10 +179,10 @@ function removeExpense (target) {
   updateTotals();
 }
 
-function toggleSignInLinks () {
-  accountCreate.closest('li').classList.toggle('hidden');
-  accountSignin.closest('li').classList.toggle('hidden');
-  accountSignout.closest('li').classList.toggle('hidden');
+function showSignInLinks (show) {
+  accountCreate.closest('li').classList.toggle('hidden', show ? false : true);
+  accountSignin.closest('li').classList.toggle('hidden', show ? false : true);
+  accountSignout.closest('li').classList.toggle('hidden', show ? true : false);
 }
 
 function updateChart(data) {
@@ -206,15 +203,23 @@ function updateSalary(target) {
   const incomeRow = target.closest('.income');
   const incomeKey = incomeRow.id;
   const value = target.value;
+  console.log(value + ", " + incomeKey);
 
   addBudgetItem(value, 'amount', 'incomes', incomeKey);
 }
 
-function updateSalaryLabels(target) {
+function updateSalaryInput(target) {
   const incomeRow = target.closest('.income');
-  const incomeDisplay = incomeRow.querySelector('h4');
+  const incomeInput = incomeRow.querySelector('.income-input');
 
-  incomeDisplay.innerHTML = formatter.format(target.value);
+  incomeInput.value = target.value;
+}
+
+function updateSalaryRange(target) {
+  const incomeRow = target.closest('.income');
+  const incomeRange = incomeRow.querySelector('.input-range');
+
+  incomeRange.value = target.value;
 }
 
 function updateTotals() {
@@ -231,7 +236,7 @@ function updateTotals() {
     expenseTotal += +expenseInput.value;
   }
 
-  breakdownTotal.innerHTML = formatter.format(expenseTotal);
+  breakdownTotal.innerHTML = config.formatter.format(expenseTotal);
 
   let data = [];
   for (let incomeInput of incomeInputs) {
@@ -243,7 +248,7 @@ function updateTotals() {
     const rowTotal = row.querySelector('.row-total');
 
     rowShare.innerHTML = (share * 100).toFixed(0) + '%';
-    rowTotal.innerHTML = formatter.format(expenseTotal * share);
+    rowTotal.innerHTML = config.formatter.format(expenseTotal * share);
 
     data.push(share);
   }
@@ -269,12 +274,7 @@ document.addEventListener('click', function (e) {
 
   if (e.target.matches('.account-signout')) {
     e.preventDefault();
-    firebaseApp.auth().signOut().then(function() {
-      toggleSignInLinks();
-      clearUI();
-    }, function(error) {
-      console.error(error);
-    });
+    config.firebaseApp.auth().signOut();
   }
 
   if (e.target.matches('.add')) {
@@ -296,7 +296,7 @@ document.addEventListener('click', function (e) {
 addListenerMulti(document, 'input', function(e){
   if (e.target.matches("input[type='range']")) {
     updateSalary(e.target);
-    updateSalaryLabels(e.target);
+    updateSalaryInput(e.target);
     updateTotals();
   }
 });
@@ -304,6 +304,12 @@ addListenerMulti(document, 'input', function(e){
 addListenerMulti(document, 'change paste keyup', function(e){
   if (e.target.matches('[data-type]')) {
     updateExpense(e.target);
+    updateTotals();
+  }
+
+  if (e.target.matches('.income-input')) {
+    updateSalary(e.target);
+    updateSalaryRange(e.target);
     updateTotals();
   }
 });

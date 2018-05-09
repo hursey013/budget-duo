@@ -1,11 +1,11 @@
 .input {
-  @apply .w-full .appearance-none .bg-white .text-grey-darker .border .shadow .rounded .py-3 .px-4;
+  @apply .w-full .appearance-none .bg-white .text-grey-dark .shadow .rounded .py-3 .px-3;
 }
 
 .label {
-  @apply .block .uppercase .tracking-wide .text-xs .font-bold .mb-2;
+  @apply .block .uppercase .tracking-wide .text-base .font-light;
 }
 
 .row {
-  @apply .flex .border-b .py-4 .text-sm
+  @apply .flex .text-grey .border-b .border-teal .py-6
 }

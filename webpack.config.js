@@ -4,7 +4,7 @@ const path = require('path')
 const webpack = require('webpack')
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/app.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: "[name].bundle.js"
@@ -32,12 +32,24 @@ module.exports = {
       },
       {
         test: /\.html$/,
-        use: ['html-loader']
+        loader: 'html-loader'
       },
       {
         test: /\.handlebars$/,
         loader: 'handlebars-loader'
-      }
+      },
+      {
+        test: /\.(jpg|png|gif|svg)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: './images/'
+            }
+          }
+        ]
+      },
     ]
   },
   plugins: [
