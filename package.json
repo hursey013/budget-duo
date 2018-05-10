@@ -1,8 +1,10 @@
 {
   "private": true,
   "scripts": {
-    "build": "webpack -p --mode=production",
-    "dev": "webpack-dev-server --open --mode=development"
+    "build": "webpack -p",
+    "deploy": "gh-pages -d dist",
+    "dev": "webpack-dev-server --open --mode=development",
+    "predeploy": "npm run build"
   },
   "dependencies": {
     "basscss-input-range": "^3.0.0",
@@ -23,6 +25,7 @@
     "css-loader": "^0.28.7",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.4",
+    "gh-pages": "^1.1.0",
     "handlebars-loader": "^1.7.0",
     "html-loader": "^0.5.1",
     "html-webpack-plugin": "^3.2.0",
