@@ -36,15 +36,13 @@ export const uiConfig = {
 // Chart.js
 export const buildChart = cntnr =>
   new Chart(cntnr, {
-    type: 'pie',
+    type: 'doughnut',
     data: {
       labels: ['Your share', "Partner's share"],
       datasets: [{ backgroundColor: ['#2AD9C2', '#00A1A7'] }]
     },
     options: {
       legend: { display: false },
-      responsive: true,
-      maintainAspectRatio: true,
       tooltips: { enabled: false },
       hover: { mode: null }
     }

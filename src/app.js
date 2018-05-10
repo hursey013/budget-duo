@@ -225,6 +225,7 @@ function updateSalaryRange(target) {
 function updateTotals() {
   const costInputs = document.querySelectorAll("[data-type='cost']");
   const incomeInputs = document.querySelectorAll("input[type='range']");
+  const splitType = document.querySelector("input[name='split']:checked")
 
   let incomeTotal = 0;
   for (let incomeInput of incomeInputs) {
@@ -242,10 +243,17 @@ function updateTotals() {
   for (let incomeInput of incomeInputs) {
     const incomeRow = incomeInput.closest('.income');
     const incomeKey = incomeRow.id;
-    const share = +incomeInput.value / incomeTotal;
     const row = document.querySelector(`[data-income-id=${incomeKey}]`);
     const rowShare = row.querySelector('.row-share');
     const rowTotal = row.querySelector('.row-total');
+
+    let share;
+
+    if (splitType.value == 'half') {
+      share = .5;
+    } else {
+      share = +incomeInput.value / incomeTotal;
+    }
 
     rowShare.innerHTML = (share * 100).toFixed(0) + '%';
     rowTotal.innerHTML = config.formatter.format(expenseTotal * share);
@@ -290,6 +298,12 @@ document.addEventListener('click', function (e) {
   if (e.target.matches('.login-backdrop')) {
     e.preventDefault();
     loginContainer.classList.add('hidden');
+  }
+});
+
+addListenerMulti(document, 'change', function(e){
+  if (e.target.matches("input[type='radio']")) {
+    updateTotals();
   }
 });
 

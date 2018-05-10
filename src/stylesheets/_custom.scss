@@ -1,17 +1,18 @@
-a > svg {
-  pointer-events: none;
+body {
+  background: rgb(0,162,168);
+  background: linear-gradient(145deg, rgba(0,162,168,1) 0%, rgba(4,29,89,1) 100%);
 }
 
-html {
-    height: 100%;
+.input {
+  @apply .w-full .appearance-none .bg-white .text-grey-dark .shadow .rounded .py-3 .px-3;
 }
-body {
-    height: 100%;
-    margin: 0;
-    background: rgb(0,162,168);
-    background: linear-gradient(145deg, rgba(0,162,168,1) 0%, rgba(4,29,89,1) 100%);
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+
+.label {
+  @apply .block .uppercase .tracking-wide .text-base .font-light;
+}
+
+.row {
+  @apply .flex .text-grey .border-b .border-teal .py-6
 }
 
 .input-range::-webkit-slider-runnable-track {

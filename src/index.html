@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118225860-1"></script>
   <script>
@@ -13,8 +13,8 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>BudgetDuo</title>
 </head>
-<body>
-  <div class="container mx-auto flex justify-between p-4 lg:p-8">
+<body class="h-full bg-fixed bg-no-repeat">
+  <div class="container mx-auto flex justify-between px-4 pt-4 lg:px-8 lg:pt-8">
     <img src="images/logo.svg" alt="BudgetDuo">
     <ul class="list-reset flex -mx-2">
       <li class="px-2">
@@ -36,7 +36,7 @@
         <h3 class="mb-4 font-normal text-white">Monthly expenses</h3>
         <div class="expenses mb-4"></div>
         <button class="add w-full lg:w-auto bg-transparent text-teal py-2 px-4 border border-blue rounded flex items-center mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stroke-current h-4 w-4 mr-1"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stroke-current h-4 w-4 mr-1 pointer-events-none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
           Add another expense
         </button>
       </div>
@@ -45,7 +45,7 @@
           <h2 class="mb-6 text-grey font-normal">Monthly expense report</h2>
           <div class="row border-t font-bold">
             <div class="w-1/2">
-              Total monthly expenses
+              Total expenses
             </div>
             <div class="w-1/4 text-right">
               100%
@@ -55,7 +55,27 @@
             </div>
           </div>
           <div class="rows"></div>
-          <canvas id="chart" class="my-8"></canvas>
+          <div class="flex items-center mt-8 -mx-4">
+            <div class="w-2/5 px-4">
+              <canvas id="chart" width="100%" height="100%"></canvas>
+            </div>
+            <div class="w-3/5 px-4 text-grey">
+              <h3 class="mb-4">Split expenses:</h3>
+              <ul class="list-reset">
+                <li class="pretty p-default p-round p-smooth mb-4">
+                  <input type="radio" name="split" value="income" checked="checked" />
+                  <div class="state">
+                    <label>Based on income</label>
+                  </div>
+                <li class="pretty p-default p-round p-smooth mb-4">
+                  <input type="radio" name="split" value="half" />
+                  <div class="state">
+                    <label>Split evenly (50/50)</label>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -71,5 +91,4 @@
     </div>
   </div>
 </body>
-
 </html>
