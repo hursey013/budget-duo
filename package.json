@@ -4,7 +4,8 @@
     "build": "webpack -p",
     "deploy": "gh-pages -d dist",
     "dev": "webpack-dev-server --open --mode=development",
-    "predeploy": "npm run build"
+    "predeploy": "npm run build",
+    "prettier": "prettier --single-quote --trailing-comma es5 --write \"**/*.js\""
   },
   "dependencies": {
     "basscss-input-range": "^3.0.0",
@@ -32,6 +33,7 @@
     "node-sass": "^4.9.0",
     "postcss": "^6.0.22",
     "postcss-loader": "^2.1.5",
+    "prettier": "1.12.1",
     "sass-loader": "^7.0.1",
     "style-loader": "^0.21.0",
     "webpack": "^4.8.1",
