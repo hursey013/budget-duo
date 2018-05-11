@@ -1,8 +1,8 @@
-import './stylesheets/styles.scss';
-
-import * as config from './config';
 import Inputmask from 'inputmask';
-import sample from './sample';
+
+import './stylesheets/styles.scss';
+import * as config from './config';
+import sample from './sample.json';
 
 const accountCreate = document.querySelector('.account-create');
 const accountSignin = document.querySelector('.account-signin');
@@ -18,17 +18,17 @@ const rowContainer = document.getElementById('rows');
 // Auth
 let currentUid = null;
 
-config.firebaseApp.auth().onAuthStateChanged(function(user) {
+config.firebaseApp.auth().onAuthStateChanged((user) => {
   if (config.ui.isPendingRedirect()) {
     auth(true);
-  } else if (user && user.uid != currentUid) {
+  } else if (user && user.uid !== currentUid) {
     currentUid = user.uid;
     showSignInLinks(false);
     loginContainer.classList.add('hidden');
     config.usersRef
       .child(currentUid)
       .once('value')
-      .then(function(snapshot) {
+      .then((snapshot) => {
         const budget = snapshot.val();
 
         budget ? buildUI(budget) : buildUI(pushLocalBudget());
@@ -152,9 +152,9 @@ function removeBudgetItem(target) {
 }
 
 function showSignInLinks(show) {
-  accountCreate.closest('li').classList.toggle('hidden', show ? false : true);
-  accountSignin.closest('li').classList.toggle('hidden', show ? false : true);
-  accountSignout.closest('li').classList.toggle('hidden', show ? true : false);
+  accountCreate.closest('li').classList.toggle('hidden', !show);
+  accountSignin.closest('li').classList.toggle('hidden', !show);
+  accountSignout.closest('li').classList.toggle('hidden', !!show);
 }
 
 function updateBudgetItem(target) {
@@ -185,13 +185,13 @@ function updateBudgetItem(target) {
 }
 
 function updateChart(data) {
-  chart.data.datasets[0].data = data;
-  chart.update();
+  window.chart.data.datasets[0].data = data;
+  window.chart.update();
 }
 
 function updateSalaryInputs(target) {
   const row = target.closest('[id]');
-  const input = target.type == 'range' ? 'text' : 'range';
+  const input = target.type === 'range' ? 'text' : 'range';
 
   row.querySelector(`input[type='${input}']`).value = target.value;
 }
@@ -206,19 +206,19 @@ function updateTotals() {
   const splitType = document.querySelector("input[name='split']:checked");
 
   let incomeTotal = 0;
-  for (let incomeInput of incomeInputs) {
+  for (const incomeInput of incomeInputs) {
     incomeTotal += +incomeInput.value;
   }
 
   let expenseTotal = 0;
-  for (let expenseInput of costInputs) {
+  for (const expenseInput of costInputs) {
     expenseTotal += +expenseInput.value;
   }
 
   breakdownTotal.innerHTML = config.formatter.format(expenseTotal);
 
-  let data = [];
-  for (let [index, incomeInput] of incomeInputs.entries()) {
+  const data = [];
+  for (const [index, incomeInput] of incomeInputs.entries()) {
     const incomeRow = incomeInput.closest('[id]');
     const incomeKey = incomeRow.id;
     const row = document.querySelectorAll('#rows > div');
@@ -233,7 +233,7 @@ function updateTotals() {
       share = +incomeInput.value / incomeTotal;
     }
 
-    rowShare.innerHTML = (share * 100).toFixed(0) + '%';
+    rowShare.innerHTML = `${(share * 100).toFixed(0)  }%`;
     rowTotal.innerHTML = config.formatter.format(expenseTotal * share);
 
     data.push(share);
@@ -247,7 +247,7 @@ function addListenerMulti(el, s, fn) {
   s.split(' ').forEach(e => el.addEventListener(e, fn, false));
 }
 
-document.addEventListener('click', function(e) {
+document.addEventListener('click', (e) => {
   if (e.target.matches('.account-create')) {
     e.preventDefault();
     auth();
@@ -279,25 +279,25 @@ document.addEventListener('click', function(e) {
   }
 });
 
-document.addEventListener('change', function(e) {
+document.addEventListener('change', (e) => {
   if (e.target.matches("input[type='radio']")) {
     updateTotals();
   }
 });
 
-document.addEventListener('input', function(e) {
-  if (e.target.matches(".incomes input[type='range']")) {
+document.addEventListener('input', (e) => {
+  if (e.target.matches("#incomes input[type='range']")) {
     updateBudgetItem(e.target);
     updateSalaryInputs(e.target);
   }
 });
 
-addListenerMulti(document, 'change paste keyup', function(e) {
-  if (e.target.matches('.expenses input')) {
+addListenerMulti(document, 'change paste keyup', (e) => {
+  if (e.target.matches('#expenses input')) {
     updateBudgetItem(e.target);
   }
 
-  if (e.target.matches(".incomes input[type='text']")) {
+  if (e.target.matches("#incomes input[type='text']")) {
     updateBudgetItem(e.target);
     updateSalaryInputs(e.target);
   }

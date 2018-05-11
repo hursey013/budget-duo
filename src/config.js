@@ -22,7 +22,7 @@ export const usersRef = firebaseApp
 export const ui = new firebaseui.auth.AuthUI(firebaseApp.auth());
 export const uiConfig = {
   callbacks: {
-    uiShown: function() {
+    uiShown() {
       document.querySelector('.loader').classList.add('hidden');
     },
   },

@@ -1,0 +1,17 @@
+{
+  "extends": [
+    "airbnb-base",
+    "prettier"
+  ],
+  "env": {
+    "browser": true
+  },
+  "globals": {
+    "window": true,
+    "document": true,
+    "localStorage": true
+  },
+  "plugins": [
+    "import"
+  ]
+}
