@@ -4,7 +4,7 @@
     "build": "webpack -p",
     "deploy": "gh-pages -d dist",
     "dev": "webpack-dev-server --open --mode=development",
-    "predeploy": "npm run build",
+    "predeploy": "npm run build && echo 'budgetduo.com' > ./dist/CNAME",
     "prettier": "prettier --single-quote --trailing-comma es5 --write \"**/*.js\""
   },
   "dependencies": {
