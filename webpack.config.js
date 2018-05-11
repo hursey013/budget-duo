@@ -11,6 +11,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js',
   },
+  devtool: 'cheap-module-source-map',
   module: {
     rules: [
       {
@@ -33,12 +34,12 @@ module.exports = {
         }),
       },
       {
-        test: /\.html$/,
-        loader: 'html-loader',
-      },
-      {
         test: /\.handlebars$/,
         loader: 'handlebars-loader',
+      },
+      {
+        test: /\.html$/,
+        loader: 'html-loader',
       },
       {
         test: /\.(jpg|png|gif|svg)$/,
@@ -53,6 +54,11 @@ module.exports = {
         ],
       },
     ],
+  },
+  resolve: {
+    alias: {
+      'chart.js': 'chart.js/dist/Chart.js',
+    },
   },
   plugins: [
     new CleanWebpackPlugin(['dist']),

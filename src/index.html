@@ -37,10 +37,10 @@
     <div class="flex flex-wrap -mx-8">
       <div class="w-full lg:w-1/2 px-8">
         <h2 class="mb-6 lg:mt-8 font-normal text-white">Annual income</h2>
-        <div class="incomes"></div>
+        <div id="incomes"></div>
         <h3 class="mb-4 font-normal text-white">Monthly expenses</h3>
-        <div class="expenses mb-4"></div>
-        <button class="add w-full lg:w-auto bg-transparent text-teal py-2 px-4 border border-blue rounded flex items-center mb-4">
+        <div id="expenses"></div>
+        <button class="add w-full lg:w-auto bg-transparent text-teal py-2 px-4 border border-blue rounded flex items-center my-4">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stroke-current h-4 w-4 mr-1 pointer-events-none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
           Add another expense
         </button>
@@ -59,7 +59,7 @@
               <span class="breakdown-total"></span>
             </div>
           </div>
-          <div class="rows"></div>
+          <div id="rows"></div>
           <div class="flex items-center mt-8 -mx-4">
             <div class="w-2/5 px-4">
               <canvas id="chart" width="100%" height="100%"></canvas>

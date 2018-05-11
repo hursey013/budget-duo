@@ -4,13 +4,14 @@ body {
 }
 
 .input {
-  @apply .w-full .appearance-none .bg-white .text-grey .shadow .rounded .py-3 .px-3;
+  @apply .w-full .appearance-none .bg-white .text-grey .shadow .rounded .p-3;
 }
 
 .label {
   @apply .block .uppercase .tracking-wide .text-base .font-light;
 }
 
+#rows > div,
 .row {
   @apply .flex .text-grey .border-b .border-teal .py-6
 }

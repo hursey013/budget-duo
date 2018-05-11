@@ -9,13 +9,13 @@ const accountSignin = document.querySelector('.account-signin');
 const accountSignout = document.querySelector('.account-signout');
 const breakdownTotal = document.querySelector('.breakdown-total');
 const chartContainer = document.getElementById('chart');
-const expenseContainer = document.querySelector('.expenses');
-const incomeContainer = document.querySelector('.incomes');
+const expenseContainer = document.getElementById('expenses');
+const incomeContainer = document.getElementById('incomes');
 const loader = document.querySelector('.loader');
 const loginContainer = document.querySelector('.login-container');
-const rowContainer = document.querySelector('.rows');
+const rowContainer = document.getElementById('rows');
 
-// Initialize
+// Auth
 let currentUid = null;
 
 config.firebaseApp.auth().onAuthStateChanged(function(user) {
@@ -46,6 +46,35 @@ function auth(pendingRedirect) {
   if (pendingRedirect) loader.classList.remove('hidden');
 }
 
+// Initialize
+function buildUI(budget, persistStorage) {
+  const expenses = budget.expenses;
+  const incomes = budget.incomes;
+
+  clearUI(persistStorage);
+
+  window.chart = config.buildChart(chartContainer);
+
+  if (incomes) {
+    Object.keys(incomes).forEach(incomeKey => {
+      addDomElement(incomes[incomeKey], createKey(incomeKey), incomeContainer);
+      addDomElement(incomes[incomeKey], null, rowContainer);
+    });
+  }
+
+  if (expenses) {
+    Object.keys(expenses).forEach(expenseKey => {
+      addDomElement(
+        expenses[expenseKey],
+        createKey(expenseKey),
+        expenseContainer
+      );
+    });
+  }
+
+  updateTotals();
+}
+
 function pushLocalBudget() {
   const budget = JSON.parse(localStorage.getItem('budget'));
 
@@ -67,8 +96,74 @@ function setLocalBudget() {
   return budget;
 }
 
-// Functions
-function addBudgetItem(value, name, type, key) {
+// Misc
+function addDomElement(object, key, parent) {
+  const div = document.createElement('div');
+  const type = parent.id;
+  const template = require(`./templates/${type}.handlebars`);
+
+  div.innerHTML = template(object);
+  const currencyInput = div.querySelector("[data-type='currency']");
+
+  if (key) div.id = key;
+  if (currencyInput) {
+    Inputmask({
+      alias: 'currency',
+      autoUnmask: true,
+      prefix: '$',
+    }).mask(div.querySelector("[data-type='currency']"));
+  }
+  parent.appendChild(div);
+}
+
+function clearUI(persistStorage) {
+  if (!persistStorage) localStorage.removeItem('budget');
+
+  breakdownTotal.innerHTML = '';
+  expenseContainer.innerHTML = '';
+  incomeContainer.innerHTML = '';
+  rowContainer.innerHTML = '';
+}
+
+function createKey(key) {
+  return key || config.usersRef.push().key;
+}
+
+function removeBudgetItem(target) {
+  const row = target.closest('[id]');
+  const type = row.parentNode.id;
+  const key = row.id;
+
+  if (currentUid) {
+    config.usersRef
+      .child(currentUid)
+      .child(type)
+      .child(key)
+      .remove();
+  } else {
+    const item = JSON.parse(localStorage.getItem('budget'));
+
+    delete item[type][key];
+    localStorage.setItem('budget', JSON.stringify(item));
+  }
+  row.parentNode.removeChild(row);
+
+  updateTotals();
+}
+
+function showSignInLinks(show) {
+  accountCreate.closest('li').classList.toggle('hidden', show ? false : true);
+  accountSignin.closest('li').classList.toggle('hidden', show ? false : true);
+  accountSignout.closest('li').classList.toggle('hidden', show ? true : false);
+}
+
+function updateBudgetItem(target) {
+  const parent = target.closest('[id]');
+  const key = parent.id;
+  const name = target.name;
+  const type = parent.parentNode.id;
+  const value = target.value;
+
   if (currentUid) {
     const item = {};
 
@@ -85,115 +180,8 @@ function addBudgetItem(value, name, type, key) {
     budget[type][key][name] = value;
     localStorage.setItem('budget', JSON.stringify(budget));
   }
-}
-
-function addExpense(expense, expenseKey) {
-  const template = require('./templates/expenses.handlebars');
-  const div = document.createElement('div');
-  const key = expenseKey || config.usersRef.push().key;
-
-  div.id = key;
-  div.classList.add('expense');
-  div.innerHTML = template(expense);
-  Inputmask({
-    alias: 'currency',
-    autoUnmask: true,
-    prefix: '$',
-  }).mask(div.querySelector("[data-type='cost']"));
-  expenseContainer.appendChild(div);
 
   updateTotals();
-}
-
-function addIncome(income, incomeKey) {
-  const template = require('./templates/incomes.handlebars');
-  const div = document.createElement('div');
-  const key = incomeKey || config.usersRef.push().key;
-
-  div.id = key;
-  div.classList.add('income');
-  div.innerHTML = template(income);
-  Inputmask({
-    alias: 'currency',
-    autoUnmask: true,
-    prefix: '$',
-  }).mask(div.querySelector('.income-input'));
-  incomeContainer.appendChild(div);
-
-  addRow(income, key);
-  updateTotals();
-}
-
-function addRow(income, key) {
-  const template = require('./templates/row.handlebars');
-  const div = document.createElement('div');
-
-  div.classList.add('row');
-  div.setAttribute('data-income-id', key);
-
-  div.innerHTML = template(income);
-  rowContainer.appendChild(div);
-}
-
-function buildUI(budget, persistStorage) {
-  const expenses = budget.expenses;
-  const incomes = budget.incomes;
-
-  clearUI();
-  if (!persistStorage) localStorage.removeItem('budget');
-
-  window.chart = config.buildChart(chartContainer);
-
-  if (incomes) {
-    Object.keys(incomes).forEach(incomeKey => {
-      addIncome(incomes[incomeKey], incomeKey);
-    });
-  }
-
-  if (expenses) {
-    Object.keys(expenses).forEach(expenseKey => {
-      addExpense(expenses[expenseKey], expenseKey);
-    });
-  }
-}
-
-function clearUI() {
-  breakdownTotal.innerHTML = '';
-  expenseContainer.innerHTML = '';
-  incomeContainer.innerHTML = '';
-  rowContainer.innerHTML = '';
-}
-
-function removeBudgetItem(type, key) {
-  if (currentUid) {
-    config.usersRef
-      .child(currentUid)
-      .child(type)
-      .child(key)
-      .remove();
-  } else {
-    const item = JSON.parse(localStorage.getItem('budget'));
-
-    delete item[type][key];
-    localStorage.setItem('budget', JSON.stringify(item));
-  }
-}
-
-function removeExpense(target) {
-  const allExpenseRows = document.querySelectorAll('.expense');
-  const expenseRow = target.closest('.expense');
-  const expenseKey = expenseRow.id;
-
-  removeBudgetItem('expenses', expenseKey);
-  expenseRow.parentNode.removeChild(expenseRow);
-
-  updateTotals();
-}
-
-function showSignInLinks(show) {
-  accountCreate.closest('li').classList.toggle('hidden', show ? false : true);
-  accountSignin.closest('li').classList.toggle('hidden', show ? false : true);
-  accountSignout.closest('li').classList.toggle('hidden', show ? true : false);
 }
 
 function updateChart(data) {
@@ -201,41 +189,20 @@ function updateChart(data) {
   chart.update();
 }
 
-function updateExpense(target) {
-  const expenseRow = target.closest('.expense');
-  const expenseKey = expenseRow.id;
-  const name = target.getAttribute('data-type');
-  const value = target.value;
+function updateSalaryInputs(target) {
+  const row = target.closest('[id]');
+  const input = target.type == 'range' ? 'text' : 'range';
 
-  addBudgetItem(value, name, 'expenses', expenseKey);
-}
-
-function updateSalary(target) {
-  const incomeRow = target.closest('.income');
-  const incomeKey = incomeRow.id;
-  const value = target.value;
-  console.log(value + ', ' + incomeKey);
-
-  addBudgetItem(value, 'amount', 'incomes', incomeKey);
-}
-
-function updateSalaryInput(target) {
-  const incomeRow = target.closest('.income');
-  const incomeInput = incomeRow.querySelector('.income-input');
-
-  incomeInput.value = target.value;
-}
-
-function updateSalaryRange(target) {
-  const incomeRow = target.closest('.income');
-  const incomeRange = incomeRow.querySelector('.input-range');
-
-  incomeRange.value = target.value;
+  row.querySelector(`input[type='${input}']`).value = target.value;
 }
 
 function updateTotals() {
-  const costInputs = document.querySelectorAll("[data-type='cost']");
-  const incomeInputs = document.querySelectorAll("input[type='range']");
+  const costInputs = expenseContainer.querySelectorAll(
+    "[data-type='currency']"
+  );
+  const incomeInputs = incomeContainer.querySelectorAll(
+    "[data-type='currency']"
+  );
   const splitType = document.querySelector("input[name='split']:checked");
 
   let incomeTotal = 0;
@@ -251,12 +218,12 @@ function updateTotals() {
   breakdownTotal.innerHTML = config.formatter.format(expenseTotal);
 
   let data = [];
-  for (let incomeInput of incomeInputs) {
-    const incomeRow = incomeInput.closest('.income');
+  for (let [index, incomeInput] of incomeInputs.entries()) {
+    const incomeRow = incomeInput.closest('[id]');
     const incomeKey = incomeRow.id;
-    const row = document.querySelector(`[data-income-id=${incomeKey}]`);
-    const rowShare = row.querySelector('.row-share');
-    const rowTotal = row.querySelector('.row-total');
+    const row = document.querySelectorAll('#rows > div');
+    const rowShare = row[index].querySelector('.row-share');
+    const rowTotal = row[index].querySelector('.row-total');
 
     let share;
 
@@ -298,12 +265,12 @@ document.addEventListener('click', function(e) {
 
   if (e.target.matches('.add')) {
     e.preventDefault();
-    addExpense();
+    addDomElement(null, createKey(), expenseContainer);
   }
 
   if (e.target.matches('.remove')) {
     e.preventDefault();
-    removeExpense(e.target);
+    removeBudgetItem(e.target);
   }
 
   if (e.target.matches('.login-backdrop')) {
@@ -312,29 +279,26 @@ document.addEventListener('click', function(e) {
   }
 });
 
-addListenerMulti(document, 'change', function(e) {
+document.addEventListener('change', function(e) {
   if (e.target.matches("input[type='radio']")) {
     updateTotals();
   }
 });
 
-addListenerMulti(document, 'input', function(e) {
-  if (e.target.matches("input[type='range']")) {
-    updateSalary(e.target);
-    updateSalaryInput(e.target);
-    updateTotals();
+document.addEventListener('input', function(e) {
+  if (e.target.matches(".incomes input[type='range']")) {
+    updateBudgetItem(e.target);
+    updateSalaryInputs(e.target);
   }
 });
 
 addListenerMulti(document, 'change paste keyup', function(e) {
-  if (e.target.matches('[data-type]')) {
-    updateExpense(e.target);
-    updateTotals();
+  if (e.target.matches('.expenses input')) {
+    updateBudgetItem(e.target);
   }
 
-  if (e.target.matches('.income-input')) {
-    updateSalary(e.target);
-    updateSalaryRange(e.target);
-    updateTotals();
+  if (e.target.matches(".incomes input[type='text']")) {
+    updateBudgetItem(e.target);
+    updateSalaryInputs(e.target);
   }
 });
