@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full">
+
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118225860-1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
     gtag('js', new Date());
     gtag('config', 'UA-118225860-1');
   </script>
@@ -13,15 +17,16 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>BudgetDuo</title>
 </head>
+
 <body class="h-full bg-fixed bg-no-repeat">
   <div class="container mx-auto flex justify-between px-4 pt-4 lg:px-8 lg:pt-8">
-    <img src="images/logo.svg" alt="BudgetDuo">
+    <a href="https://budgetduo.com"><img src="images/logo.svg" alt="BudgetDuo"></a>
     <ul class="list-reset flex -mx-2">
       <li class="px-2">
         <a class="account-signin inline-block border border-transparent rounded text-white py-2 px-4 no-underline" href="#">Sign in</a>
       </li>
       <li class="px-2">
-        <a class="account-create inline-block border border-transparent rounded py-2 px-4 bg-teal no-underline text-grey-dark" href="#">Create account</a>
+        <a class="account-create inline-block border border-transparent rounded py-2 px-4 bg-teal no-underline text-blue-dark" href="#">Create account</a>
       </li>
       <li class="px-2 hidden">
         <a class="account-signout inline-block border border-transparent rounded text-white py-2 px-4 no-underline" href="#">Sign out</a>
@@ -67,12 +72,12 @@
                   <div class="state">
                     <label>Based on income</label>
                   </div>
-                <li class="pretty p-default p-round p-smooth mb-4">
-                  <input type="radio" name="split" value="half" />
-                  <div class="state">
-                    <label>Split evenly (50/50)</label>
-                  </div>
-                </li>
+                  <li class="pretty p-default p-round p-smooth mb-4">
+                    <input type="radio" name="split" value="half" />
+                    <div class="state">
+                      <label>Split evenly (50/50)</label>
+                    </div>
+                  </li>
               </ul>
             </div>
           </div>
@@ -91,4 +96,5 @@
     </div>
   </div>
 </body>
+
 </html>

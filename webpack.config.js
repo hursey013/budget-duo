@@ -1,5 +1,6 @@
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
@@ -56,6 +57,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(['dist']),
     new ExtractTextPlugin('styles.css'),
+    new FaviconsWebpackPlugin('./src/images/favicon.svg'),
     new HtmlWebpackPlugin({ template: './src/index.html' }),
   ],
 };
