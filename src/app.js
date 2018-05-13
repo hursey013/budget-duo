@@ -1,10 +1,7 @@
-import Inputmask from 'inputmask';
-
 import './stylesheets/styles.scss';
 import * as config from './config';
 import sample from './sample.json';
 
-const accountCreate = document.querySelector('.account-create');
 const accountSignin = document.querySelector('.account-signin');
 const accountSignout = document.querySelector('.account-signout');
 const breakdownTotal = document.querySelector('.breakdown-total');
@@ -56,17 +53,17 @@ function buildUI(budget, persistStorage) {
   window.chart = config.buildChart(chartContainer);
 
   if (incomes) {
-    Object.keys(incomes).forEach(incomeKey => {
-      addDomElement(incomes[incomeKey], createKey(incomeKey), incomeContainer);
-      addDomElement(incomes[incomeKey], null, rowContainer);
+    Object.keys(incomes).forEach(key => {
+      addDomElement(incomes[key], createKey(key), incomeContainer);
+      addDomElement(incomes[key], null, rowContainer);
     });
   }
 
   if (expenses) {
-    Object.keys(expenses).forEach(expenseKey => {
+    Object.keys(expenses).forEach(key => {
       addDomElement(
-        expenses[expenseKey],
-        createKey(expenseKey),
+        expenses[key],
+        createKey(key),
         expenseContainer
       );
     });
@@ -103,16 +100,12 @@ function addDomElement(object, key, parent) {
   const template = require(`./templates/${type}.handlebars`);
 
   div.innerHTML = template(object);
+  div.classList.add('animated', 'fadeIn');
   const currencyInput = div.querySelector("[data-type='currency']");
 
   if (key) div.id = key;
-  if (currencyInput) {
-    Inputmask({
-      alias: 'currency',
-      autoUnmask: true,
-      prefix: '$',
-    }).mask(div.querySelector("[data-type='currency']"));
-  }
+  if (currencyInput) config.masker(currencyInput);
+  
   parent.appendChild(div);
 }
 
@@ -146,13 +139,23 @@ function removeBudgetItem(target) {
     delete item[type][key];
     localStorage.setItem('budget', JSON.stringify(item));
   }
-  row.parentNode.removeChild(row);
+  
+  if (expenseContainer.querySelectorAll('[id]').length > 1){
+    row.classList.add('fadeOut');
+    setTimeout(function(){row.parentNode.removeChild(row)}, 1000);
+  } else {
+    const inputs = row.querySelectorAll('input');
+    for (const input of inputs) {
+      row.classList.add('shake');
+      input.value = '';
+      updateBudgetItem(input);
+    }
+  }
 
   updateTotals();
 }
 
 function showSignInLinks(show) {
-  accountCreate.closest('li').classList.toggle('hidden', !show);
   accountSignin.closest('li').classList.toggle('hidden', !show);
   accountSignout.closest('li').classList.toggle('hidden', !!show);
 }
@@ -197,12 +200,8 @@ function updateSalaryInputs(target) {
 }
 
 function updateTotals() {
-  const costInputs = expenseContainer.querySelectorAll(
-    "[data-type='currency']"
-  );
-  const incomeInputs = incomeContainer.querySelectorAll(
-    "[data-type='currency']"
-  );
+  const costInputs = expenseContainer.querySelectorAll("[data-type='currency']");
+  const incomeInputs = incomeContainer.querySelectorAll("[data-type='currency']");
   const splitType = document.querySelector("input[name='split']:checked");
 
   let incomeTotal = 0;
@@ -221,7 +220,7 @@ function updateTotals() {
   for (const [index, incomeInput] of incomeInputs.entries()) {
     const incomeRow = incomeInput.closest('[id]');
     const incomeKey = incomeRow.id;
-    const row = document.querySelectorAll('#rows > div');
+    const row = document.querySelectorAll('#rows>div');
     const rowShare = row[index].querySelector('.row-share');
     const rowTotal = row[index].querySelector('.row-total');
 
@@ -233,7 +232,7 @@ function updateTotals() {
       share = +incomeInput.value / incomeTotal;
     }
 
-    rowShare.innerHTML = `${(share * 100).toFixed(0)  }%`;
+    rowShare.innerHTML = `${(share * 100).toFixed(0)}%`;
     rowTotal.innerHTML = config.formatter.format(expenseTotal * share);
 
     data.push(share);
@@ -248,11 +247,6 @@ function addListenerMulti(el, s, fn) {
 }
 
 document.addEventListener('click', (e) => {
-  if (e.target.matches('.account-create')) {
-    e.preventDefault();
-    auth();
-  }
-
   if (e.target.matches('.account-signin')) {
     e.preventDefault();
     auth();
@@ -302,3 +296,11 @@ addListenerMulti(document, 'change paste keyup', (e) => {
     updateSalaryInputs(e.target);
   }
 });
+
+addListenerMulti(document, 'webkitAnimationEnd oanimationend msAnimationEnd animationend', (e) => {
+  if (e.target.matches('.animated')) {
+    e.target.classList.remove('fadeIn', 'shake');
+  }
+});
+
+

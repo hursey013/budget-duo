@@ -3,6 +3,7 @@ import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 import * as firebaseui from 'firebaseui';
+import Inputmask from 'inputmask';
 
 // Firebase
 const config = {
@@ -50,6 +51,13 @@ export const buildChart = cntnr =>
       hover: { mode: null },
     },
   });
+
+export const masker = input =>
+  Inputmask({
+    alias: 'currency',
+    autoUnmask: true,
+    prefix: '$',
+  }).mask(input);
 
 export const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
