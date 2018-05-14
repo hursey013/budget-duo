@@ -3,17 +3,53 @@ body {
   background: linear-gradient(145deg, rgba(0,162,168,1) 0%, rgba(4,29,89,1) 100%);
 }
 
+.collapsed {
+  .details {
+    display: none;
+  }
+  .expand-close {
+    display: none;
+  }
+  .expand-open {
+    display: block;
+  }
+}
+
+.expanded {
+  .details {
+    display: block;
+  }
+  .expand-close {
+    display: block;
+  }
+  .expand-open {
+    display: none;
+  }
+}
+
+#expenses {
+  .select {
+    display: none;
+  }
+  &.split-adhoc .select {
+    display: block;
+  }
+}
+
 .input {
   @apply .w-full .appearance-none .bg-white .text-grey .shadow .rounded .p-3;
 }
 
 .label {
-  @apply .block .uppercase .tracking-wide .text-base .font-light;
+  @apply .block .uppercase .text-xs .font-bold .text-teal;
 }
 
-#rows > div,
 .row {
-  @apply .flex .text-grey .border-b .border-teal .py-6
+  @apply .flex .items-start .-mx-1 .py-6 .border-b .border-teal;
+
+  .col {
+    @apply .px-1;
+  }
 }
 
 .input-range::-webkit-slider-runnable-track {

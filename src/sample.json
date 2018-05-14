@@ -1,12 +1,10 @@
 {
   "expenses": [
     {"item": "Electricity", "cost": "100"},
-    {"item": "Insurance", "cost": "95"},
     {"item": "Internet", "cost": "45"},
     {"item": "Gym", "cost": "65"},
-    {"item": "Mortgage", "cost": "1800"},
-    {"item": "Savings", "cost": "200"},
-    {"item": "Water", "cost": "60"}
+    {"item": "Rent", "cost": "1200"},
+    {"item": "Savings", "cost": "200"}
   ],
   "incomes": [
     {"name": "You", "amount": "40000"},
