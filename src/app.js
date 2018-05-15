@@ -65,15 +65,15 @@ function buildUI(budget, persistStorage) {
   }
 
   if (incomesArray) {
-    Object.keys(incomesArray).forEach(key => {
-      addDomElement(incomesArray[key], createKey(key), incomeContainer);
-      addDomElement(incomesArray[key], null, rowContainer);
+    Object.keys(incomesArray).forEach(function (key, i) {
+      addDomElement(incomesArray[key], createKey(key), incomeContainer, i);
+      addDomElement(incomesArray[key], null, rowContainer, i);
     });
   }
 
   if (expensesArray) {
-    Object.keys(expensesArray).forEach(key => {
-      addDomElement(expensesArray[key], createKey(key), expenseContainer);
+    Object.keys(expensesArray).forEach(function (key, i) {
+      addDomElement(expensesArray[key], createKey(key), expenseContainer, i);
     });
   }
 
@@ -103,10 +103,12 @@ function setLocalBudget() {
 }
 
 // Misc
-function addDomElement(object, key, parent) {
+function addDomElement(object, key, parent, index) {
   const div = document.createElement('div');
   const type = parent.id;
   const template = require(`./templates/${type}.handlebars`);
+
+  object.index = index;
 
   div.innerHTML = template(object);
   div.classList.add('animated', 'fadeIn');

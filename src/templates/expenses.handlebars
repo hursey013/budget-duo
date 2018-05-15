@@ -5,8 +5,8 @@
   <div class="select flex-none w-24 lg:w-32 px-1">
     <div class="relative">
       <select class="input pr-8" name="split">
-        <option value="0" {{[helpers/selected] 0 split}}>You</option>
-        <option value="1" {{[helpers/selected] 1 split}}>Partner</option>
+        <option value="0" {{[helpers/selected] index split}}>You</option>
+        <option value="1" {{[helpers/selected] index split}}>Partner</option>
       </select>
       <a class="pointer-events-none absolute pin-y pin-r flex items-center px-2">
         <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>

@@ -38,12 +38,13 @@ export const uiConfig = {
 };
 
 // Chart.js
+export const colors = ['#2AD9C2', '#00A1A7'];
 export const buildChart = cntnr =>
   new Chart(cntnr, {
     type: 'doughnut',
     data: {
       labels: ['Your share', "Partner's share"],
-      datasets: [{ backgroundColor: ['#2AD9C2', '#00A1A7'] }],
+      datasets: [{ backgroundColor: colors }],
     },
     options: {
       legend: { display: false },
