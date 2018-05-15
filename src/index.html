@@ -18,7 +18,7 @@
   <title>BudgetDuo</title>
 </head>
 
-<body class="h-full bg-fixed bg-no-repeat">
+<body class="h-full bg-fixed bg-no-repeat text-grey">
   <div class="container mx-auto flex justify-between px-4 pt-4 lg:px-8 lg:pt-8">
     <a href="https://budgetduo.com"><img src="images/logo.svg" alt="BudgetDuo"></a>
     <ul class="list-reset flex -mx-2">
@@ -32,7 +32,7 @@
   </div>
   <div class="container mx-auto p-4 lg:p-8 overflow-hidden">
     <div class="flex flex-wrap -mx-8">
-      <div class="w-full lg:w-1/2 px-8">
+      <div class="w-full lg:w-1/2 px-8 mb-8">
         <h2 class="mb-6 lg:mt-8 font-normal text-white">Annual income</h2>
         <div id="incomes"></div>
         <h3 class="mb-4 font-normal text-white">Monthly expenses</h3>
@@ -42,39 +42,64 @@
           Add another expense
         </button>
       </div>
-      <div class="w-full lg:w-1/2 px-8">
+      <div class="w-full lg:w-1/2 px-8 mb-8">
         <div class="bg-white rounded-lg shadow p-4 lg:p-8">
-          <h2 class="mb-6 text-grey font-normal">Monthly expense report</h2>
-          <div class="row border-t font-bold animated fadeIn">
-            <div class="w-1/2">
-              Total expenses
+          <h2 class="mb-6 font-normal">Expense report</h2>
+          <div class="row justify-end pt-0 pb-2">
+            <div class="col flex-1 text-right">
+              <span class="label">% of total</span>
             </div>
-            <div class="w-1/4 text-right">
-              100%
-            </div>
-            <div class="w-1/4 text-right">
-              <span class="breakdown-total"></span>
+            <div class="col w-2/5 text-right">
+              <span class="label mr-6">Amount</span>
             </div>
           </div>
           <div id="rows"></div>
+
+          <div class="row flex-wrap collapsed">
+            <div class="col flex-1">
+              Total expenses
+            </div>
+            <div class="col w-1/5 text-right font-bold">
+              100%
+            </div>
+            <div class="col w-2/5 flex items-center justify-end text-right">
+              <span class="breakdown-total font-bold"></span>/mo
+              <a href="#" class="expand ml-2 text-teal">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="expand-open stroke-current h-4 w-4  pointer-events-none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="expand-close stroke-current h-4 w-4  pointer-events-none"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              </a>
+            </div>
+            <ul class="details col list-reset mt-2 mr-6 w-full text-right text-xs">
+              <li class="py-1"><span class="breakdown-total-biweekly"></span> / bi-weekly</li>
+              <li class="py-1"><span class="breakdown-total-bimonthly"></span> / bi-monthly</li>
+              <li class="py-1"><span class="breakdown-total-annually"></span> / annually</li>
+            </ul>
+          </div>
           <div class="flex items-center mt-8 -mx-4">
             <div class="w-2/5 px-4">
               <canvas id="chart" width="100%" height="100%"></canvas>
             </div>
-            <div class="w-3/5 px-4 text-grey">
+            <div class="w-3/5 px-4">
               <h3 class="mb-4">Split expenses:</h3>
-              <ul class="list-reset">
-                <li class="pretty p-default p-round p-smooth mb-4">
-                  <input type="radio" name="split" value="income" checked="checked" />
+              <ul id="split" class="list-reset">
+                <li class="block pretty p-default p-round p-smooth mb-3">
+                  <input type="radio" name="split" value="income" checked />
                   <div class="state">
                     <label>Based on income</label>
                   </div>
-                  <li class="pretty p-default p-round p-smooth mb-4">
-                    <input type="radio" name="split" value="half" />
-                    <div class="state">
-                      <label>Split evenly (50/50)</label>
-                    </div>
-                  </li>
+                </li>
+                <li class="block pretty p-default p-round p-smooth mb-3">
+                  <input type="radio" name="split" value="half" />
+                  <div class="state">
+                    <label>Split evenly (50/50)</label>
+                  </div>
+                </li>
+                <li class="block pretty p-default p-round p-smooth mb-3">
+                  <input type="radio" name="split" value="adhoc" />
+                  <div class="state">
+                    <label>Grab bag (ad hoc)</label>
+                  </div>
+                </li>
               </ul>
             </div>
           </div>

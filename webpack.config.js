@@ -3,7 +3,6 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
-const webpack = require('webpack');
 
 module.exports = {
   entry: './src/app.js',
@@ -29,8 +28,27 @@ module.exports = {
         test: /\.scss$/,
         include: [path.resolve(__dirname, 'src', 'stylesheets')],
         use: ExtractTextPlugin.extract({
-          use: ['css-loader', 'postcss-loader', 'sass-loader'],
           fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                autoprefixer: false,
+                importLoaders: 1,
+              },
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                ident: 'postcss',
+                plugins: () => [
+                  require('tailwindcss')('./tailwind.js'),
+                  require('autoprefixer')(),
+                ],
+              },
+            },
+            'sass-loader',
+          ],
         }),
       },
       {
