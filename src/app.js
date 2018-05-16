@@ -298,14 +298,22 @@ function updateTotals() {
 }
 
 function updateSplitType(target) {
+  const key = target.name;
+  const val = target.value;
+
   if (currentUid){
     config.usersRef
       .child(currentUid)
-      .child(target.name)
-      .set(target.value);
+      .child(key)
+      .set(val);
+  } else {
+    const budget = JSON.parse(localStorage.getItem('budget'));
+
+    budget[key] = val;
+    localStorage.setItem('budget', JSON.stringify(budget));
   }
 
-  setSplitType(target.value);
+  setSplitType(val);
   updateTotals();
 }
 
