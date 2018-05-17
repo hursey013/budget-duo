@@ -1,5 +1,5 @@
-import {colors} from '../../config';
+import { colors } from '../../config';
 
-module.exports = function(index){
+module.exports = function(index) {
   return colors[index];
 };

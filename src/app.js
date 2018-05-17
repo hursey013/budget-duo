@@ -5,9 +5,15 @@ import sample from './sample.json';
 const accountSignin = document.querySelector('.account-signin');
 const accountSignout = document.querySelector('.account-signout');
 const breakdownTotal = document.querySelector('.breakdown-total');
-const breakdownTotalBiweekly = document.querySelector('.breakdown-total-biweekly');
-const breakdownTotalBimonthly = document.querySelector('.breakdown-total-bimonthly');
-const breakdownTotalAnnually = document.querySelector('.breakdown-total-annually');
+const breakdownTotalBiweekly = document.querySelector(
+  '.breakdown-total-biweekly'
+);
+const breakdownTotalBimonthly = document.querySelector(
+  '.breakdown-total-bimonthly'
+);
+const breakdownTotalAnnually = document.querySelector(
+  '.breakdown-total-annually'
+);
 const chartContainer = document.getElementById('chart');
 const expenseContainer = document.getElementById('expenses');
 const incomeContainer = document.getElementById('incomes');
@@ -65,14 +71,14 @@ function buildUI(budget, persistStorage) {
   }
 
   if (incomesArray) {
-    Object.keys(incomesArray).forEach(function (key, i) {
+    Object.keys(incomesArray).forEach(function(key, i) {
       addDomElement(incomesArray[key], createKey(key), incomeContainer, i);
       addDomElement(incomesArray[key], null, rowContainer, i);
     });
   }
 
   if (expensesArray) {
-    Object.keys(expensesArray).forEach(function (key, i) {
+    Object.keys(expensesArray).forEach(function(key, i) {
       addDomElement(expensesArray[key], createKey(key), expenseContainer, i);
     });
   }
@@ -133,14 +139,14 @@ function createKey(key) {
   return key || config.usersRef.push().key;
 }
 
-function getTotal(inputs, index){
+function getTotal(inputs, index) {
   let total = 0;
   for (const input of inputs) {
     if (typeof index !== 'undefined') {
       const select = input.parentNode.parentNode.querySelector('select');
       const option = select.options[select.selectedIndex];
 
-      if (index === +option.value){
+      if (index === +option.value) {
         total += +input.value;
       }
     } else {
@@ -262,8 +268,12 @@ function updateTotals() {
   const expenseTotal = getTotal(costInputs);
 
   breakdownTotal.innerHTML = config.formatter.format(expenseTotal);
-  breakdownTotalBiweekly.innerHTML = config.formatter.format((expenseTotal * 12) / 26);
-  breakdownTotalBimonthly.innerHTML = config.formatter.format((expenseTotal * 12) / 24);
+  breakdownTotalBiweekly.innerHTML = config.formatter.format(
+    expenseTotal * 12 / 26
+  );
+  breakdownTotalBimonthly.innerHTML = config.formatter.format(
+    expenseTotal * 12 / 24
+  );
   breakdownTotalAnnually.innerHTML = config.formatter.format(expenseTotal * 12);
 
   const data = [];
@@ -287,9 +297,15 @@ function updateTotals() {
 
     rowShare.innerHTML = `${(share * 100).toFixed(0)}%`;
     rowTotal.innerHTML = config.formatter.format(expenseTotal * share);
-    rowTotalBiweekly.innerHTML = config.formatter.format(((expenseTotal * share) * 12) / 26);
-    rowTotalBimonthly.innerHTML = config.formatter.format(((expenseTotal * share) * 12) / 24);
-    rowTotalAnnually.innerHTML = config.formatter.format((expenseTotal * share) * 12);
+    rowTotalBiweekly.innerHTML = config.formatter.format(
+      expenseTotal * share * 12 / 26
+    );
+    rowTotalBimonthly.innerHTML = config.formatter.format(
+      expenseTotal * share * 12 / 24
+    );
+    rowTotalAnnually.innerHTML = config.formatter.format(
+      expenseTotal * share * 12
+    );
 
     data.push(share);
   }
@@ -301,7 +317,7 @@ function updateSplitType(target) {
   const key = target.name;
   const val = target.value;
 
-  if (currentUid){
+  if (currentUid) {
     config.usersRef
       .child(currentUid)
       .child(key)
@@ -355,7 +371,7 @@ document.addEventListener('click', e => {
 });
 
 document.addEventListener('change', e => {
-  if (e.target.matches("select")) {
+  if (e.target.matches('select')) {
     updateBudgetItem(e.target);
   }
 
