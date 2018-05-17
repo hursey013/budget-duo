@@ -43,13 +43,23 @@ export const buildChart = cntnr =>
   new Chart(cntnr, {
     type: 'doughnut',
     data: {
-      labels: ['Your share', "Partner's share"],
+      labels: ['You', 'Partner'],
       datasets: [{ backgroundColor: colors }],
     },
     options: {
       legend: { display: false },
-      tooltips: { enabled: false },
-      hover: { mode: null },
+      tooltips: {
+        callbacks: {
+          label: function(tooltipItem, data) {
+            var dataset = data.datasets[tooltipItem.datasetIndex];
+            var label = data.labels[tooltipItem.index];
+            var currentValue = dataset.data[tooltipItem.index];
+            var percentage = parseFloat((currentValue * 100).toFixed(0));
+
+            return `${label}: ${percentage}%`;
+          },
+        },
+      },
     },
   });
 
