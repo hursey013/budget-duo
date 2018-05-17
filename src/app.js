@@ -108,7 +108,7 @@ function addDomElement(object, key, parent, index) {
   const type = parent.id;
   const template = require(`./templates/${type}.handlebars`);
 
-  object.index = index;
+  if (typeof index !== 'undefined') object.index = index;
 
   div.innerHTML = template(object);
   div.classList.add('animated', 'fadeIn');

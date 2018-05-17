@@ -45,10 +45,10 @@ body {
 }
 
 .row {
-  @apply .flex .items-start .-mx-1 .py-6 .border-b .border-teal;
+  @apply .flex .items-start .-mx-2 .py-6 .border-b .border-teal;
 
   .col {
-    @apply .px-1;
+    @apply .px-2;
   }
 }
 
