@@ -7,7 +7,7 @@ module.exports = {
   entry: './src/app.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].bundle.js',
+    filename: '[name].[chunkhash].js',
   },
   devtool: 'cheap-module-source-map',
   module: {
@@ -79,7 +79,10 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(['dist']),
-    new ExtractTextPlugin('styles.css'),
+    new ExtractTextPlugin({
+      filename: 'style.[hash].css',
+      allChunks: true,
+    }),
     new HtmlWebpackPlugin({
       favicon: './src/images/favicon.ico',
       template: './src/index.html',
