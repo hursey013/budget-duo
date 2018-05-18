@@ -29,13 +29,7 @@ module.exports = {
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
-            {
-              loader: 'css-loader',
-              options: {
-                autoprefixer: false,
-                importLoaders: 1,
-              },
-            },
+            'css-loader',
             {
               loader: 'postcss-loader',
               options: {

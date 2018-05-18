@@ -4,21 +4,15 @@ import sample from './sample.json';
 
 const accountSignin = document.querySelector('.account-signin');
 const accountSignout = document.querySelector('.account-signout');
-const breakdownTotal = document.querySelector('.breakdown-total');
-const breakdownTotalBiweekly = document.querySelector(
-  '.breakdown-total-biweekly'
-);
-const breakdownTotalBimonthly = document.querySelector(
-  '.breakdown-total-bimonthly'
-);
-const breakdownTotalAnnually = document.querySelector(
-  '.breakdown-total-annually'
-);
 const chartContainer = document.getElementById('chart');
 const expenseContainer = document.getElementById('expenses');
 const incomeContainer = document.getElementById('incomes');
 const loader = document.querySelector('.loader');
 const loginContainer = document.querySelector('.login-container');
+const reportTotal = document.querySelector('.report-total');
+const reportTotalBiweekly = document.querySelector('.report-total-biweekly');
+const reportTotalBimonthly = document.querySelector('.report-total-bimonthly');
+const reportTotalAnnually = document.querySelector('.report-total-annually');
 const rowContainer = document.getElementById('rows');
 const splitContainer = document.getElementById('split');
 
@@ -61,7 +55,11 @@ function buildUI(budget, persistStorage) {
 
   clearUI(persistStorage);
 
-  window.chart = config.buildChart(chartContainer);
+  const labels = [];
+  for (let income in incomesArray) {
+    labels.push(incomesArray[income].name);
+  }
+  window.chart = config.buildChart(chartContainer, labels);
 
   if (currentUid && splitType) {
     const radio = splitContainer.querySelector(`input[value=${splitType}]`);
@@ -129,7 +127,7 @@ function addDomElement(object, key, parent, index) {
 function clearUI(persistStorage) {
   if (!persistStorage) localStorage.removeItem('budget');
 
-  breakdownTotal.innerHTML = '';
+  reportTotal.innerHTML = '';
   expenseContainer.innerHTML = '';
   incomeContainer.innerHTML = '';
   rowContainer.innerHTML = '';
@@ -257,24 +255,16 @@ function updateSalaryInputs(target) {
 }
 
 function updateTotals() {
-  const costInputs = expenseContainer.querySelectorAll(
-    "[data-type='currency']"
-  );
-  const incomeInputs = incomeContainer.querySelectorAll(
-    "[data-type='currency']"
-  );
-  const splitType = document.querySelector("input[name='split']:checked").value;
+  const expenseInputs = expenseContainer.querySelectorAll("[data-type='currency']");
+  const incomeInputs = incomeContainer.querySelectorAll("[data-type='currency']");
+  const expenseTotal = getTotal(expenseInputs);
   const incomeTotal = getTotal(incomeInputs);
-  const expenseTotal = getTotal(costInputs);
+  const splitType = document.querySelector("input[name='split']:checked").value;
 
-  breakdownTotal.innerHTML = config.formatter.format(expenseTotal);
-  breakdownTotalBiweekly.innerHTML = config.formatter.format(
-    expenseTotal * 12 / 26
-  );
-  breakdownTotalBimonthly.innerHTML = config.formatter.format(
-    expenseTotal * 12 / 24
-  );
-  breakdownTotalAnnually.innerHTML = config.formatter.format(expenseTotal * 12);
+  reportTotal.innerHTML = calcTotal(expenseTotal);
+  reportTotalBiweekly.innerHTML = calcTotal(expenseTotal, false, 26);
+  reportTotalBimonthly.innerHTML = calcTotal(expenseTotal, false, 24);
+  reportTotalAnnually.innerHTML = calcTotal(expenseTotal, false, 1);
 
   const data = [];
   for (const [index, incomeInput] of incomeInputs.entries()) {
@@ -286,31 +276,32 @@ function updateTotals() {
     const rowTotalAnnually = row[index].querySelector('.row-total-annually');
 
     let share;
-
     if (splitType == 'half') {
       share = 0.5;
     } else if (splitType == 'adhoc') {
-      share = getTotal(costInputs, index) / expenseTotal;
+      share = getTotal(expenseInputs, index) / expenseTotal;
     } else {
       share = +incomeInput.value / incomeTotal;
     }
 
     rowShare.innerHTML = `${(share * 100).toFixed(0)}%`;
-    rowTotal.innerHTML = config.formatter.format(expenseTotal * share);
-    rowTotalBiweekly.innerHTML = config.formatter.format(
-      expenseTotal * share * 12 / 26
-    );
-    rowTotalBimonthly.innerHTML = config.formatter.format(
-      expenseTotal * share * 12 / 24
-    );
-    rowTotalAnnually.innerHTML = config.formatter.format(
-      expenseTotal * share * 12
-    );
+    rowTotal.innerHTML = calcTotal(expenseTotal, share);
+    rowTotalBiweekly.innerHTML = calcTotal(expenseTotal, share, 26);
+    rowTotalBimonthly.innerHTML = calcTotal(expenseTotal, share, 24);
+    rowTotalAnnually.innerHTML = calcTotal(expenseTotal, share, 1);
 
     data.push(share);
   }
 
   updateChart(data);
+}
+
+function calcTotal (total, share, interval) {
+  let newTotal  = total;
+  if (interval) newTotal = interval ? (newTotal * 12 / interval) : newTotal;
+  if (share) newTotal = share ? (newTotal * share) : newTotal;
+
+  return config.formatter.format(newTotal);
 }
 
 function updateSplitType(target) {
@@ -400,8 +391,7 @@ addListenerMulti(document, 'change paste keyup', e => {
 
 addListenerMulti(
   document,
-  'webkitAnimationEnd oanimationend msAnimationEnd animationend',
-  e => {
+  'webkitAnimationEnd oanimationend msAnimationEnd animationend', e => {
     if (e.target.matches('.animated')) {
       e.target.classList.remove('fadeIn', 'shake');
     }

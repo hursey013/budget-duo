@@ -39,11 +39,11 @@ export const uiConfig = {
 
 // Chart.js
 export const colors = ['#2AD9C2', '#00A1A7'];
-export const buildChart = cntnr =>
+export const buildChart = (cntnr, labels) =>
   new Chart(cntnr, {
     type: 'doughnut',
     data: {
-      labels: ['You', 'Partner'],
+      labels: labels,
       datasets: [{ backgroundColor: colors }],
     },
     options: {
