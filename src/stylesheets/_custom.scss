@@ -1,4 +1,4 @@
-body {
+.bg-gradient {
   background: rgb(0,162,168);
   background: linear-gradient(145deg, rgba(0,162,168,1) 0%, rgba(4,29,89,1) 100%);
 }
@@ -44,12 +44,21 @@ body {
   @apply .block .uppercase .text-xs .font-bold .text-teal;
 }
 
+.page {
+  @apply .h-full
+}
+
 .row {
   @apply .flex .items-start .-mx-2 .py-6 .border-b .border-teal;
 
   .col {
     @apply .px-2;
   }
+}
+
+.sr-only {
+  position: absolute;
+  left: -999em;
 }
 
 .input-range::-webkit-slider-runnable-track {

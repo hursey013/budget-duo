@@ -23,12 +23,16 @@ export const usersRef = firebaseApp
 export const ui = new firebaseui.auth.AuthUI(firebaseApp.auth());
 export const uiConfig = {
   callbacks: {
-    uiShown() {
-      document.querySelector('.loader').classList.add('hidden');
+    uiChanged(fromPageId, toPageId) {
+      if (fromPageId == 'callback') {
+        document.querySelector('.loader').classList.add('hidden');
+      }
     },
   },
   signInOptions: [
     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+    firebase.auth.FacebookAuthProvider.PROVIDER_ID,
     {
       provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
       requireDisplayName: false,

@@ -43,15 +43,13 @@ View the full documentation at https://tailwindcss.com.
 */
 
 let colors = {
-  transparent: 'transparent',
-  black: '#22292f',
+  black: '#383838',
   'blue-dark': '#064872',
   grey: '#6E7D95',
-  'grey-dark': '#5B616A',
   white: '#ffffff',
   teal: '#2AD9C2',
-  'teal-light': '#7BFFEE',
-  smoke: 'rgba(0, 0, 0, 0.75)',
+  'teal-light': '#00EBCB',
+  smoke: 'rgba(0, 0, 0, 0.25)',
 };
 
 module.exports = {

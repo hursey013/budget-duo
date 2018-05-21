@@ -14,6 +14,7 @@
     "firebase": "5.0.1",
     "firebaseui": "^3.0.0",
     "handlebars": "^4.0.11",
+    "hint.css": "^2.5.0",
     "inputmask": "^3.3.11",
     "loaders.css": "^0.1.2",
     "pretty-checkbox": "^3.0.3",

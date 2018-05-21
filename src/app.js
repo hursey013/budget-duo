@@ -8,7 +8,8 @@ const chartContainer = document.getElementById('chart');
 const expenseContainer = document.getElementById('expenses');
 const incomeContainer = document.getElementById('incomes');
 const loader = document.querySelector('.loader');
-const loginContainer = document.querySelector('.login-container');
+const pageApp = document.querySelector('.page-app');
+const pageLogin = document.querySelector('.page-login');
 const reportTotal = document.querySelector('.report-total');
 const reportTotalBiweekly = document.querySelector('.report-total-biweekly');
 const reportTotalBimonthly = document.querySelector('.report-total-bimonthly');
@@ -21,11 +22,10 @@ let currentUid = null;
 
 config.firebaseApp.auth().onAuthStateChanged(user => {
   if (config.ui.isPendingRedirect()) {
-    auth(true);
+    auth();
   } else if (user && user.uid !== currentUid) {
     currentUid = user.uid;
     toggleSignInLinks(false);
-    loginContainer.classList.add('hidden');
     config.usersRef
       .child(currentUid)
       .once('value')
@@ -41,10 +41,10 @@ config.firebaseApp.auth().onAuthStateChanged(user => {
   }
 });
 
-function auth(pendingRedirect) {
-  loginContainer.classList.remove('hidden');
+function auth() {
+  pageApp.classList.add('hidden');
+  pageLogin.classList.remove('hidden');
   config.ui.start('#firebaseui-auth-container', config.uiConfig);
-  if (pendingRedirect) loader.classList.remove('hidden');
 }
 
 // Initialize
@@ -82,6 +82,9 @@ function buildUI(budget, persistStorage) {
   }
 
   updateTotals();
+
+  pageApp.classList.remove('hidden');
+  pageLogin.classList.add('hidden');
 }
 
 function pushLocalBudget() {
@@ -176,6 +179,7 @@ function removeBudgetItem(target) {
     row.classList.add('fadeOut');
     setTimeout(() => {
       row.parentNode.removeChild(row);
+      updateTotals();
     }, 1000);
   } else {
     const inputs = row.querySelectorAll('input');
@@ -185,8 +189,6 @@ function removeBudgetItem(target) {
       updateBudgetItem(input);
     }
   }
-
-  updateTotals();
 }
 
 function setSplitType(value) {
@@ -255,16 +257,20 @@ function updateSalaryInputs(target) {
 }
 
 function updateTotals() {
-  const expenseInputs = expenseContainer.querySelectorAll("[data-type='currency']");
-  const incomeInputs = incomeContainer.querySelectorAll("[data-type='currency']");
+  const expenseInputs = expenseContainer.querySelectorAll(
+    "[data-type='currency']"
+  );
+  const incomeInputs = incomeContainer.querySelectorAll(
+    "[data-type='currency']"
+  );
   const expenseTotal = getTotal(expenseInputs);
   const incomeTotal = getTotal(incomeInputs);
   const splitType = document.querySelector("input[name='split']:checked").value;
 
   reportTotal.innerHTML = calcTotal(expenseTotal);
-  reportTotalBiweekly.innerHTML = calcTotal(expenseTotal, false, 26);
-  reportTotalBimonthly.innerHTML = calcTotal(expenseTotal, false, 24);
-  reportTotalAnnually.innerHTML = calcTotal(expenseTotal, false, 1);
+  reportTotalBiweekly.innerHTML = calcTotal(expenseTotal, 1, 26);
+  reportTotalBimonthly.innerHTML = calcTotal(expenseTotal, 1, 24);
+  reportTotalAnnually.innerHTML = calcTotal(expenseTotal, 1, 1);
 
   const data = [];
   for (const [index, incomeInput] of incomeInputs.entries()) {
@@ -296,10 +302,12 @@ function updateTotals() {
   updateChart(data);
 }
 
-function calcTotal (total, share, interval) {
-  let newTotal  = total;
-  if (interval) newTotal = interval ? (newTotal * 12 / interval) : newTotal;
-  if (share) newTotal = share ? (newTotal * share) : newTotal;
+function calcTotal(total, share, interval) {
+  let newTotal = total;
+  if (interval) newTotal = interval ? newTotal * 12 / interval : newTotal;
+  if (typeof share !== 'undefined') {
+    newTotal = newTotal * share;
+  }
 
   return config.formatter.format(newTotal);
 }
@@ -391,7 +399,8 @@ addListenerMulti(document, 'change paste keyup', e => {
 
 addListenerMulti(
   document,
-  'webkitAnimationEnd oanimationend msAnimationEnd animationend', e => {
+  'webkitAnimationEnd oanimationend msAnimationEnd animationend',
+  e => {
     if (e.target.matches('.animated')) {
       e.target.classList.remove('fadeIn', 'shake');
     }

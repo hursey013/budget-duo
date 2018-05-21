@@ -5,7 +5,6 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118225860-1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-
     function gtag() {
       dataLayer.push(arguments);
     }
@@ -18,98 +17,133 @@
   <title>BudgetDuo</title>
 </head>
 
-<body class="h-full bg-fixed bg-no-repeat text-grey">
-  <div class="container mx-auto flex justify-between px-4 pt-4 lg:px-8 lg:pt-8">
-    <a href="https://budgetduo.com"><img src="images/logo.svg" alt="BudgetDuo"></a>
-    <ul class="list-reset flex -mx-2">
-      <li class="px-2">
-        <a class="account-signin inline-block border border-transparent rounded py-2 px-4 bg-teal no-underline text-blue-dark" href="#">Sign in</a>
-      </li>
-      <li class="px-2 hidden">
-        <a class="account-signout inline-block border border-transparent rounded text-white py-2 px-4 no-underline" href="#">Sign out</a>
-      </li>
-    </ul>
-  </div>
-  <div class="container mx-auto p-4 lg:p-8 overflow-hidden">
-    <div class="flex flex-wrap -mx-8">
-      <div class="w-full lg:w-1/2 px-8 mb-8 lg:mb-0">
-        <h2 class="mb-6 lg:mt-8 font-normal text-white">Annual income</h2>
-        <div id="incomes"></div>
-        <h3 class="mb-4 font-normal text-white">Monthly expenses</h3>
-        <div id="expenses"></div>
-        <button class="add w-full lg:w-auto bg-transparent text-teal py-2 px-4 border border-blue rounded flex items-center my-4">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stroke-current h-4 w-4 mr-1 pointer-events-none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-          Add another expense
-        </button>
+<body class="bg-gradient bg-fixed bg-no-repeat font-source-sans font-normal leading-normal text-grey h-full flex flex-col">
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div class="page-app flex-1 hidden">
+    <div class="flex flex-col min-h-screen">
+      <div class="container mx-auto px-4 pt-4 lg:px-8 lg:pt-8 flex-none">
+        <div class="flex items-center justify-between">
+          <a href="/"><img src="images/logo.svg" alt="BudgetDuo" aria-hidden="true"></a>
+          <h1 class="sr-only">BudgetDuo</h1>
+          <ul class="list-reset flex">
+            <li>
+              <span class="mr-2 text-white italic hidden lg:inline-block">Sign in to save your information</span>
+              <a class="account-signin inline-block rounded py-2 px-4 bg-teal no-underline text-blue-dark hover:bg-teal-light" href="#">Sign in</a>
+            </li>
+            <li class="hidden">
+              <a class="account-signout inline-block rounded text-white py-2 px-4 no-underline" href="#">Sign out</a>
+            </li>
+          </ul>
+        </div>
       </div>
-      <div class="w-full lg:w-1/2 px-8 mb-8 lg:mb-0">
-        <div class="bg-white rounded-lg shadow p-4 lg:p-8">
-          <h2 class="mb-6 font-normal">Expense report</h2>
-          <div class="row justify-end pt-0 pb-2">
-            <div class="col flex-1 text-right">
-              <span class="label">% of total</span>
+      <div class="container mx-auto p-4 lg:p-8 overflow-hidden flex-1">
+        <div class="flex flex-wrap -mx-8">
+          <div class="w-full lg:w-1/2 px-8 mb-8 lg:mb-0">
+            <div class="text-white mt-8">
+              <h2 class="text-3xl">What's your share?</h2>
+              <p class="text-xl font-light">Calculate how much you and your partner should contribute towards shared expenses</p>
             </div>
-            <div class="col w-2/5 text-right">
-              <span class="label mr-6">Amount due</span>
-            </div>
+            <h3 class="mb-6 mt-8 font-normal text-white text-2xl">Tell us about your income</h3>
+            <div id="incomes"></div>
+            <h3 class="mb-4 font-normal text-white text-xl">...and your monthly expenses</h3>
+            <div id="expenses"></div>
+            <button class="add w-full lg:w-auto text-teal py-2 px-4 border border-teal rounded flex items-center my-4 hover:border-teal-light hover:text-teal-light">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stroke-current h-4 w-4 mr-1 pointer-events-none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Add another expense
+            </button>
           </div>
-          <div id="rows"></div>
-          <div class="row flex-wrap collapsed">
-            <div class="col flex-1 font-bold">
-              Total expenses:
-            </div>
-            <div class="col w-1/5 text-right font-bold">
-              100%
-            </div>
-            <div class="col w-2/5 flex items-center justify-end text-right">
-              <div class="truncate">
-                <span class="report-total font-bold"></span>/mo
+          <div class="w-full lg:w-1/2 px-8 mb-8 lg:mb-0">
+            <div class="bg-white rounded-lg shadow p-4 lg:p-8 mb-8">
+              <h2 class="mb-6 font-normal">Now let's break that down...</h2>
+
+
+              <div class="flex items-center mb-8 -mx-4">
+                <div class="w-1/3 px-4">
+                  <canvas id="chart" width="100%" height="100%"></canvas>
+                </div>
+                <div class="w-2/3 px-4">
+
+                  <h3 class="mb-2 font-bold text-lg">Divvy our expenses</h3>
+                  <ul id="split" class="list-reset">
+                    <li class="pretty p-default p-round p-smooth mb-2 hint--left hint--large hint--rounded" aria-label="We calculate what percentage you contribute to your combined income and that's what you pay towards the bills.">
+                      <input type="radio" name="split" value="income" checked />
+                      <div class="state">
+                        <label>Based on income</label>
+                      </div>
+                    </li>
+                    <li class="pretty p-default p-round p-smooth mb-2 hint--left hint--large hint--rounded" aria-label="Add up all of the bills and then cut them in half, that's how much you owe. When using this method your income becomes irrelevant.">
+                      <input type="radio" name="split" value="half" />
+                      <div class="state">
+                        <label>Down the middle (50/50)</label>
+                      </div>
+                    </li>
+                    <li class="pretty p-default p-round p-smooth mb-2 hint--left hint--large hint--rounded" aria-label="You and you partner decide who will pay each bill on a per bill basis. When using this method your income becomes irrelevant.">
+                      <input type="radio" name="split" value="adhoc" />
+                      <div class="state">
+                        <label>Grab bag (ad hoc)</label>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
               </div>
-              <a href="#" class="expand ml-2 text-teal">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="expand-open stroke-current h-4 w-4  pointer-events-none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="expand-close stroke-current h-4 w-4  pointer-events-none"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-              </a>
+              <h3 class="mb-8 font-normal">Excellent, here's your expense report</h3>
+              <div class="row justify-end pt-0 pb-2">
+                <div class="col flex-1">
+                  <span class="label">Individual</span>
+                </div>
+                <div class="col w-2/5 text-right">
+                  <span class="label">% of total</span>
+                </div>
+                <div class="col w-2/5 text-right">
+                  <span class="label mr-6">Amount due</span>
+                </div>
+              </div>
+              <div id="rows"></div>
+              <div class="row border-b-0 flex-wrap collapsed">
+                <div class="col flex-1 font-bold">
+                  Total expenses:
+                </div>
+                <div class="col w-1/5 text-right font-bold">
+                  100%
+                </div>
+                <div class="col w-2/5 flex items-center justify-end text-right">
+                  <div class="truncate">
+                    <span class="report-total font-bold"></span>/mo
+                  </div>
+                  <a href="#" class="expand ml-2 text-teal">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="expand-open stroke-current h-4 w-4  pointer-events-none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="expand-close stroke-current h-4 w-4  pointer-events-none"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  </a>
+                </div>
+                <ul class="details col list-reset mt-2 mr-6 w-full text-right text-xs">
+                  <li class="py-1"><span class="report-total-biweekly"></span> / bi-weekly</li>
+                  <li class="py-1"><span class="report-total-bimonthly"></span> / bi-monthly</li>
+                  <li class="py-1"><span class="report-total-annually"></span> / annually</li>
+                </ul>
+              </div>
             </div>
-            <ul class="details col list-reset mt-2 mr-6 w-full text-right text-xs">
-              <li class="py-1"><span class="report-total-biweekly"></span> / bi-weekly</li>
-              <li class="py-1"><span class="report-total-bimonthly"></span> / bi-monthly</li>
-              <li class="py-1"><span class="report-total-annually"></span> / annually</li>
-            </ul>
-          </div>
-          <div class="flex items-center mt-8 -mx-4">
-            <div class="w-2/5 px-4">
-              <canvas id="chart" width="100%" height="100%"></canvas>
-            </div>
-            <div class="w-3/5 px-4">
-              <h3 class="mb-4">Split expenses:</h3>
-              <ul id="split" class="list-reset">
-                <li class="block pretty p-default p-round p-smooth mb-3">
-                  <input type="radio" name="split" value="income" checked />
-                  <div class="state">
-                    <label>Based on income</label>
-                  </div>
-                </li>
-                <li class="block pretty p-default p-round p-smooth mb-3">
-                  <input type="radio" name="split" value="half" />
-                  <div class="state">
-                    <label>Split evenly (50/50)</label>
-                  </div>
-                </li>
-                <li class="block pretty p-default p-round p-smooth mb-3">
-                  <input type="radio" name="split" value="adhoc" />
-                  <div class="state">
-                    <label>Grab bag (ad hoc)</label>
-                  </div>
-                </li>
-              </ul>
+            <div class="text-white">
+              <h3 class="my-2">What now?</h3>
+              <p class="mb-2">Talk with your partner about which method of splitting expenses makes most sense for your relationship.</p>
+              <p>Once you've decided on a plan, consider creating a shared checking account and depositing your contribution with every paycheck for a worry-free, automated system.</p>
             </div>
           </div>
         </div>
       </div>
+      <div class="bg-smoke p-4 lg:p-8 flex-none">
+        <div class="container mx-auto text-sm text-white text-center">
+          <img src="images/mark.svg" alt="" class="w-8 mb-4">
+          <p>A project by <a href="https://github.com/hursey013/" class="text-white font-bold no-underline">@hursey013</a> and <a href="http://rtwell.com" class="text-white font-bold no-underline">@rtwell</a>
+            <p class="mb-4">For comments, suggestions, and questions please visit <a href="https://github.com/hursey013/budget-duo/issues" class="text-white font-bold">Github</a></p>
+            <p>&copy; 2018 BudgetDuo</p>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="login-container hidden">
-    <div class="login-backdrop fixed pin z-50 overflow-auto bg-smoke justify-center flex flex-col">
+  <div class="page-login flex-1">
+    <div class="h-full flex flex-col justify-center text-center">
+      <a href="/" class="mb-6"><img src="images/logo.svg" alt="BudgetDuo" aria-hidden="true"></a>
+      <h1 class="sr-only">BudgetDuo</h1>
       <div class="loader mx-auto">
         <div class="ball-scale-ripple">
           <div></div>
@@ -119,5 +153,4 @@
     </div>
   </div>
 </body>
-
 </html>
