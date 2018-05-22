@@ -2,6 +2,7 @@ import './stylesheets/styles.scss';
 import * as config from './config';
 import sample from './sample.json';
 
+const accountBack = document.querySelector('.account-back');
 const accountSignin = document.querySelector('.account-signin');
 const accountSignout = document.querySelector('.account-signout');
 const chartContainer = document.getElementById('chart');
@@ -83,6 +84,7 @@ function buildUI(budget, persistStorage) {
 
   updateTotals();
 
+  accountBack.classList.add('hidden');
   pageApp.classList.remove('hidden');
   pageLogin.classList.add('hidden');
 }
@@ -338,8 +340,20 @@ function addListenerMulti(el, s, fn) {
 }
 
 document.addEventListener('click', e => {
+  if (e.target.matches('a[href="#"]')) {
+    e.preventDefault();
+  }
+
+  if (e.target.matches('.account-back')) {
+    e.preventDefault();
+    accountBack.classList.add('hidden');
+    pageApp.classList.remove('hidden');
+    pageLogin.classList.add('hidden');
+  }
+
   if (e.target.matches('.account-signin')) {
     e.preventDefault();
+    accountBack.classList.remove('hidden');
     auth();
   }
 

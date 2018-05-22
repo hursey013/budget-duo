@@ -41,11 +41,7 @@
 }
 
 .label {
-  @apply .block .uppercase .text-xs .font-bold .text-teal;
-}
-
-.page {
-  @apply .h-full
+  @apply .block .uppercase .text-xs .font-bold .text-teal .whitespace-no-wrap;
 }
 
 .row {

@@ -41,7 +41,7 @@
           <div class="w-full lg:w-1/2 px-8 mb-8 lg:mb-0">
             <div class="text-white mt-8">
               <h2 class="text-3xl">What's your share?</h2>
-              <p class="text-xl font-light">Calculate how much you and your partner should contribute towards shared expenses</p>
+              <p class="text-xl font-light mr-6">Calculate how much you and your partner should contribute towards shared expenses.</p>
             </div>
             <h3 class="mb-6 mt-8 font-normal text-white text-2xl">Tell us about your income</h3>
             <div id="incomes"></div>
@@ -52,7 +52,7 @@
               Add another expense
             </button>
           </div>
-          <div class="w-full lg:w-1/2 px-8 mb-8 lg:mb-0">
+          <div class="w-full lg:w-1/2 px-8 mb-6 lg:mb-0">
             <div class="bg-white rounded-lg shadow p-4 lg:p-8 mb-8">
               <h2 class="mb-6 font-normal">Now let's break that down...</h2>
 
@@ -65,19 +65,19 @@
 
                   <h3 class="mb-2 font-bold text-lg">Divvy our expenses</h3>
                   <ul id="split" class="list-reset">
-                    <li class="pretty p-default p-round p-smooth mb-2 hint--left hint--large hint--rounded" aria-label="We calculate what percentage you contribute to your combined income and that's what you pay towards the bills.">
+                    <li class="block pretty p-default p-round p-smooth mb-2 hint--left hint--large hint--rounded" aria-label="Using the income you entered, we adjust the amount you owe to be proportional to the amount you contribute to you and your partner's total income.">
                       <input type="radio" name="split" value="income" checked />
                       <div class="state">
                         <label>Based on income</label>
                       </div>
                     </li>
-                    <li class="pretty p-default p-round p-smooth mb-2 hint--left hint--large hint--rounded" aria-label="Add up all of the bills and then cut them in half, that's how much you owe. When using this method your income becomes irrelevant.">
+                    <li class="block pretty p-default p-round p-smooth mb-2 hint--left hint--large hint--rounded" aria-label="Add up all of the bills and then cut them in half, that's how much you owe. When using this method your income becomes irrelevant.">
                       <input type="radio" name="split" value="half" />
                       <div class="state">
                         <label>Down the middle (50/50)</label>
                       </div>
                     </li>
-                    <li class="pretty p-default p-round p-smooth mb-2 hint--left hint--large hint--rounded" aria-label="You and you partner decide who will pay each bill on a per bill basis. When using this method your income becomes irrelevant.">
+                    <li class="block pretty p-default p-round p-smooth mb-2 hint--left hint--large hint--rounded" aria-label="You and you partner decide who will pay each bill on a per bill basis. When using this method your income becomes irrelevant.">
                       <input type="radio" name="split" value="adhoc" />
                       <div class="state">
                         <label>Grab bag (ad hoc)</label>
@@ -86,7 +86,7 @@
                   </ul>
                 </div>
               </div>
-              <h3 class="mb-8 font-normal">Excellent, here's your expense report</h3>
+              <h3 class="mb-8 font-normal">Great, here's your expense report:</h3>
               <div class="row justify-end pt-0 pb-2">
                 <div class="col flex-1">
                   <span class="label">Individual</span>
@@ -101,7 +101,7 @@
               <div id="rows"></div>
               <div class="row border-b-0 flex-wrap collapsed">
                 <div class="col flex-1 font-bold">
-                  Total expenses:
+                  Total:
                 </div>
                 <div class="col w-1/5 text-right font-bold">
                   100%
@@ -130,11 +130,11 @@
           </div>
         </div>
       </div>
-      <div class="bg-smoke p-4 lg:p-8 flex-none">
+      <div class="bg-smoke p-8 flex-none">
         <div class="container mx-auto text-sm text-white text-center">
           <img src="images/mark.svg" alt="" class="w-8 mb-4">
-          <p>A project by <a href="https://github.com/hursey013/" class="text-white font-bold no-underline">@hursey013</a> and <a href="http://rtwell.com" class="text-white font-bold no-underline">@rtwell</a>
-            <p class="mb-4">For comments, suggestions, and questions please visit <a href="https://github.com/hursey013/budget-duo/issues" class="text-white font-bold">Github</a></p>
+          <p class="mb-4">A project by <a href="https://github.com/hursey013/" class="text-white font-bold no-underline">@hursey013</a> and <a href="http://rtwell.com" class="text-white font-bold no-underline">@rtwell</a>
+            <p class="mb-4"><a href="mailto:hursey013@pm.me" class="text-white font-bold">Contact</a> | <a href="https://github.com/hursey013/budget-duo" class="text-white font-bold">Github</a></p>
             <p>&copy; 2018 BudgetDuo</p>
         </div>
       </div>
@@ -142,7 +142,7 @@
   </div>
   <div class="page-login flex-1">
     <div class="h-full flex flex-col justify-center text-center">
-      <a href="/" class="mb-6"><img src="images/logo.svg" alt="BudgetDuo" aria-hidden="true"></a>
+      <img src="images/logo.svg" alt="BudgetDuo" aria-hidden="true" class="mb-6">
       <h1 class="sr-only">BudgetDuo</h1>
       <div class="loader mx-auto">
         <div class="ball-scale-ripple">
@@ -150,6 +150,7 @@
         </div>
       </div>
       <div id="firebaseui-auth-container"></div>
+      <a href="#" class="hidden account-back text-teal text-center no-underline font-bold mt-6 hover:underline">&laquo; Go back</a>
     </div>
   </div>
 </body>
