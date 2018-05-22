@@ -5,6 +5,7 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118225860-1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
+
     function gtag() {
       dataLayer.push(arguments);
     }
@@ -47,7 +48,7 @@
             <div id="incomes"></div>
             <h3 class="mb-4 font-normal text-white text-xl">...and your monthly expenses</h3>
             <div id="expenses"></div>
-            <button class="add w-full lg:w-auto text-teal py-2 px-4 border border-teal rounded flex items-center my-4 hover:border-teal-light hover:text-teal-light">
+            <button class="add w-full lg:w-auto text-teal py-2 px-4 border rounded flex items-center my-4 hover:border-teal-light hover:text-teal-light">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stroke-current h-4 w-4 mr-1 pointer-events-none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
               Add another expense
             </button>
@@ -55,10 +56,8 @@
           <div class="w-full lg:w-1/2 px-8 mb-6 lg:mb-0">
             <div class="bg-white rounded-lg shadow p-4 lg:p-8 mb-8">
               <h2 class="mb-6 font-normal">Now let's break that down...</h2>
-
-
-              <div class="flex mb-8 -mx-4">
-                <div class="w-2/3 px-4">
+              <div class="flex mb-8 -mx-2">
+                <div class="w-2/3 px-2">
                   <h3 class="mb-2 font-bold text-lg">Divvy our expenses:</h3>
                   <ul id="split" class="list-reset">
                     <li class="block mb-3 flex">
@@ -70,19 +69,19 @@
                     </li>
                     <li class="block mb-3 flex">
                       <input type="radio" name="split" value="half" class="radio mr-1 mt-px flex-none" id="split-half" />
-                        <label for="split-half" class="cursor-pointer">Down the middle (50/50)
+                      <label for="split-half" class="cursor-pointer">Down the middle (50/50)
                         <p class="text-xs">Add up all of the bills and then cut them in half, that's how much you owe. When using this method your income becomes irrelevant.</p>
                         </label>
                     </li>
                     <li class="block flex">
                       <input type="radio" name="split" value="adhoc" class="radio mr-1 mt-px flex-none" id="split-adhoc" />
-                        <label for="split-adhoc" class="cursor-pointer">Grab bag (ad hoc)
+                      <label for="split-adhoc" class="cursor-pointer">Grab bag (ad hoc)
                         <p class="text-xs">You and you partner decide who will pay each bill on a per bill basis. When using this method your income becomes irrelevant.</p>
                         </label>
                     </li>
                   </ul>
                 </div>
-                <div class="w-1/3 px-4">
+                <div class="w-1/3 px-2">
                   <canvas id="chart" width="100%" height="100%"></canvas>
                 </div>
               </div>
@@ -154,4 +153,5 @@
     </div>
   </div>
 </body>
+
 </html>

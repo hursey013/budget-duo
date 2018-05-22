@@ -45,7 +45,7 @@
 }
 
 .row {
-  @apply .flex .items-start .-mx-2 .py-6 .border-b .border-teal;
+  @apply .flex .items-start .-mx-2 .py-6 .border-b;
 
   .col {
     @apply .px-2;
