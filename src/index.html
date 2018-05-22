@@ -57,33 +57,33 @@
               <h2 class="mb-6 font-normal">Now let's break that down...</h2>
 
 
-              <div class="flex items-center mb-8 -mx-4">
-                <div class="w-1/3 px-4">
-                  <canvas id="chart" width="100%" height="100%"></canvas>
-                </div>
+              <div class="flex mb-8 -mx-4">
                 <div class="w-2/3 px-4">
-
-                  <h3 class="mb-2 font-bold text-lg">Divvy our expenses</h3>
+                  <h3 class="mb-2 font-bold text-lg">Divvy our expenses:</h3>
                   <ul id="split" class="list-reset">
-                    <li class="block pretty p-default p-round p-smooth mb-2 hint--left hint--large hint--rounded" aria-label="Using the income you entered, we adjust the amount you owe to be proportional to the amount you contribute to you and your partner's total income.">
-                      <input type="radio" name="split" value="income" checked />
-                      <div class="state">
-                        <label>Based on income</label>
-                      </div>
+                    <li class="block mb-3 flex">
+                      <input type="radio" name="split" value="income" class="radio mr-1 mt-px flex-none" id="split-income" checked />
+                      <label for="split-income" class="cursor-pointer">
+                        Based on income
+                        <p class="text-xs">Using the income you entered, we adjust the amount you owe to be proportional to the amount you contribute to you and your partner's total income.</p>
+                      </label>
                     </li>
-                    <li class="block pretty p-default p-round p-smooth mb-2 hint--left hint--large hint--rounded" aria-label="Add up all of the bills and then cut them in half, that's how much you owe. When using this method your income becomes irrelevant.">
-                      <input type="radio" name="split" value="half" />
-                      <div class="state">
-                        <label>Down the middle (50/50)</label>
-                      </div>
+                    <li class="block mb-3 flex">
+                      <input type="radio" name="split" value="half" class="radio mr-1 mt-px flex-none" id="split-half" />
+                        <label for="split-half" class="cursor-pointer">Down the middle (50/50)
+                        <p class="text-xs">Add up all of the bills and then cut them in half, that's how much you owe. When using this method your income becomes irrelevant.</p>
+                        </label>
                     </li>
-                    <li class="block pretty p-default p-round p-smooth mb-2 hint--left hint--large hint--rounded" aria-label="You and you partner decide who will pay each bill on a per bill basis. When using this method your income becomes irrelevant.">
-                      <input type="radio" name="split" value="adhoc" />
-                      <div class="state">
-                        <label>Grab bag (ad hoc)</label>
-                      </div>
+                    <li class="block flex">
+                      <input type="radio" name="split" value="adhoc" class="radio mr-1 mt-px flex-none" id="split-adhoc" />
+                        <label for="split-adhoc" class="cursor-pointer">Grab bag (ad hoc)
+                        <p class="text-xs">You and you partner decide who will pay each bill on a per bill basis. When using this method your income becomes irrelevant.</p>
+                        </label>
                     </li>
                   </ul>
+                </div>
+                <div class="w-1/3 px-4">
+                  <canvas id="chart" width="100%" height="100%"></canvas>
                 </div>
               </div>
               <h3 class="mb-8 font-normal">Great, here's your expense report:</h3>
