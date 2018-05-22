@@ -44,18 +44,18 @@
               <h2 class="text-3xl">What's your share?</h2>
               <p class="text-xl font-light mr-6">Calculate how much you and your partner should contribute towards shared expenses.</p>
             </div>
-            <h3 class="mb-6 mt-8 font-normal text-white text-2xl">Tell us about your income</h3>
+            <h3 class="mb-6 mt-8 font-normal text-white text-2xl">Combined income</h3>
             <div id="incomes"></div>
-            <h3 class="mb-4 font-normal text-white text-xl">...and your monthly expenses</h3>
+            <h3 class="mb-4 font-normal text-white text-2xl">Monthly expenses</h3>
             <div class="flex items-center -mx-1 mb-2">
               <div class="label flex-1 px-1">
                 Description
               </div>
               <div class="split-adhoc-label label flex-none w-24 lg:w-32 px-1">
-                Who pays?
+                Payer
               </div>
               <div class="label flex-none w-24 lg:w-32 px-1 text-right mr-6">
-                Monthly cost
+                Cost
               </div>
             </div>
             <div id="expenses"></div>
@@ -69,24 +69,26 @@
               <h2 class="mb-6 font-normal">Now let's break that down...</h2>
               <div class="flex mb-8 -mx-2">
                 <div class="w-2/3 px-2">
-                  <h3 class="mb-2 font-bold text-lg">Divvy our expenses:</h3>
+                  <h3 class="mb-2 font-normal text-lg">Divvy our expenses:</h3>
                   <ul id="split" class="list-reset">
                     <li class="block mb-3 flex">
                       <input type="radio" name="split" value="income" class="radio mr-1 mt-px flex-none" id="split-income" checked />
                       <label for="split-income" class="cursor-pointer">
-                        Based on income
+                        <span class="font-bold">Based on income</span>
                         <p class="text-xs">Using the income you entered, we adjust the amount you owe to be proportional to the amount you contribute to you and your partner's total income.</p>
                       </label>
                     </li>
                     <li class="block mb-3 flex">
                       <input type="radio" name="split" value="half" class="radio mr-1 mt-px flex-none" id="split-half" />
-                      <label for="split-half" class="cursor-pointer">Down the middle (50/50)
+                      <label for="split-half" class="cursor-pointer">
+                        <span class="font-bold">Down the middle (50/50)</span>
                         <p class="text-xs">Add up all of the bills and then cut them in half, that's how much you owe. When using this method your income becomes irrelevant.</p>
                         </label>
                     </li>
                     <li class="block flex">
                       <input type="radio" name="split" value="adhoc" class="radio mr-1 mt-px flex-none" id="split-adhoc" />
-                      <label for="split-adhoc" class="cursor-pointer">Grab bag (ad hoc)
+                      <label for="split-adhoc" class="cursor-pointer">
+                        <span class="font-bold">Grab bag (ad hoc)</span>
                         <p class="text-xs">You and you partner decide who will pay each bill on a per bill basis. When using this method your income becomes irrelevant.</p>
                         </label>
                     </li>
