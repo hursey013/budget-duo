@@ -23,8 +23,8 @@ export const usersRef = firebaseApp
 export const ui = new firebaseui.auth.AuthUI(firebaseApp.auth());
 export const uiConfig = {
   callbacks: {
-    uiChanged(fromPageId, toPageId) {
-      if (fromPageId == 'callback') {
+    uiChanged(fromPageId) {
+      if (fromPageId === 'callback') {
         document.querySelector('.loader').classList.add('hidden');
       }
     },
@@ -47,18 +47,18 @@ export const buildChart = (cntnr, labels) =>
   new Chart(cntnr, {
     type: 'doughnut',
     data: {
-      labels: labels,
+      labels,
       datasets: [{ backgroundColor: colors }],
     },
     options: {
       legend: { display: false },
       tooltips: {
         callbacks: {
-          label: function(tooltipItem, data) {
-            var dataset = data.datasets[tooltipItem.datasetIndex];
-            var label = data.labels[tooltipItem.index];
-            var currentValue = dataset.data[tooltipItem.index];
-            var percentage = parseFloat((currentValue * 100).toFixed(0));
+          label(tooltipItem, data) {
+            const dataset = data.datasets[tooltipItem.datasetIndex];
+            const label = data.labels[tooltipItem.index];
+            const currentValue = dataset.data[tooltipItem.index];
+            const percentage = parseFloat((currentValue * 100).toFixed(0));
 
             return `${label}: ${percentage}%`;
           },

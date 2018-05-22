@@ -8,7 +8,6 @@ const accountSignout = document.querySelector('.account-signout');
 const chartContainer = document.getElementById('chart');
 const expenseContainer = document.getElementById('expenses');
 const incomeContainer = document.getElementById('incomes');
-const loader = document.querySelector('.loader');
 const pageApp = document.querySelector('.page-app');
 const pageLogin = document.querySelector('.page-login');
 const reportTotal = document.querySelector('.report-total');
@@ -57,9 +56,9 @@ function buildUI(budget, persistStorage) {
   clearUI(persistStorage);
 
   const labels = [];
-  for (let income in incomesArray) {
+  Object.keys(incomesArray).forEach(income => {
     labels.push(incomesArray[income].name);
-  }
+  });
   window.chart = config.buildChart(chartContainer, labels);
 
   if (currentUid && splitType) {
@@ -70,14 +69,14 @@ function buildUI(budget, persistStorage) {
   }
 
   if (incomesArray) {
-    Object.keys(incomesArray).forEach(function(key, i) {
+    Object.keys(incomesArray).forEach((key, i) => {
       addDomElement(incomesArray[key], createKey(key), incomeContainer, i);
       addDomElement(incomesArray[key], null, rowContainer, i);
     });
   }
 
   if (expensesArray) {
-    Object.keys(expensesArray).forEach(function(key, i) {
+    Object.keys(expensesArray).forEach((key, i) => {
       addDomElement(expensesArray[key], createKey(key), expenseContainer, i);
     });
   }
@@ -113,13 +112,14 @@ function setLocalBudget() {
 
 // Misc
 function addDomElement(object, key, parent, index) {
+  const context = object;
   const div = document.createElement('div');
   const type = parent.id;
-  const template = require(`./templates/${type}.handlebars`);
+  const template = require(`./templates/${type}.handlebars`); // eslint-disable-line global-require, import/no-dynamic-require
 
-  if (typeof index !== 'undefined') object.index = index;
+  if (typeof index !== 'undefined') context.index = index;
 
-  div.innerHTML = template(object);
+  div.innerHTML = template(context);
   div.classList.add('animated', 'fadeIn');
   const currencyInput = div.querySelector("[data-type='currency']");
 
@@ -127,6 +127,16 @@ function addDomElement(object, key, parent, index) {
   if (currencyInput) config.masker(currencyInput);
 
   parent.appendChild(div);
+}
+
+function calcTotal(total, share, interval) {
+  let newTotal = total;
+  if (interval) newTotal = interval ? newTotal * 12 / interval : newTotal;
+  if (typeof share !== 'undefined') {
+    newTotal *= share;
+  }
+
+  return config.formatter.format(newTotal);
 }
 
 function clearUI(persistStorage) {
@@ -284,9 +294,9 @@ function updateTotals() {
     const rowTotalAnnually = row[index].querySelector('.row-total-annually');
 
     let share;
-    if (splitType == 'half') {
+    if (splitType === 'half') {
       share = 0.5;
-    } else if (splitType == 'adhoc') {
+    } else if (splitType === 'adhoc') {
       share = getTotal(expenseInputs, index) / expenseTotal;
     } else {
       share = +incomeInput.value / incomeTotal;
@@ -302,16 +312,6 @@ function updateTotals() {
   }
 
   updateChart(data);
-}
-
-function calcTotal(total, share, interval) {
-  let newTotal = total;
-  if (interval) newTotal = interval ? newTotal * 12 / interval : newTotal;
-  if (typeof share !== 'undefined') {
-    newTotal = newTotal * share;
-  }
-
-  return config.formatter.format(newTotal);
 }
 
 function updateSplitType(target) {
@@ -375,11 +375,6 @@ document.addEventListener('click', e => {
   if (e.target.matches('.remove')) {
     e.preventDefault();
     removeBudgetItem(e.target);
-  }
-
-  if (e.target.matches('.login-backdrop')) {
-    e.preventDefault();
-    loginContainer.classList.add('hidden');
   }
 });
 
