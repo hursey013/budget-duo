@@ -27,15 +27,6 @@
   }
 }
 
-#expenses {
-  .select {
-    display: none;
-  }
-  &.split-adhoc .select {
-    display: block;
-  }
-}
-
 .input {
   @apply .w-full .appearance-none .bg-white .text-grey .shadow .rounded .p-3;
 }
@@ -49,6 +40,18 @@
 
   .col {
     @apply .px-2;
+  }
+}
+
+.select,
+.split-adhoc-label {
+  display: none;
+}
+
+.split-adhoc {
+  .select,
+  .split-adhoc-label {
+    display: block;
   }
 }
 

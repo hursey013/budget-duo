@@ -8,8 +8,8 @@ const accountSignout = document.querySelector('.account-signout');
 const chartContainer = document.getElementById('chart');
 const expenseContainer = document.getElementById('expenses');
 const incomeContainer = document.getElementById('incomes');
-const pageApp = document.querySelector('.page-app');
 const pageLogin = document.querySelector('.page-login');
+const pageMain = document.querySelector('.page-main');
 const reportTotal = document.querySelector('.report-total');
 const reportTotalBiweekly = document.querySelector('.report-total-biweekly');
 const reportTotalBimonthly = document.querySelector('.report-total-bimonthly');
@@ -42,7 +42,7 @@ config.firebaseApp.auth().onAuthStateChanged(user => {
 });
 
 function auth() {
-  pageApp.classList.add('hidden');
+  pageMain.classList.add('hidden');
   pageLogin.classList.remove('hidden');
   config.ui.start('#firebaseui-auth-container', config.uiConfig);
 }
@@ -84,7 +84,7 @@ function buildUI(budget, persistStorage) {
   updateTotals();
 
   accountBack.classList.add('hidden');
-  pageApp.classList.remove('hidden');
+  pageMain.classList.remove('hidden');
   pageLogin.classList.add('hidden');
 }
 
@@ -204,7 +204,7 @@ function removeBudgetItem(target) {
 }
 
 function setSplitType(value) {
-  expenseContainer.className = `split-${value}`;
+  pageMain.className = `split-${value}`;
 }
 
 function toggleAccordion(parent) {
@@ -347,7 +347,7 @@ document.addEventListener('click', e => {
   if (e.target.matches('.account-back')) {
     e.preventDefault();
     accountBack.classList.add('hidden');
-    pageApp.classList.remove('hidden');
+    pageMain.classList.remove('hidden');
     pageLogin.classList.add('hidden');
   }
 
