@@ -22,6 +22,7 @@ export const usersRef = firebaseApp
   .child('users');
 export const ui = new firebaseui.auth.AuthUI(firebaseApp.auth());
 export const uiConfig = {
+  signInSuccessUrl: '/',
   callbacks: {
     uiChanged(fromPageId) {
       if (fromPageId === 'callback') {

@@ -1,16 +1,16 @@
+import './images/logo_360x360.png';
 import './stylesheets/styles.scss';
 import * as config from './config';
 import sample from './sample.json';
 
-const accountBack = document.querySelector('.account-back');
-const accountSignin = document.querySelector('.account-signin');
-const accountSignout = document.querySelector('.account-signout');
+const accountSignin = document.querySelector('.signin');
+const accountSignout = document.querySelector('.signout');
 const chartContainer = document.getElementById('chart');
 const expenseContainer = document.getElementById('expenses');
 const expenseWrapper = document.getElementById('expenses-wrapper');
 const incomeContainer = document.getElementById('incomes');
-const pageLogin = document.querySelector('.page-login');
-const pageMain = document.querySelector('.page-main');
+const mainPage = document.getElementById('main');
+const pages = document.querySelectorAll('.page');
 const reportTotal = document.querySelector('.report-total');
 const reportTotalBiweekly = document.querySelector('.report-total-biweekly');
 const reportTotalBimonthly = document.querySelector('.report-total-bimonthly');
@@ -22,11 +22,11 @@ const splitContainer = document.getElementById('split');
 let currentUid = null;
 
 config.firebaseApp.auth().onAuthStateChanged(user => {
-  if (config.ui.isPendingRedirect()) {
-    auth();
-  } else if (user && user.uid !== currentUid) {
+  if (user && user.uid !== currentUid) {
     currentUid = user.uid;
+
     toggleSignInLinks(false);
+
     config.usersRef
       .child(currentUid)
       .once('value')
@@ -37,16 +37,11 @@ config.firebaseApp.auth().onAuthStateChanged(user => {
       });
   } else {
     currentUid = null;
+
     toggleSignInLinks(true);
     buildUI(setLocalBudget(), true);
   }
 });
-
-function auth() {
-  pageMain.classList.add('hidden');
-  pageLogin.classList.remove('hidden');
-  config.ui.start('#firebaseui-auth-container', config.uiConfig);
-}
 
 // Initialize
 function buildUI(budget, persistStorage) {
@@ -70,23 +65,33 @@ function buildUI(budget, persistStorage) {
   }
 
   if (incomesArray) {
-    Object.keys(incomesArray).forEach((key, i) => {
-      addDomElement(incomesArray[key], createKey(key), incomeContainer, i);
-      addDomElement(incomesArray[key], null, rowContainer, i);
+    Object.keys(incomesArray).forEach((key, index) => {
+      addDomElement(incomesArray[key], createKey(key), incomeContainer, index);
+      addDomElement(incomesArray[key], null, rowContainer, index);
     });
   }
 
   if (expensesArray) {
-    Object.keys(expensesArray).forEach((key, i) => {
-      addDomElement(expensesArray[key], createKey(key), expenseContainer, i);
+    Object.keys(expensesArray).forEach((key, index) => {
+      addDomElement(
+        expensesArray[key],
+        createKey(key),
+        expenseContainer,
+        index
+      );
     });
   }
 
   updateTotals();
+}
 
-  accountBack.classList.add('hidden');
-  pageMain.classList.remove('hidden');
-  pageLogin.classList.add('hidden');
+function clearUI(persistStorage) {
+  if (!persistStorage) localStorage.removeItem('budget');
+
+  reportTotal.innerHTML = '';
+  expenseContainer.innerHTML = '';
+  incomeContainer.innerHTML = '';
+  rowContainer.innerHTML = '';
 }
 
 function pushLocalBudget() {
@@ -130,23 +135,18 @@ function addDomElement(object, key, parent, index) {
   parent.appendChild(div);
 }
 
+function auth() {
+  config.ui.start('#firebaseui-auth-container', config.uiConfig);
+}
+
 function calcTotal(total, share, interval) {
   let newTotal = total;
-  if (interval) newTotal = interval ? newTotal * 12 / interval : newTotal;
+  newTotal = interval ? newTotal * 12 / interval : newTotal;
   if (typeof share !== 'undefined') {
     newTotal *= share;
   }
 
   return config.formatter.format(newTotal);
-}
-
-function clearUI(persistStorage) {
-  if (!persistStorage) localStorage.removeItem('budget');
-
-  reportTotal.innerHTML = '';
-  expenseContainer.innerHTML = '';
-  incomeContainer.innerHTML = '';
-  rowContainer.innerHTML = '';
 }
 
 function createKey(key) {
@@ -198,6 +198,25 @@ function removeBudgetItem(target) {
       input.value = '';
       updateBudgetItem(input);
     }
+  }
+}
+
+function renderUI() {
+  const hash = window.location.hash.substring(1);
+  const ids = [];
+
+  for (const page of pages) {
+    if (hash === page.id) {
+      page.classList.remove('hidden');
+      if (hash === 'login') auth();
+    } else {
+      page.classList.add('hidden');
+    }
+    ids.push(page.id);
+  }
+
+  if (hash === '' || !ids.includes(hash)) {
+    mainPage.classList.remove('hidden');
   }
 }
 
@@ -328,24 +347,6 @@ function addListenerMulti(el, s, fn) {
 }
 
 document.addEventListener('click', e => {
-  if (e.target.matches('.account-back')) {
-    e.preventDefault();
-    accountBack.classList.add('hidden');
-    pageMain.classList.remove('hidden');
-    pageLogin.classList.add('hidden');
-  }
-
-  if (e.target.matches('.account-signin')) {
-    e.preventDefault();
-    accountBack.classList.remove('hidden');
-    auth();
-  }
-
-  if (e.target.matches('.account-signout')) {
-    e.preventDefault();
-    config.firebaseApp.auth().signOut();
-  }
-
   if (e.target.matches('.add')) {
     e.preventDefault();
     addDomElement(null, createKey(), expenseContainer);
@@ -360,6 +361,16 @@ document.addEventListener('click', e => {
     e.preventDefault();
     removeBudgetItem(e.target);
   }
+
+  if (e.target.matches('.signin')) {
+    e.preventDefault();
+    window.location.hash = 'login';
+  }
+
+  if (e.target.matches('.signout')) {
+    e.preventDefault();
+    config.firebaseApp.auth().signOut();
+  }
 });
 
 document.addEventListener('change', e => {
@@ -370,6 +381,10 @@ document.addEventListener('change', e => {
   if (e.target.matches("input[type='radio']")) {
     updateSplitType(e.target);
   }
+});
+
+addListenerMulti(window, 'hashchange load', () => {
+  renderUI();
 });
 
 addListenerMulti(document, 'change input', e => {

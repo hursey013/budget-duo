@@ -280,7 +280,7 @@ module.exports = {
     zIndex: ['responsive'],
   },
   plugins: [
-    require('tailwindcss/plugins/container')({  // eslint-disable-line global-require
+    require('tailwindcss/plugins/container')({ // eslint-disable-line global-require
       // center: true,
       // padding: '1rem',
     }),

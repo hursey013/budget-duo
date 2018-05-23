@@ -16,23 +16,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>BudgetDuo</title>
+  <!-- Search Engine -->
+  <meta name="description" content="Calculate how much you and your partner should contribute towards shared expenses.">
+  <meta name="image" content="https://budgetduo.com/images/logo_360x360.png">
+  <!-- Schema.org for Google -->
+  <meta itemprop="name" content="BudgetDuo">
+  <meta itemprop="description" content="Calculate how much you and your partner should contribute towards shared expenses.">
+  <meta itemprop="image" content="https://budgetduo.com/images/logo_360x360.png">
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="BudgetDuo">
+  <meta name="twitter:description" content="Calculate how much you and your partner should contribute towards shared expenses.">
+  <meta name="twitter:image" content="https://budgetduo.com/images/logo_360x360.png">
+  <!-- Open Graph general (Facebook, Pinterest & Google+) -->
+  <meta property="og:title" content="BudgetDuo">
+  <meta property="fb:app_id" content="1970001709690705">
+  <meta property="og:description" content="Calculate how much you and your partner should contribute towards shared expenses.">
+  <meta property="og:url" content="https://budgetduo.com">
+  <meta property="og:site_name" content="BudgetDuo">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://budgetduo.com/images/logo_360x360.png" />
 </head>
 
 <body class="bg-gradient bg-fixed bg-no-repeat font-source-sans font-normal leading-normal text-grey h-full flex flex-col">
-  <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div class="page-main flex-1 hidden">
+  <div class="page flex-1 hidden" id="main">
     <div class="flex flex-col min-h-screen">
       <div class="container mx-auto px-4 pt-4 lg:px-8 lg:pt-8 flex-none">
         <div class="flex items-center justify-between">
-          <a href="/"><img src="images/logo.svg" alt="BudgetDuo" aria-hidden="true"></a>
+          <a href="/"><img src="${require(`./images/logo.svg`)}" alt="BudgetDuo" aria-hidden="true"></a>
           <h1 class="sr-only">BudgetDuo</h1>
           <ul class="list-reset flex">
             <li>
               <span class="mr-2 text-white italic hidden lg:inline-block">Sign in to save your information</span>
-              <a class="account-signin inline-block rounded py-2 px-4 bg-teal no-underline text-blue-dark hover:bg-teal-light" href="#">Sign in</a>
+              <a class="signin inline-block rounded py-2 px-4 bg-teal no-underline text-blue-dark hover:bg-teal-light" href="#">Sign in</a>
             </li>
             <li class="hidden">
-              <a class="account-signout inline-block rounded text-white py-2 px-4 no-underline" href="#">Sign out</a>
+              <a class="signout inline-block rounded text-white py-2 px-4 no-underline" href="#">Sign out</a>
             </li>
           </ul>
         </div>
@@ -44,7 +63,7 @@
               <h2 class="text-3xl">What's your share?</h2>
               <p class="text-xl font-light mr-6">Calculate how much you and your partner should contribute towards shared expenses.</p>
             </div>
-            <h3 class="mb-6 mt-8 font-normal text-white text-2xl">Combined income</h3>
+            <h3 class="mb-6 mt-8 font-normal text-white text-2xl">Annual income</h3>
             <div id="incomes"></div>
             <h3 class="mb-4 font-normal text-white text-2xl">Monthly expenses</h3>
             <div id="expenses-wrapper">
@@ -83,7 +102,7 @@
                     <li class="block mb-3 flex">
                       <input type="radio" name="split" value="half" class="radio mr-1 flex-none" id="split-half" />
                       <label for="split-half" class="cursor-pointer">
-                        <span class="font-bold">Down the middle (50/50)</span>
+                        <span class="font-bold">Split 50/50</span>
                         <p class="text-xs">Add up all of the bills and then cut them in half, that's how much you owe. When using this method your income becomes irrelevant.</p>
                         </label>
                     </li>
@@ -146,7 +165,7 @@
       </div>
       <div class="bg-smoke p-8 flex-none">
         <div class="container mx-auto text-sm text-white text-center">
-          <img src="images/mark_knockout.svg" alt="" class="w-8 mb-4">
+          <img src="${require(`./images/mark_knockout.svg`)}" alt="" class="w-8 mb-4">
           <p class="mb-4">A project by <a href="https://github.com/hursey013/" class="text-white font-bold no-underline">@hursey013</a> and <a href="http://rtwell.com" class="text-white font-bold no-underline">@rtwell</a>
             <p class="mb-4"><a href="mailto:hursey013@pm.me" class="text-white font-bold">Contact</a> | <a href="https://github.com/hursey013/budget-duo" class="text-white font-bold">Github</a></p>
             <p>&copy; 2018 BudgetDuo</p>
@@ -154,9 +173,9 @@
       </div>
     </div>
   </div>
-  <div class="page-login flex-1">
-    <div class="h-full flex flex-col justify-center text-center">
-      <img src="images/logo.svg" alt="BudgetDuo" aria-hidden="true" class="mb-6">
+  <div class="page flex-1" id="login">
+    <div class="h-full flex flex-col justify-center text-center text-white">
+      <a href="#"><img src="${require(`./images/logo.svg`)}" alt="BudgetDuo" aria-hidden="true" class="mb-6"></a>
       <h1 class="sr-only">BudgetDuo</h1>
       <div class="loader mx-auto">
         <div class="ball-scale-ripple">
@@ -164,7 +183,6 @@
         </div>
       </div>
       <div id="firebaseui-auth-container"></div>
-      <a href="#" class="hidden account-back text-teal text-center no-underline font-bold mt-6 hover:underline">&laquo; Go back</a>
     </div>
   </div>
 </body>

@@ -1,4 +1,5 @@
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
@@ -14,7 +15,6 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        include: /src/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -49,17 +49,13 @@ module.exports = {
         loader: 'handlebars-loader',
       },
       {
-        test: /\.html$/,
-        loader: 'html-loader',
-      },
-      {
         test: /\.(jpg|png|gif|svg)$/,
         use: [
           {
             loader: 'file-loader',
             options: {
-              name: '[name].[ext]',
-              outputPath: './images/',
+              name: '[name].[ext]?[hash]',
+              outputPath: './images/'
             },
           },
         ],
@@ -75,11 +71,17 @@ module.exports = {
     new CleanWebpackPlugin(['dist']),
     new ExtractTextPlugin({
       filename: 'style.[hash].css',
-      allChunks: true,
+      allChunks: false,
     }),
     new HtmlWebpackPlugin({
       favicon: './src/images/favicon.ico',
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        minifyJS: true,
+      },
       template: './src/index.html',
     }),
+    new CompressionPlugin(),
   ],
 };
