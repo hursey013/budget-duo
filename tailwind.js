@@ -1,4 +1,4 @@
-let colors = {
+const colors = {
   'blue-dark': '#064872',
   grey: '#6E7D95',
   white: '#ffffff',
@@ -8,7 +8,7 @@ let colors = {
 };
 
 module.exports = {
-  colors: colors,
+  colors,
   screens: {
     lg: '992px',
     xl: '1200px',
@@ -90,7 +90,7 @@ module.exports = {
     '4': '4px',
     '8': '8px',
   },
-  borderColors: global.Object.assign({ default: colors['teal'] }, colors),
+  borderColors: global.Object.assign({ default: colors.teal }, colors),
   borderRadius: {
     none: '0',
     sm: '.125rem',
@@ -280,7 +280,7 @@ module.exports = {
     zIndex: ['responsive'],
   },
   plugins: [
-    require('tailwindcss/plugins/container')({
+    require('tailwindcss/plugins/container')({  // eslint-disable-line global-require
       // center: true,
       // padding: '1rem',
     }),

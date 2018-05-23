@@ -7,6 +7,7 @@ const accountSignin = document.querySelector('.account-signin');
 const accountSignout = document.querySelector('.account-signout');
 const chartContainer = document.getElementById('chart');
 const expenseContainer = document.getElementById('expenses');
+const expenseWrapper = document.getElementById('expenses-wrapper');
 const incomeContainer = document.getElementById('incomes');
 const pageLogin = document.querySelector('.page-login');
 const pageMain = document.querySelector('.page-main');
@@ -188,11 +189,8 @@ function removeBudgetItem(target) {
   }
 
   if (expenseContainer.querySelectorAll('[id]').length > 1) {
-    row.classList.add('fadeOut');
-    setTimeout(() => {
-      row.parentNode.removeChild(row);
-      updateTotals();
-    }, 1000);
+    row.parentNode.removeChild(row);
+    updateTotals();
   } else {
     const inputs = row.querySelectorAll('input');
     for (const input of inputs) {
@@ -204,17 +202,7 @@ function removeBudgetItem(target) {
 }
 
 function setSplitType(value) {
-  pageMain.className = `split-${value}`;
-}
-
-function toggleAccordion(parent) {
-  if (parent.classList.contains('collapsed')) {
-    parent.classList.remove('collapsed');
-    parent.classList.add('expanded');
-  } else {
-    parent.classList.remove('expanded');
-    parent.classList.add('collapsed');
-  }
+  expenseWrapper.className = `split-${value}`;
 }
 
 function toggleSignInLinks(show) {
@@ -263,7 +251,7 @@ function updateChart(data) {
 
 function updateSalaryInputs(target) {
   const row = target.closest('[id]');
-  const input = target.type === 'range' ? 'text' : 'range';
+  const input = target.type === 'range' ? 'tel' : 'range';
 
   row.querySelector(`input[type='${input}']`).value = target.value;
 }
@@ -340,10 +328,6 @@ function addListenerMulti(el, s, fn) {
 }
 
 document.addEventListener('click', e => {
-  if (e.target.matches('a[href="#"]')) {
-    e.preventDefault();
-  }
-
   if (e.target.matches('.account-back')) {
     e.preventDefault();
     accountBack.classList.add('hidden');
@@ -367,9 +351,9 @@ document.addEventListener('click', e => {
     addDomElement(null, createKey(), expenseContainer);
   }
 
-  if (e.target.matches('.expand')) {
+  if (e.target.closest('.row')) {
     e.preventDefault();
-    toggleAccordion(e.target.parentNode.parentNode);
+    e.target.closest('.row').classList.toggle('expanded');
   }
 
   if (e.target.matches('.remove')) {
@@ -400,7 +384,7 @@ addListenerMulti(document, 'change paste keyup', e => {
     updateBudgetItem(e.target);
   }
 
-  if (e.target.matches("#incomes input[type='text']")) {
+  if (e.target.matches("#incomes input[data-type='currency']")) {
     updateBudgetItem(e.target);
     updateSalaryInputs(e.target);
   }

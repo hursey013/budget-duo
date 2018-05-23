@@ -1,4 +1,9 @@
 @import 'variables';
+
 @import 'vendor';
-@import 'radio';
+
+@import 'components/accordion';
+@import 'components/radio';
+@import 'components/range';
+
 @import 'custom';

@@ -3,30 +3,6 @@
   background: linear-gradient(145deg, rgba(0,162,168,1) 0%, rgba(4,29,89,1) 100%);
 }
 
-.collapsed {
-  .details {
-    display: none;
-  }
-  .expand-close {
-    display: none;
-  }
-  .expand-open {
-    display: block;
-  }
-}
-
-.expanded {
-  .details {
-    display: block;
-  }
-  .expand-close {
-    display: block;
-  }
-  .expand-open {
-    display: none;
-  }
-}
-
 .input {
   @apply .w-full .appearance-none .bg-white .text-grey .shadow .rounded .p-3;
 }
@@ -58,26 +34,6 @@
 .sr-only {
   position: absolute;
   left: -999em;
-}
-
-.input-range::-webkit-slider-runnable-track {
-  background-color: $color-teal;
-}
-
-.input-range::-moz-range-track {
-  background-color: $color-teal;
-}
-
-.input-range::-webkit-slider-thumb {
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: 50%;
-}
-
-.input-range::-moz-range-thumb {
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: 50%;
 }
 
 .firebaseui-id-page-callback,

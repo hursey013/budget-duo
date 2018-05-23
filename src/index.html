@@ -47,18 +47,20 @@
             <h3 class="mb-6 mt-8 font-normal text-white text-2xl">Combined income</h3>
             <div id="incomes"></div>
             <h3 class="mb-4 font-normal text-white text-2xl">Monthly expenses</h3>
-            <div class="flex items-center -mx-1 mb-2">
-              <div class="label flex-1 px-1">
-                Description
+            <div id="expenses-wrapper">
+              <div class="flex items-center -mx-1 mb-2">
+                <div class="label flex-1 px-1">
+                  Description
+                </div>
+                <div class="split-adhoc-label label flex-none w-24 lg:w-32 px-1">
+                  Payer
+                </div>
+                <div class="label flex-none w-24 lg:w-32 px-1 text-right mr-6">
+                  Cost
+                </div>
               </div>
-              <div class="split-adhoc-label label flex-none w-24 lg:w-32 px-1">
-                Payer
-              </div>
-              <div class="label flex-none w-24 lg:w-32 px-1 text-right mr-6">
-                Cost
-              </div>
+              <div id="expenses"></div>
             </div>
-            <div id="expenses"></div>
             <button class="add w-full lg:w-auto text-teal py-2 px-4 border rounded flex items-center my-4 hover:border-teal-light hover:text-teal-light">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stroke-current h-4 w-4 mr-1 pointer-events-none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
               Add another expense
@@ -72,21 +74,21 @@
                   <h3 class="mb-2 font-normal text-lg">Divvy our expenses:</h3>
                   <ul id="split" class="list-reset">
                     <li class="block mb-3 flex">
-                      <input type="radio" name="split" value="income" class="radio mr-1 mt-px flex-none" id="split-income" checked />
+                      <input type="radio" name="split" value="income" class="radio mr-1 flex-none" id="split-income" checked />
                       <label for="split-income" class="cursor-pointer">
                         <span class="font-bold">Based on income</span>
                         <p class="text-xs">Using the income you entered, we adjust the amount you owe to be proportional to the amount you contribute to you and your partner's total income.</p>
                       </label>
                     </li>
                     <li class="block mb-3 flex">
-                      <input type="radio" name="split" value="half" class="radio mr-1 mt-px flex-none" id="split-half" />
+                      <input type="radio" name="split" value="half" class="radio mr-1 flex-none" id="split-half" />
                       <label for="split-half" class="cursor-pointer">
                         <span class="font-bold">Down the middle (50/50)</span>
                         <p class="text-xs">Add up all of the bills and then cut them in half, that's how much you owe. When using this method your income becomes irrelevant.</p>
                         </label>
                     </li>
                     <li class="block flex">
-                      <input type="radio" name="split" value="adhoc" class="radio mr-1 mt-px flex-none" id="split-adhoc" />
+                      <input type="radio" name="split" value="adhoc" class="radio mr-1 flex-none" id="split-adhoc" />
                       <label for="split-adhoc" class="cursor-pointer">
                         <span class="font-bold">Grab bag (ad hoc)</span>
                         <p class="text-xs">You and you partner decide who will pay each bill on a per bill basis. When using this method your income becomes irrelevant.</p>
@@ -103,36 +105,36 @@
                 <div class="col flex-1">
                   <span class="label">Individual</span>
                 </div>
-                <div class="col w-2/5 text-right">
+                <div class="col w-1/5 text-right">
                   <span class="label">% of total</span>
                 </div>
-                <div class="col w-2/5 text-right">
+                <div class="col w-1/2 text-right">
                   <span class="label mr-6">Amount due</span>
                 </div>
               </div>
               <div id="rows"></div>
-              <div class="row border-b-0 flex-wrap collapsed">
+              <a href="#" class="row flex-wrap no-underline text-grey border-b-0 pb-0">
                 <div class="col flex-1 font-bold">
                   Total:
                 </div>
                 <div class="col w-1/5 text-right font-bold">
                   100%
                 </div>
-                <div class="col w-2/5 flex items-center justify-end text-right">
+                <div class="col w-1/2 flex items-center justify-end text-right">
                   <div class="truncate">
                     <span class="report-total font-bold"></span>/mo
                   </div>
-                  <a href="#" class="expand ml-2 text-teal">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="expand-open stroke-current h-4 w-4  pointer-events-none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="expand-close stroke-current h-4 w-4  pointer-events-none"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                  </a>
+                  <span class="">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="open ml-2 text-teal stroke-current h-4 w-4 pointer-events-none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="close ml-2 text-teal stroke-current h-4 w-4 pointer-events-none"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  </span>
                 </div>
                 <ul class="details col list-reset mt-2 mr-6 w-full text-right text-xs">
                   <li class="py-1"><span class="report-total-biweekly"></span> / bi-weekly</li>
                   <li class="py-1"><span class="report-total-bimonthly"></span> / bi-monthly</li>
                   <li class="py-1"><span class="report-total-annually"></span> / annually</li>
                 </ul>
-              </div>
+              </a>
             </div>
             <div class="text-white">
               <h3 class="my-2">What now?</h3>
@@ -144,7 +146,7 @@
       </div>
       <div class="bg-smoke p-8 flex-none">
         <div class="container mx-auto text-sm text-white text-center">
-          <img src="images/mark.svg" alt="" class="w-8 mb-4">
+          <img src="images/mark_knockout.svg" alt="" class="w-8 mb-4">
           <p class="mb-4">A project by <a href="https://github.com/hursey013/" class="text-white font-bold no-underline">@hursey013</a> and <a href="http://rtwell.com" class="text-white font-bold no-underline">@rtwell</a>
             <p class="mb-4"><a href="mailto:hursey013@pm.me" class="text-white font-bold">Contact</a> | <a href="https://github.com/hursey013/budget-duo" class="text-white font-bold">Github</a></p>
             <p>&copy; 2018 BudgetDuo</p>
