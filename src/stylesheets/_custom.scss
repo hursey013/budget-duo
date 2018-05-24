@@ -4,7 +4,7 @@
 }
 
 .input {
-  @apply .w-full .appearance-none .bg-white .text-grey .shadow .rounded .p-3;
+  @apply .w-full .appearance-none .bg-white .text-grey .shadow .p-3;
 }
 
 .label {
@@ -12,7 +12,7 @@
 }
 
 .row {
-  @apply .flex .items-start .-mx-2 .py-6 .border-b;
+  @apply .flex .items-start .-mx-2 .py-6;
 
   .col {
     @apply .px-2;

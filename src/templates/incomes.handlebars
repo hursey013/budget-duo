@@ -9,8 +9,11 @@
     <div class="flex-1 px-1">
       <input type="range" name="amount" value="{{amount}}" min="0" max="250000" step="500" class="input-range text-white w-full">
     </div>
-    <div class="flex-none w-32 mr-6 px-1">
-      <input class="input" type="tel" name="amount" value="{{amount}}" maxlength="20" data-type="currency">
+    <div class="flex-none items-center w-32 mr-6 px-1 flex items-center">
+      <div class="bg-grey-light p-3 rounded-tl rounded-bl shadow leading-tight">
+        $
+      </div>
+      <input class="input flex-1 rounded-tr rounded-br leading-tight" type="tel" name="amount" value="{{amount}}" data-type="currency" maxlength="20">
     </div>
   </div>
 </div>

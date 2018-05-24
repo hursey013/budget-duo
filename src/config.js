@@ -72,7 +72,7 @@ export const masker = input =>
   Inputmask({
     alias: 'currency',
     autoUnmask: true,
-    prefix: '$',
+    prefix: '',
   }).mask(input);
 
 export const formatter = new Intl.NumberFormat('en-US', {

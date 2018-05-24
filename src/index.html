@@ -90,27 +90,27 @@
               <h2 class="mb-6 font-normal">Now let's break that down...</h2>
               <div class="flex mb-8 -mx-2">
                 <div class="w-2/3 px-2">
-                  <h3 class="mb-2 font-normal text-lg">Divvy our expenses:</h3>
+                  <h3 class="mb-2 font-normal text-lg">Divide our expenses:</h3>
                   <ul id="split" class="list-reset">
                     <li class="block mb-3 flex">
                       <input type="radio" name="split" value="income" class="radio mr-2 flex-none" id="split-income" checked />
                       <label for="split-income" class="cursor-pointer">
                         <span class="font-bold">Based on income</span>
-                        <p class="text-xs">Using the income you entered, we adjust the amount you owe to be proportional to the amount you contribute to you and your partner's total income.</p>
+                        <p class="text-sm">Using the income you entered, we adjust the amount you owe to be proportional to the amount you contribute to you and your partner's total income.</p>
                       </label>
                     </li>
                     <li class="block mb-3 flex">
                       <input type="radio" name="split" value="half" class="radio mr-2 flex-none" id="split-half" />
                       <label for="split-half" class="cursor-pointer">
-                        <span class="font-bold">Split 50/50</span>
-                        <p class="text-xs">Add up all of the bills and then cut them in half, that's how much you owe. When using this method your income becomes irrelevant.</p>
+                        <span class="font-bold">50/50 split</span>
+                        <p class="text-sm">You and your partner are each responsible for exactly half of all shared expenses. When using this method your income becomes irrelevant.</p>
                         </label>
                     </li>
                     <li class="block flex">
                       <input type="radio" name="split" value="adhoc" class="radio mr-2 flex-none" id="split-adhoc" />
                       <label for="split-adhoc" class="cursor-pointer">
                         <span class="font-bold">Grab bag (ad hoc)</span>
-                        <p class="text-xs">You and you partner decide who will pay each bill on a per bill basis. When using this method your income becomes irrelevant.</p>
+                        <p class="text-sm">You and you partner decide who will pay on a bill by bill basis. When using this method your income becomes irrelevant.</p>
                         </label>
                     </li>
                   </ul>
@@ -119,20 +119,22 @@
                   <canvas id="chart" width="100%" height="100%"></canvas>
                 </div>
               </div>
-              <h3 class="mb-8 font-normal">Great, here's your expense report:</h3>
-              <div class="row justify-end pt-0 pb-2">
-                <div class="col flex-1">
-                  <span class="label">Individual</span>
-                </div>
-                <div class="col w-1/5 text-right">
-                  <span class="label">% of total</span>
-                </div>
-                <div class="col w-1/2 text-right">
-                  <span class="label mr-6">Amount due</span>
+              <h3 class="mb-4 font-normal">Great, here's your expense report:</h3>
+              <div class="border-b">
+                <div class="row justify-end pt-0 pb-2">
+                  <div class="col flex-1">
+                    <span class="label">Individual</span>
+                  </div>
+                  <div class="col w-1/5 text-right">
+                    <span class="label">% of total</span>
+                  </div>
+                  <div class="col w-1/2 text-right">
+                    <span class="label mr-6">Amount due</span>
+                  </div>
                 </div>
               </div>
               <div id="rows"></div>
-              <a href="#" class="row flex-wrap no-underline text-grey border-b-0 pb-0">
+              <a href="#" class="row flex-wrap no-underline text-grey border-b-0 pb-0 expanded">
                 <div class="col flex-1 font-bold">
                   Total:
                 </div>
@@ -148,7 +150,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="close ml-2 text-teal stroke-current h-4 w-4 pointer-events-none"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                   </span>
                 </div>
-                <ul class="details col list-reset mt-2 mr-6 w-full text-right text-xs">
+                <ul class="details col list-reset mt-2 mr-6 w-full text-right text-sm">
                   <li class="py-1"><span class="report-total-biweekly"></span> / bi-weekly</li>
                   <li class="py-1"><span class="report-total-bimonthly"></span> / bi-monthly</li>
                   <li class="py-1"><span class="report-total-annually"></span> / annually</li>
@@ -157,7 +159,7 @@
             </div>
             <div class="text-white">
               <h3 class="my-2">What now?</h3>
-              <p class="mb-2">Talk with your partner about which method of splitting expenses makes most sense for your relationship.</p>
+              <p class="mb-2">Talk with your partner about which method of splitting expenses makes the most sense for your relationship.</p>
               <p>Once you've decided on a plan, consider creating a shared checking account and depositing your contribution with every paycheck for a worry-free, automated system.</p>
             </div>
           </div>

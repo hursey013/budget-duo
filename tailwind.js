@@ -1,6 +1,7 @@
 const colors = {
   'blue-dark': '#064872',
   grey: '#6E7D95',
+  'grey-light': '#F1F5F8',
   white: '#ffffff',
   teal: '#2AD9C2',
   'teal-light': '#00EBCB',
