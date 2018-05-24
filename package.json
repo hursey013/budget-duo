@@ -21,10 +21,10 @@
     "tailwindcss": "^0.5.3"
   },
   "devDependencies": {
+    "@babel/core": "^7.0.0-beta.48",
+    "@babel/preset-env": "^7.0.0-beta.48",
     "autoprefixer": "^8.5.0",
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-preset-env": "^1.7.0",
+    "babel-loader": "^8.0.0-beta.3",
     "clean-webpack-plugin": "^0.1.19",
     "compression-webpack-plugin": "^1.1.11",
     "css-loader": "^0.28.7",

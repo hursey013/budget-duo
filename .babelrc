@@ -1,3 +1,10 @@
 {
-  "presets": ["env"]
+  "presets": [
+    ["@babel/preset-env", {
+      "useBuiltIns": true,
+      "targets": {
+        "browsers": ["last 2 versions", "safari > 8", "not ie < 11"]
+      }
+    }]
+  ]
 }
