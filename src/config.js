@@ -3,7 +3,7 @@ import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 import * as firebaseui from 'firebaseui';
-import Inputmask from 'inputmask';
+import Inputmask from 'inputmask/dist/inputmask/inputmask.numeric.extensions';
 
 // Firebase
 const config = {
@@ -68,12 +68,12 @@ export const buildChart = (cntnr, labels) =>
     },
   });
 
-export const masker = input =>
-  Inputmask({
+export const inputmask = new Inputmask({
     alias: 'currency',
+    allowMinus: false,
     autoUnmask: true,
     prefix: '',
-  }).mask(input);
+  });
 
 export const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',

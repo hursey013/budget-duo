@@ -130,7 +130,7 @@ function addDomElement(object, key, parent, index) {
   const currencyInput = div.querySelector("[data-type='currency']");
 
   if (key) div.id = key;
-  if (currencyInput) config.masker(currencyInput);
+  if (currencyInput) config.inputmask.mask(currencyInput);
 
   parent.appendChild(div);
 }
