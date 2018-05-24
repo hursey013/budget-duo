@@ -15,7 +15,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>BudgetDuo</title>
+  <title>BudgetDuo - Split shared expense farily</title>
   <!-- Search Engine -->
   <meta name="description" content="Calculate how much you and your partner should contribute towards shared expenses.">
   <meta name="image" content="https://budgetduo.com/images/logo_360x360.png">
@@ -43,8 +43,10 @@
     <div class="flex flex-col min-h-screen">
       <div class="container mx-auto px-4 pt-4 lg:px-8 lg:pt-8 flex-none">
         <div class="flex items-center justify-between">
-          <a href="/"><img src="${require(`./images/logo.svg`)}" alt="BudgetDuo" aria-hidden="true"></a>
-          <h1 class="sr-only">BudgetDuo</h1>
+          <a href="/">
+            <h1 class="sr-only">BudgetDuo</h1>
+            <img src="${require(`./images/logo.svg`)}" alt="BudgetDuo" aria-hidden="true">
+          </a>
           <ul class="list-reset flex">
             <li>
               <span class="mr-2 text-white italic hidden lg:inline-block">Sign in to save your information</span>
@@ -68,13 +70,13 @@
             <h3 class="mb-4 font-normal text-white text-2xl">Monthly expenses</h3>
             <div id="expenses-wrapper">
               <div class="flex items-center -mx-1 mb-2">
-                <div class="label flex-1 px-1">
+                <div class="label flex-1 px-1" id="expense_description">
                   Description
                 </div>
-                <div class="split-adhoc-label label flex-none w-1/4 px-1">
+                <div class="split-adhoc-label label flex-none w-1/4 px-1" id="expense_payer">
                   Payer
                 </div>
-                <div class="label flex-none w-2/5 xl:w-1/4 px-1 text-right mr-6">
+                <div class="label flex-none w-2/5 lg:w-1/3 px-1 text-right mr-6" id="expense_cost">
                   Cost
                 </div>
               </div>
@@ -90,30 +92,32 @@
               <h2 class="mb-6 font-normal">Now let's break that down...</h2>
               <div class="flex mb-8 -mx-2">
                 <div class="w-2/3 px-2">
-                  <h3 class="mb-4 font-normal text-xl">Divide our expenses</h3>
-                  <ul id="split" class="list-reset">
-                    <li class="block mb-3 flex">
-                      <input type="radio" name="split" value="income" class="radio mr-2 flex-none" id="split-income" checked />
-                      <label for="split-income" class="cursor-pointer">
-                        <span class="font-bold">Based on income</span>
-                        <p class="text-sm">Using the income you entered, we adjust the amount you owe to be proportional to the amount you contribute to you and your partner's total income.</p>
-                      </label>
-                    </li>
-                    <li class="block mb-3 flex">
-                      <input type="radio" name="split" value="half" class="radio mr-2 flex-none" id="split-half" />
-                      <label for="split-half" class="cursor-pointer">
-                        <span class="font-bold">50/50 split</span>
-                        <p class="text-sm">You and your partner are each responsible for half of all shared expenses. <span class="italic">When using this method your income becomes irrelevant.</span></p>
+                  <fieldset>
+                    <legend class="mb-4 font-normal text-xl">Divide our expenses</legend>
+                    <ul id="split" class="list-reset">
+                      <li class="block mb-3 flex">
+                        <input type="radio" name="split" value="income" class="radio mr-2 flex-none" id="split-income" checked />
+                        <label for="split-income" class="cursor-pointer">
+                          <span class="font-bold">Based on income</span>
+                          <p class="text-sm">Using the income you entered, we adjust the amount you owe to be proportional to the amount you contribute to you and your partner's total income.</p>
                         </label>
-                    </li>
-                    <li class="block flex">
-                      <input type="radio" name="split" value="adhoc" class="radio mr-2 flex-none" id="split-adhoc" />
-                      <label for="split-adhoc" class="cursor-pointer">
-                        <span class="font-bold">Grab bag (ad hoc)</span>
-                        <p class="text-sm">Using the dropdown menu next to each expense, designate who will be responsible on a bill-by-bill basis. <span class="italic">When using this method your income becomes irrelevant.</span></p>
-                        </label>
-                    </li>
-                  </ul>
+                      </li>
+                      <li class="block mb-3 flex">
+                        <input type="radio" name="split" value="half" class="radio mr-2 flex-none" id="split-half" />
+                        <label for="split-half" class="cursor-pointer">
+                          <span class="font-bold">50/50 split</span>
+                          <p class="text-sm">You and your partner are each responsible for half of all shared expenses. <span class="italic">When using this method your income becomes irrelevant.</span></p>
+                          </label>
+                      </li>
+                      <li class="block flex">
+                        <input type="radio" name="split" value="adhoc" class="radio mr-2 flex-none" id="split-adhoc" />
+                        <label for="split-adhoc" class="cursor-pointer">
+                          <span class="font-bold">Grab bag (ad hoc)</span>
+                          <p class="text-sm">Using the dropdown menu next to each expense, designate who will be responsible on a bill-by-bill basis. <span class="italic">When using this method your income becomes irrelevant.</span></p>
+                          </label>
+                      </li>
+                    </ul>
+                  </fieldset>
                 </div>
                 <div class="w-1/3 px-2">
                   <canvas id="chart" width="100%" height="100%"></canvas>
