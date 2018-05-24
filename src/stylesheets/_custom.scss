@@ -4,7 +4,7 @@
 }
 
 .input {
-  @apply .overflow-hidden .w-full .appearance-none .bg-white .text-grey .shadow .p-3;
+  @apply .min-w-0 .w-full .appearance-none .bg-white .text-grey .shadow .p-3;
 }
 
 .label {

@@ -62,11 +62,6 @@ module.exports = {
       },
     ],
   },
-  resolve: {
-    alias: {
-      'chart.js': 'chart.js/dist/Chart.js',
-    },
-  },
   plugins: [
     new CleanWebpackPlugin(['dist']),
     new ExtractTextPlugin({

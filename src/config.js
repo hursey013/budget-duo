@@ -3,7 +3,7 @@ import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 import * as firebaseui from 'firebaseui';
-import Inputmask from 'inputmask/dist/inputmask/inputmask.numeric.extensions';
+import Inputmask from 'inputmask';
 
 // Firebase
 const config = {

@@ -1,3 +1,6 @@
+import 'babel-polyfill';
+import 'element-closest';
+
 import './images/logo_360x360.png';
 import './stylesheets/styles.scss';
 import * as config from './config';

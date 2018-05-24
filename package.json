@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "animate.css": "^3.6.1",
+    "babel-polyfill": "^6.26.0",
     "basscss-input-range": "^3.0.0",
     "chart.js": "^2.7.2",
+    "element-closest": "^2.0.2",
     "firebase": "5.0.3",
     "firebaseui": "^3.0.0",
     "handlebars": "^4.0.11",
