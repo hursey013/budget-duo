@@ -1,10 +1,8 @@
-const glob = require('glob-all');
 const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const PurgecssPlugin = require('purgecss-webpack-plugin');
 
 module.exports = {
   entry: './src/app.js',
@@ -74,22 +72,6 @@ module.exports = {
     new ExtractTextPlugin({
       filename: 'style.[hash].css',
       allChunks: false,
-    }),
-    new PurgecssPlugin({
-      paths: glob.sync([
-        path.join(__dirname, "src/*.html"),
-        path.join(__dirname, "src/**/*.handlebars")
-      ]),
-      extractors: [
-        {
-          extractor: class {
-            static extract(content) {
-              return content.match(/[A-z0-9-:\/]+/g)
-            }
-          },
-          extensions: ['handlebars', 'html']
-        }
-      ]
     }),
     new HtmlWebpackPlugin({
       favicon: './src/images/favicon.ico',
