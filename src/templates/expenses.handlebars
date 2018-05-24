@@ -2,7 +2,7 @@
   <div class="flex-1 px-1">
     <input class="input rounded" type="text" name="item" value="{{item}}" maxlength="100">
   </div>
-  <div class="select relative flex-none w-24 lg:w-32 px-1">
+  <div class="select relative flex-none w-1/4 px-1">
     <select class="input rounded pr-8" name="split">
       <option value="0" {{[helpers/selected] index split}}>You</option>
       <option value="1" {{[helpers/selected] index split}}>Partner</option>
@@ -11,11 +11,9 @@
       <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
     </div>
   </div>
-  <div class="flex-none items-center w-24 lg:w-32 px-1 flex">
-    <div class="bg-grey-light p-3 rounded-tl rounded-bl shadow leading-tight">
-      $
-    </div>
-    <input class="input flex-1 rounded-tr rounded-br leading-tight" type="tel" name="cost" value="{{cost}}" data-type="currency" maxlength="20">
+  <div class="flex-none items-center w-2/5 xl:w-1/4 px-1 flex">
+    <div class="bg-grey-light p-3 rounded-tl rounded-bl shadow leading-tight">$</div>
+    <input class="input flex-1 rounded-l-none rounded-r leading-tight" type="tel" name="cost" value="{{cost}}" data-type="currency" maxlength="20">
   </div>
   <a href="#" class="remove flex-none px-1">
     <svg class="stroke-current text-teal inline-block h-4 w-4 pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
