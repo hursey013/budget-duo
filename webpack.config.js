@@ -1,8 +1,10 @@
+const glob = require('glob-all');
 const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const PurgecssPlugin = require('purgecss-webpack-plugin');
 
 module.exports = {
   entry: './src/app.js',
@@ -70,8 +72,27 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(['dist']),
     new ExtractTextPlugin({
-      filename: 'style.[hash].css',
-      allChunks: false,
+      filename: 'style.[hash].css'
+    }),
+    new PurgecssPlugin({
+      paths: glob.sync([
+        './src/index.html',
+        './src/templates/*.handlebars',
+      ]),
+      extractors: [
+        {
+          extractor: class {
+            static extract(content) {
+              return content.match(/[A-z0-9-:\/]+/g)
+            }
+          },
+          extensions: ['handlebars', 'html']
+        }
+      ],
+      fontFace: true,
+      keyframes: true,
+      whitelist: ['animated', 'expanded', 'fadeIn', 'hidden', 'shake'],
+      whitelistPatterns: [/^firebaseui-/, /^mdl-/, /^split-/]
     }),
     new HtmlWebpackPlugin({
       favicon: './src/images/favicon.ico',
