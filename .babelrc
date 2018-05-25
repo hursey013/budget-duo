@@ -3,7 +3,7 @@
     ["@babel/preset-env", {
       "useBuiltIns": true,
       "targets": {
-        "browsers": ["last 2 versions", "safari > 8", "not ie < 11"]
+        "browsers": ["last 2 versions", "not ie < 11"]
       }
     }]
   ]

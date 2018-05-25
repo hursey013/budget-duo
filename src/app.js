@@ -28,8 +28,6 @@ config.firebaseApp.auth().onAuthStateChanged(user => {
   if (user && user.uid !== currentUid) {
     currentUid = user.uid;
 
-    toggleSignInLinks(false);
-
     config.usersRef
       .child(currentUid)
       .once('value')
@@ -41,7 +39,6 @@ config.firebaseApp.auth().onAuthStateChanged(user => {
   } else {
     currentUid = null;
 
-    toggleSignInLinks(true);
     buildUI(setLocalBudget(), true);
   }
 });
@@ -53,6 +50,7 @@ function buildUI(budget, persistStorage) {
   const splitType = budget.split;
 
   clearUI(persistStorage);
+  toggleSignInLinks();
 
   const labels = [];
   Object.keys(incomesArray).forEach(income => {
@@ -227,9 +225,14 @@ function setSplitType(value) {
   expenseWrapper.className = `split-${value}`;
 }
 
-function toggleSignInLinks(show) {
-  accountSignin.closest('li').classList.toggle('hidden', !show);
-  accountSignout.closest('li').classList.toggle('hidden', !!show);
+function toggleSignInLinks() {
+  if (currentUid){
+    accountSignin.closest('li').classList.add('hidden');
+    accountSignout.closest('li').classList.remove('hidden');
+  } else {
+    accountSignin.closest('li').classList.remove('hidden');
+    accountSignout.closest('li').classList.add('hidden');
+  }
 }
 
 function updateBudgetItem(target) {
