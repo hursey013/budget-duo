@@ -168,6 +168,7 @@ function getTotal(inputs, index) {
       total += +input.value;
     }
   }
+
   return total;
 }
 
@@ -310,7 +311,7 @@ function updateTotals() {
     if (splitType === 'half') {
       share = 0.5;
     } else if (splitType === 'adhoc') {
-      share = getTotal(expenseInputs, index) / expenseTotal;
+      share = getTotal(expenseInputs, index) / expenseTotal || 0;
     } else {
       share = +incomeInput.value / incomeTotal;
     }
