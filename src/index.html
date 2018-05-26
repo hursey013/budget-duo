@@ -41,7 +41,7 @@
 <body class="bg-gradient bg-fixed bg-no-repeat font-source-sans font-normal leading-normal text-grey h-full flex flex-col">
   <div class="page flex-1 hidden" id="main">
     <div class="flex flex-col flex-1 min-h-screen">
-      <div class="container mx-auto px-4 pt-4 lg:px-8 lg:pt-8 flex-none">
+      <header class="container mx-auto px-4 pt-4 lg:px-8 lg:pt-8 flex-none">
         <div class="flex items-center justify-between">
           <a href="/">
             <h1 class="sr-only">BudgetDuo</h1>
@@ -49,7 +49,7 @@
           </a>
           <ul class="list-reset flex">
             <li>
-              <span class="mr-2 text-white italic hidden lg:inline-block">Sign in to save your information</span>
+              <span class="mr-2 text-white italic hidden lg:inline-block">Sign in to save</span>
               <a class="signin inline-block rounded py-2 px-4 bg-teal no-underline text-blue-dark hover:bg-teal-light" href="#">Sign in</a>
             </li>
             <li class="hidden">
@@ -57,8 +57,8 @@
             </li>
           </ul>
         </div>
-      </div>
-      <div class="container mx-auto p-4 lg:p-8 flex-1 flex-auto overflow-hidden">
+      </header>
+      <main class="container mx-auto p-4 lg:p-8 flex-1 flex-auto overflow-hidden">
         <div class="flex flex-wrap -mx-8">
           <div class="w-full lg:w-1/2 px-8 mb-8 lg:mb-0">
             <div class="text-white mt-8">
@@ -84,46 +84,43 @@
             </div>
             <button class="add w-full lg:w-auto text-teal py-2 px-4 border rounded flex items-center my-4 hover:border-teal-light hover:text-teal-light">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stroke-current h-4 w-4 mr-1 pointer-events-none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-              Add another expense
+              Add expense
             </button>
           </div>
           <div class="w-full lg:w-1/2 px-8 mb-6 lg:mb-0">
             <div class="bg-white rounded-lg shadow p-4 lg:p-8 mb-8">
-              <h2 class="mb-6 font-normal">Now let's break that down...</h2>
+              <h2 class="mb-4 font-normal">Divide our expenses</h2>
               <div class="flex mb-8 -mx-2">
                 <div class="w-2/3 px-2">
-                  <fieldset>
-                    <legend class="mb-4 font-normal text-xl">Divide our expenses</legend>
-                    <ul id="split" class="list-reset">
-                      <li class="block mb-3 flex">
-                        <input type="radio" name="split" value="income" class="radio mr-2 flex-none" id="split-income" checked />
-                        <label for="split-income" class="cursor-pointer">
-                          <span class="font-bold">Based on income</span>
-                          <p class="text-sm">Using the income you entered, we adjust the amount you owe to be proportional to the amount you contribute to you and your partner's total income.</p>
+                  <ul id="split" class="list-reset">
+                    <li class="block mb-3 flex">
+                      <input type="radio" name="split" value="income" class="radio mr-2 flex-none" id="split-income" checked />
+                      <label for="split-income" class="cursor-pointer">
+                        <span class="font-bold">Based on income</span>
+                        <p class="text-sm">The amount you and your partner owe for shared expenses is proportional to the total income you each contribute to your shared household.</p>
+                      </label>
+                    </li>
+                    <li class="block mb-3 flex">
+                      <input type="radio" name="split" value="half" class="radio mr-2 flex-none" id="split-half" />
+                      <label for="split-half" class="cursor-pointer">
+                        <span class="font-bold">50/50 split</span>
+                        <p class="text-sm">Your shared expenses are split in half for you and your partner. <span class="italic">When using this method, your income is irrelevant.</span></p>
                         </label>
-                      </li>
-                      <li class="block mb-3 flex">
-                        <input type="radio" name="split" value="half" class="radio mr-2 flex-none" id="split-half" />
-                        <label for="split-half" class="cursor-pointer">
-                          <span class="font-bold">50/50 split</span>
-                          <p class="text-sm">You and your partner are each responsible for half of all shared expenses. <span class="italic">When using this method your income becomes irrelevant.</span></p>
-                          </label>
-                      </li>
-                      <li class="block flex">
-                        <input type="radio" name="split" value="adhoc" class="radio mr-2 flex-none" id="split-adhoc" />
-                        <label for="split-adhoc" class="cursor-pointer">
-                          <span class="font-bold">Grab bag (ad hoc)</span>
-                          <p class="text-sm">Using the dropdown menu next to each expense, designate who will be responsible on a bill-by-bill basis. <span class="italic">When using this method your income becomes irrelevant.</span></p>
-                          </label>
-                      </li>
-                    </ul>
-                  </fieldset>
+                    </li>
+                    <li class="block flex">
+                      <input type="radio" name="split" value="adhoc" class="radio mr-2 flex-none" id="split-adhoc" />
+                      <label for="split-adhoc" class="cursor-pointer">
+                        <span class="font-bold">Grab bag method</span>
+                        <p class="text-sm">Designate who will be responsible for each bill using the dropdown menu next to each expense. <span class="italic">When using this method, your income is irrelevant.</span></p>
+                        </label>
+                    </li>
+                  </ul>
                 </div>
                 <div class="w-1/3 px-2">
                   <canvas id="chart" width="100%" height="100%"></canvas>
                 </div>
               </div>
-              <h3 class="mb-4 font-normal">Great, here's your expense report:</h3>
+              <h3 class="mb-4 font-normal">Great! Here's your expense breakdown:</h3>
               <div class="border-b">
                 <div class="row justify-end pt-0 pb-2">
                   <div class="col flex-1">
@@ -138,7 +135,7 @@
                 </div>
               </div>
               <div id="rows"></div>
-              <a href="#" class="row flex-wrap no-underline text-grey border-b-0 pb-2 lg:pb-0">
+              <a href="#" class="row flex-wrap no-underline text-grey border-b-0 pb-2 lg:pb-0 expanded">
                 <div class="col flex-1 font-bold">
                   Total:
                 </div>
@@ -163,19 +160,19 @@
             </div>
             <div class="text-white">
               <h3 class="my-2">What now?</h3>
-              <p class="mb-2">Talk with your partner about which method of splitting expenses makes the most sense for your relationship. Once you've decided on a plan, consider creating a shared checking account and depositing your contribution with every paycheck for a worry-free, automated system.</p>
+              <p class="mb-2">Talk with your partner about which expense method works for you. Once you've chosen a method, consider creating a shared checking account, depositing contributions from each paycheck, and paying bills using your new account for a worry-free, streamlined financial solution.</p>
             </div>
           </div>
         </div>
-      </div>
-      <div class="bg-smoke p-8 flex-none">
+      </main>
+      <footer class="bg-smoke p-8 flex-none">
         <div class="container mx-auto text-sm text-white text-center">
           <img src="${require(`./images/mark_knockout.svg`)}" alt="" class="w-8 mb-4">
           <p class="mb-4">A project by <a href="https://github.com/hursey013/" class="text-white font-bold no-underline">@hursey013</a> and <a href="http://rtwell.com" class="text-white font-bold no-underline">@rtwell</a>
             <p class="mb-4"><a href="mailto:hursey013@pm.me" class="text-white font-bold">Contact</a> | <a href="https://github.com/hursey013/budget-duo" class="text-white font-bold">Github</a></p>
             <p>&copy; 2018 BudgetDuo</p>
         </div>
-      </div>
+      </footer>
     </div>
   </div>
   <div class="page flex-1" id="login">
