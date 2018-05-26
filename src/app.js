@@ -13,19 +13,26 @@ const expenseContainer = document.getElementById('expenses');
 const expenseWrapper = document.getElementById('expenses-wrapper');
 const incomeContainer = document.getElementById('incomes');
 const mainPage = document.getElementById('main');
+const notification = document.getElementById('notification');
 const pages = document.querySelectorAll('.page');
 const reportTotal = document.querySelector('.report-total');
 const reportTotalBiweekly = document.querySelector('.report-total-biweekly');
 const reportTotalBimonthly = document.querySelector('.report-total-bimonthly');
 const reportTotalAnnually = document.querySelector('.report-total-annually');
 const rowContainer = document.getElementById('rows');
+const rowTotal = document.getElementById('row-total');
 const splitContainer = document.getElementById('split');
+const splitIncome = document.getElementById('split-income');
 
 // Auth
 let currentUid = null;
 
 config.firebaseApp.auth().onAuthStateChanged(user => {
-  if (user && user.uid !== currentUid) {
+  if (user && currentUid === user.uid) {
+    return;
+  }
+  
+  if (user) {
     currentUid = user.uid;
 
     config.usersRef
@@ -50,7 +57,6 @@ function buildUI(budget, persistStorage) {
   const splitType = budget.split;
 
   clearUI(persistStorage);
-  toggleSignInLinks();
 
   const labels = [];
   Object.keys(incomesArray).forEach(income => {
@@ -87,7 +93,19 @@ function buildUI(budget, persistStorage) {
 }
 
 function clearUI(persistStorage) {
+  const rows = rowContainer.querySelectorAll('.row');
+  
   if (!persistStorage) localStorage.removeItem('budget');
+  
+  for (const row of rows) {
+    row.classList.remove('expanded');
+  }
+  rowTotal.classList.add('expanded');
+  
+  toggleSignInLinks();
+  
+  setSplitType('income')
+  splitIncome.checked = true;
 
   reportTotal.innerHTML = '';
   expenseContainer.innerHTML = '';
@@ -226,6 +244,18 @@ function setSplitType(value) {
   expenseWrapper.className = `split-${value}`;
 }
 
+function showNotification(message, timeout) {
+  notification.classList.add('lg:inline-block', 'fadeIn');
+
+  if (timeout) {
+  setTimeout(function(){
+    notification.innerHTML = message;
+  }, 3000);
+  } else {
+    notification.innerHTML = message;
+  }
+}
+
 function toggleSignInLinks() {
   if (currentUid){
     accountSignin.closest('li').classList.add('hidden');
@@ -253,12 +283,15 @@ function updateBudgetItem(target) {
   if (currentUid) {
     const item = {};
 
+    showNotification('Saving...');
+
     item[desc] = val;
     config.usersRef
       .child(currentUid)
       .child(type)
       .child(key)
-      .update(item);
+      .update(item)
+      .then(showNotification('All changes saved', 3000));
   } else {
     const budget = JSON.parse(localStorage.getItem('budget'));
 
@@ -280,6 +313,26 @@ function updateSalaryInputs(target) {
   const input = target.type === 'range' ? 'tel' : 'range';
 
   row.querySelector(`input[type='${input}']`).value = target.value;
+}
+
+function updateSplitType(target) {
+  const key = target.name;
+  const val = target.value;
+
+  if (currentUid) {
+    config.usersRef
+      .child(currentUid)
+      .child(key)
+      .set(val);
+  } else {
+    const budget = JSON.parse(localStorage.getItem('budget'));
+
+    budget[key] = val;
+    localStorage.setItem('budget', JSON.stringify(budget));
+  }
+
+  setSplitType(val);
+  updateTotals();
 }
 
 function updateTotals() {
@@ -326,26 +379,6 @@ function updateTotals() {
   }
 
   updateChart(data);
-}
-
-function updateSplitType(target) {
-  const key = target.name;
-  const val = target.value;
-
-  if (currentUid) {
-    config.usersRef
-      .child(currentUid)
-      .child(key)
-      .set(val);
-  } else {
-    const budget = JSON.parse(localStorage.getItem('budget'));
-
-    budget[key] = val;
-    localStorage.setItem('budget', JSON.stringify(budget));
-  }
-
-  setSplitType(val);
-  updateTotals();
 }
 
 // Event listeners

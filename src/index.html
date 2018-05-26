@@ -47,13 +47,14 @@
             <h1 class="sr-only">BudgetDuo</h1>
             <img src="images/logo.svg" alt="BudgetDuo" aria-hidden="true">
           </a>
-          <ul class="list-reset flex">
+          <ul class="list-reset">
             <li>
               <span class="mr-2 text-white italic hidden lg:inline-block">Sign in to save</span>
               <a class="signin inline-block rounded py-2 px-4 bg-teal no-underline text-blue-dark hover:bg-teal-light" href="#">Sign in</a>
             </li>
             <li class="hidden">
-              <a class="signout inline-block rounded text-white py-2 px-4 no-underline" href="#">Sign out</a>
+              <span id="notification" class="animated mr-2 text-white italic inline-block hidden"></span>
+              <a class="signout inline-block text-teal py-2 px-4 border rounded hover:border-teal-light hover:text-teal-light no-underline" href="#">Sign out</a>
             </li>
           </ul>
         </div>
@@ -135,7 +136,7 @@
                 </div>
               </div>
               <div id="rows"></div>
-              <a href="#" class="row flex-wrap no-underline text-grey border-b-0 pb-2 lg:pb-0 expanded">
+              <a href="#" class="row flex-wrap no-underline text-grey border-b-0 pb-2 lg:pb-0 expanded" id="row-total">
                 <div class="col flex-1 font-bold">
                   Total:
                 </div>
