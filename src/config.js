@@ -4,10 +4,6 @@ import 'firebase/auth';
 import 'firebase/database';
 import * as firebaseui from 'firebaseui';
 import Inputmask from 'inputmask/dist/inputmask/inputmask.numeric.extensions';
-import Raven from 'raven-js';
-Raven
-    .config('https://9f29be7f52744d27bbaa49b8df235bfe@sentry.io/1214043')
-    .install();
 
 // Firebase
 const config = {
@@ -32,7 +28,7 @@ export const uiConfig = {
       if (fromPageId === 'callback') {
         document.querySelector('.loader').classList.add('hidden');
       }
-    },
+    }
   },
   signInOptions: [
     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
