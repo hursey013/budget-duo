@@ -15,7 +15,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>BudgetDuo - Split shared expense farily</title>
+  <title>BudgetDuo - Shared expense calculator</title>
   <!-- Search Engine -->
   <meta name="description" content="Calculate how much you and your partner should contribute towards shared expenses.">
   <meta name="image" content="https://budgetduo.com/images/logo_360x360.png">
@@ -45,7 +45,7 @@
         <div class="flex items-center justify-between">
           <a href="/">
             <h1 class="sr-only">BudgetDuo</h1>
-            <img src="${require(`./images/logo.svg`)}" alt="BudgetDuo" aria-hidden="true">
+            <img src="images/logo.svg" alt="BudgetDuo" aria-hidden="true">
           </a>
           <ul class="list-reset flex">
             <li>
@@ -167,17 +167,28 @@
       </main>
       <footer class="bg-smoke p-8 flex-none">
         <div class="container mx-auto text-sm text-white text-center">
-          <img src="${require(`./images/mark_knockout.svg`)}" alt="" class="w-8 mb-4">
+          <img src="images/mark_knockout.svg" alt="" class="w-8 mb-4">
           <p class="mb-4">A project by <a href="https://github.com/hursey013/" class="text-white font-bold no-underline">@hursey013</a> and <a href="http://rtwell.com" class="text-white font-bold no-underline">@rtwell</a>
-            <p class="mb-4"><a href="mailto:hursey013@pm.me" class="text-white font-bold">Contact</a> | <a href="https://github.com/hursey013/budget-duo" class="text-white font-bold">Github</a></p>
-            <p>&copy; 2018 BudgetDuo</p>
+          </p>
+          <ul class="list-reset flex mb-4 justify-center">
+            <li class="mx-2">
+              <a href="mailto:hursey013@pm.me" class="text-white font-bold">Contact</a>
+            </li>
+            <li class="mx-2">
+            <a href="tos.html" class="text-white font-bold" target="_blank">Terms of Service</a>
+            </li>
+            <li class="mx-2">
+            <a href="https://github.com/hursey013/budget-duo" class="text-white font-bold">Github</a>
+            </li>
+          </ul>
+          <p class="mb-4">&copy; 2018 BudgetDuo</p>
         </div>
       </footer>
     </div>
   </div>
   <div class="page flex-1" id="login">
     <div class="h-full flex flex-col justify-center text-center text-white">
-      <a href="#"><img src="${require(`./images/logo.svg`)}" alt="BudgetDuo" aria-hidden="true" class="mb-6"></a>
+      <a href="#"><img src="images/logo.svg" alt="BudgetDuo" aria-hidden="true" class="mb-6"></a>
       <h1 class="sr-only">BudgetDuo</h1>
       <div class="loader ball-scale-ripple">
         <div class="mx-auto"></div>

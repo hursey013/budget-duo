@@ -45,6 +45,10 @@ module.exports = {
         }),
       },
       {
+        test: /\.(html)$/,
+        loader: 'html-loader',
+      },
+      {
         test: /\.handlebars$/,
         loader: 'handlebars-loader',
       },
@@ -74,12 +78,12 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       favicon: './src/images/favicon.ico',
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        minifyJS: true,
-      },
       template: './src/index.html',
+    }),
+    new HtmlWebpackPlugin({
+      favicon: './src/images/favicon.ico',
+      filename: 'tos.html',
+      template: './src/tos.html'
     }),
     new CompressionPlugin(),
   ],
