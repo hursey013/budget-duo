@@ -196,11 +196,14 @@ function removeBudgetItem(target) {
   const key = row.id;
 
   if (currentUid) {
+    showNotification('Saving...');
+
     config.usersRef
       .child(currentUid)
       .child(type)
       .child(key)
-      .remove();
+      .remove()
+      .then(showNotification('All changes saved', 3000));
   } else {
     const item = JSON.parse(localStorage.getItem('budget'));
 
@@ -320,10 +323,13 @@ function updateSplitType(target) {
   const val = target.value;
 
   if (currentUid) {
+    showNotification('Saving...');
+
     config.usersRef
       .child(currentUid)
       .child(key)
-      .set(val);
+      .set(val)
+      .then(showNotification('All changes saved', 3000));
   } else {
     const budget = JSON.parse(localStorage.getItem('budget'));
 
@@ -421,16 +427,20 @@ document.addEventListener('change', e => {
   if (e.target.matches("input[type='radio']")) {
     updateSplitType(e.target);
   }
+
+  if (e.target.matches("#incomes input[type='range']")) {
+    updateBudgetItem(e.target);
+  }
 });
 
 addListenerMulti(window, 'hashchange load', () => {
   renderUI();
 });
 
-addListenerMulti(document, 'change input', e => {
+document.addEventListener('input', e => {
   if (e.target.matches("#incomes input[type='range']")) {
-    updateBudgetItem(e.target);
     updateSalaryInputs(e.target);
+    updateTotals();
   }
 });
 
