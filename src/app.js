@@ -20,7 +20,7 @@ const reportTotalBiweekly = document.querySelector('.report-total-biweekly');
 const reportTotalBimonthly = document.querySelector('.report-total-bimonthly');
 const reportTotalAnnually = document.querySelector('.report-total-annually');
 const rowContainer = document.getElementById('rows');
-const rowTotal = document.getElementById('row-total');
+const rowTotalContainer = document.getElementById('row-total');
 const splitContainer = document.getElementById('split');
 const splitIncome = document.getElementById('split-income');
 
@@ -31,7 +31,7 @@ config.firebaseApp.auth().onAuthStateChanged(user => {
   if (user && currentUid === user.uid) {
     return;
   }
-  
+
   if (user) {
     currentUid = user.uid;
 
@@ -94,17 +94,17 @@ function buildUI(budget, persistStorage) {
 
 function clearUI(persistStorage) {
   const rows = rowContainer.querySelectorAll('.row');
-  
+
   if (!persistStorage) localStorage.removeItem('budget');
-  
+
   for (const row of rows) {
     row.classList.remove('expanded');
   }
-  rowTotal.classList.add('expanded');
-  
+  rowTotalContainer.classList.add('expanded');
+
   toggleSignInLinks();
-  
-  setSplitType('income')
+
+  setSplitType('income');
   splitIncome.checked = true;
 
   reportTotal.innerHTML = '';
@@ -251,16 +251,16 @@ function showNotification(message, timeout) {
   notification.classList.add('lg:inline-block', 'fadeIn');
 
   if (timeout) {
-  setTimeout(function(){
-    notification.innerHTML = message;
-  }, 3000);
+    setTimeout(() => {
+      notification.innerHTML = message;
+    }, 3000);
   } else {
     notification.innerHTML = message;
   }
 }
 
 function toggleSignInLinks() {
-  if (currentUid){
+  if (currentUid) {
     accountSignin.closest('li').classList.add('hidden');
     accountSignout.closest('li').classList.remove('hidden');
   } else {

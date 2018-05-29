@@ -28,7 +28,7 @@ export const uiConfig = {
       if (fromPageId === 'callback') {
         document.querySelector('.loader').classList.add('hidden');
       }
-    }
+    },
   },
   signInOptions: [
     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
@@ -43,7 +43,7 @@ export const uiConfig = {
 };
 
 // Chart.js
-export const colors = ['#2AD9C2', '#00A1A7'];
+export const colors = ['#2ad9c2', '#00a1a7'];
 export const buildChart = (cntnr, labels) =>
   new Chart(cntnr, {
     type: 'doughnut',
@@ -69,11 +69,11 @@ export const buildChart = (cntnr, labels) =>
   });
 
 export const inputmask = new Inputmask({
-    alias: 'currency',
-    allowMinus: false,
-    autoUnmask: true,
-    prefix: '',
-  });
+  alias: 'currency',
+  allowMinus: false,
+  autoUnmask: true,
+  prefix: '',
+});
 
 export const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',

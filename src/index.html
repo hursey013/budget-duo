@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en">
 
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118225860-1"></script>
@@ -38,7 +38,7 @@
   <meta property="og:image" content="https://budgetduo.com/images/logo_360x360.png" />
 </head>
 
-<body class="bg-gradient bg-fixed bg-no-repeat font-source-sans font-normal leading-normal text-grey h-full flex flex-col">
+<body class="bg-gradient bg-fixed bg-no-repeat font-source-sans font-normal leading-normal text-grey min-h-full flex flex-col">
   <div class="page flex-1 hidden" id="main">
     <div class="flex flex-col flex-1 min-h-screen">
       <header class="container mx-auto px-4 pt-4 lg:px-8 lg:pt-8 flex-none">
@@ -54,7 +54,7 @@
             </li>
             <li class="hidden">
               <span id="notification" class="animated mr-2 text-white italic inline-block hidden"></span>
-              <a class="signout inline-block text-teal py-2 px-4 border rounded hover:border-teal-light hover:text-teal-light no-underline" href="#">Sign out</a>
+              <a class="signout inline-block text-teal py-2 px-4 border-2 rounded hover:border-teal-light hover:text-teal-light font-bold no-underline" href="#">Sign out</a>
             </li>
           </ul>
         </div>
@@ -83,7 +83,7 @@
               </div>
               <div id="expenses"></div>
             </div>
-            <button class="add w-full lg:w-auto text-teal py-2 px-4 border rounded flex items-center my-4 hover:border-teal-light hover:text-teal-light">
+            <button class="add text-teal py-2 px-4 border-2 rounded flex items-center my-4 hover:border-teal-light hover:text-teal-light font-bold">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stroke-current h-4 w-4 mr-1 pointer-events-none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
               Add expense
             </button>
@@ -188,7 +188,7 @@
     </div>
   </div>
   <div class="page flex-1" id="login">
-    <div class="h-full flex flex-col justify-center text-center text-white">
+    <div class="min-h-screen flex flex-col justify-center text-center text-white">
       <a href="#"><img src="images/logo.svg" alt="BudgetDuo" aria-hidden="true" class="mb-6"></a>
       <h1 class="sr-only">BudgetDuo</h1>
       <div class="loader ball-scale-ripple">
