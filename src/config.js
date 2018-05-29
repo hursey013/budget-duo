@@ -28,7 +28,7 @@ export const uiConfig = {
       if (fromPageId === 'callback') {
         document.querySelector('.loader').classList.add('hidden');
       }
-    }
+    },
   },
   signInOptions: [
     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
@@ -69,11 +69,11 @@ export const buildChart = (cntnr, labels) =>
   });
 
 export const inputmask = new Inputmask({
-    alias: 'currency',
-    allowMinus: false,
-    autoUnmask: true,
-    prefix: '',
-  });
+  alias: 'currency',
+  allowMinus: false,
+  autoUnmask: true,
+  prefix: '',
+});
 
 export const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',

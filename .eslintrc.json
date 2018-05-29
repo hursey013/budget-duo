@@ -7,14 +7,15 @@
     "browser": true
   },
   "globals": {
-    "window": true,
     "document": true,
-    "localStorage": true
+    "localStorage": true,
+    "window": true
   },
   "plugins": [
     "import"
   ],
   "rules": {
+    "global-require": 0,
     "no-unused-expressions": ["error", { "allowShortCircuit": true, "allowTernary": true }],
     "no-use-before-define": ["error", { "functions": false }],
     "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"]

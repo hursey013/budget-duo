@@ -19,8 +19,8 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env']
-          }
+            presets: ['@babel/preset-env'],
+          },
         },
       },
       {
@@ -59,7 +59,7 @@ module.exports = {
             loader: 'file-loader',
             options: {
               name: '[name].[ext]?[hash]',
-              outputPath: './images/'
+              outputPath: './images/',
             },
           },
         ],
@@ -74,7 +74,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(['dist']),
     new ExtractTextPlugin({
-      filename: 'style.[hash].css'
+      filename: 'style.[hash].css',
     }),
     new HtmlWebpackPlugin({
       favicon: './src/images/favicon.ico',
@@ -83,7 +83,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       favicon: './src/images/favicon.ico',
       filename: 'tos.html',
-      template: './src/tos.html'
+      template: './src/tos.html',
     }),
     new CompressionPlugin(),
   ],
