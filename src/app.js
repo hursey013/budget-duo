@@ -283,7 +283,7 @@ function updateBudgetItem(target) {
   if (target.nodeName === 'SELECT') {
     const option = target.options[target.selectedIndex];
     val = +option.value;
-  } else if (!isNaN(parseFloat(target.value)) && isFinite(target.value)){
+  } else if (isNumeric(target.value)){
     val = +target.value;
   } else {
     val = target.value;
@@ -433,20 +433,16 @@ document.addEventListener('change', e => {
   if (e.target.matches("input[type='radio']")) {
     updateSplitType(e.target);
   }
-
-  if (e.target.matches("#incomes input[type='range']")) {
-    updateBudgetItem(e.target);
-  }
 });
 
 addListenerMulti(window, 'hashchange load', () => {
   renderUI();
 });
 
-document.addEventListener('input', e => {
+addListenerMulti(document, 'change input', e => {
   if (e.target.matches("#incomes input[type='range']")) {
+    updateBudgetItem(e.target);
     updateSalaryInputs(e.target);
-    updateTotals();
   }
 });
 
