@@ -64,7 +64,7 @@ function buildUI(budget, persistStorage) {
   });
   window.chart = config.buildChart(chartContainer, labels);
 
-  if (currentUid && splitType) {
+  if (splitType) {
     const radio = splitContainer.querySelector(`input[value=${splitType}]`);
 
     radio.checked = true;
@@ -140,9 +140,9 @@ function addDomElement(object, key, parent, index) {
   const context = object;
   const div = document.createElement('div');
   const type = parent.id;
-  const template = require(`./templates/${type}.handlebars`); // eslint-disable-line global-require, import/no-dynamic-require
+  const template = require(`./templates/${type}.handlebars`); // eslint-disable-line import/no-dynamic-require
 
-  if (typeof index !== 'undefined') context.index = index;
+  if (isNumeric(index)) context.index = index;
 
   div.innerHTML = template(context);
   div.classList.add('animated', 'fadeIn');
@@ -161,7 +161,7 @@ function auth() {
 function calcTotal(total, share, interval) {
   let newTotal = total;
   newTotal = interval ? newTotal * 12 / interval : newTotal;
-  if (typeof share !== 'undefined') {
+  if (isNumeric(share)) {
     newTotal *= share;
   }
 
@@ -175,11 +175,11 @@ function createKey(key) {
 function getTotal(inputs, index) {
   let total = 0;
   for (const input of inputs) {
-    if (typeof index !== 'undefined') {
+    if (isNumeric(index)) {
       const select = input.parentNode.parentNode.querySelector('select');
       const option = select.options[select.selectedIndex];
 
-      if (index === +option.value) {
+      if (+index === +option.value) {
         total += +input.value;
       }
     } else {
@@ -188,6 +188,10 @@ function getTotal(inputs, index) {
   }
 
   return total;
+}
+
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 function removeBudgetItem(target) {
@@ -278,7 +282,9 @@ function updateBudgetItem(target) {
   let val;
   if (target.nodeName === 'SELECT') {
     const option = target.options[target.selectedIndex];
-    val = option.value;
+    val = +option.value;
+  } else if (!isNaN(parseFloat(target.value)) && isFinite(target.value)){
+    val = +target.value;
   } else {
     val = target.value;
   }
@@ -370,9 +376,9 @@ function updateTotals() {
     if (splitType === 'half') {
       share = 0.5;
     } else if (splitType === 'adhoc') {
-      share = getTotal(expenseInputs, index) / expenseTotal || 0;
+      share = getTotal(expenseInputs, index) / +expenseTotal || 0;
     } else {
-      share = +incomeInput.value / incomeTotal;
+      share = +incomeInput.value / +incomeTotal;
     }
 
     rowShare.innerHTML = `${(share * 100).toFixed(0)}%`;
