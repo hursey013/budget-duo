@@ -1,10 +1,10 @@
 const colors = {
   'blue-dark': '#064872',
-  grey: '#6E7D95',
-  'grey-light': '#F1F5F8',
+  grey: '#6e7d95',
+  'grey-light': '#f1f5f8',
   white: '#ffffff',
-  teal: '#2AD9C2',
-  'teal-light': '#00EBCB',
+  teal: '#2ad9c2',
+  'teal-light': '#00ebcb',
   smoke: 'rgba(0, 0, 0, 0.25)',
 };
 

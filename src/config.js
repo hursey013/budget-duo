@@ -43,7 +43,7 @@ export const uiConfig = {
 };
 
 // Chart.js
-export const colors = ['#2AD9C2', '#00A1A7'];
+export const colors = ['#2ad9c2', '#00a1a7'];
 export const buildChart = (cntnr, labels) =>
   new Chart(cntnr, {
     type: 'doughnut',
