@@ -3,12 +3,20 @@
   background: linear-gradient(145deg, rgba(0, 162, 168, 1) 0%, rgba(4, 29, 89, 1) 100%);
 }
 
+.icon {
+  @apply .stroke-current .h-4 .w-4 .pointer-events-none;
+}
+
 .input {
   @apply .min-w-0 .w-full .appearance-none .bg-white .text-grey .shadow .p-3;
 }
 
 .label {
   @apply .block .uppercase .text-xs .font-bold .text-teal .whitespace-no-wrap;
+}
+
+.page {
+  @apply .h-full;
 }
 
 .row {
