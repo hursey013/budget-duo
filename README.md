@@ -1,3 +1,5 @@
+***See https://github.com/hursey013/budget-duo-react for WIP refactor of BudgetDuo in React.***
+
 # budget-duo
 Calculate how much you and your partner should contribute towards shared expenses
 
