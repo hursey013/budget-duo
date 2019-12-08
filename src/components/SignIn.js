@@ -54,7 +54,6 @@ class SignIn extends Component {
   uiConfig = {
     signInOptions: [
       this.props.firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-      this.props.firebase.auth.FacebookAuthProvider.PROVIDER_ID,
       this.props.firebase.auth.TwitterAuthProvider.PROVIDER_ID,
       {
         provider: this.props.firebase.auth.EmailAuthProvider.PROVIDER_ID,
