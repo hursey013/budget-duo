@@ -36,7 +36,7 @@ const Footer = () => (
       </p>
       <List>
         <li>
-          <a href="mailto:hello@budgetduo.com">Contact</a>
+          <a href="mailto:hursey013@pm.me">Contact</a>
         </li>
         <li>
           <a href="https://github.com/hursey013/budget-duo">GitHub</a>
