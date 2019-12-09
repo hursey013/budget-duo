@@ -61,51 +61,53 @@ const Expenses = ({
         <Label css={tw`w-4/12 px-2 text-right mr-auto`}>Cost</Label>
       </Row>
       <TransitionGroup>
-        {Object.keys(expenses).map(key => (
-          <Row css={tw`-mx-2 mb-4`} key={key}>
-            <div css={isAdhoc ? tw`w-4/12 px-2` : tw`w-7/12 px-2`}>
-              <Text
-                name="name"
-                onChange={e => handleUpdate(key, e)}
-                value={expenses[key].name}
-              />
-            </div>
-            {isAdhoc && (
-              <div css={tw`w-3/12 px-2`}>
-                <Select
-                  name="payer"
-                  options={Object.keys(incomes).map(key => ({
-                    name: incomes[key].name,
-                    value: key
-                  }))}
+        {Object.keys(expenses)
+          .sort()
+          .map(key => (
+            <Row css={tw`-mx-2 mb-4`} key={key}>
+              <div css={isAdhoc ? tw`w-4/12 px-2` : tw`w-7/12 px-2`}>
+                <Text
+                  name="name"
                   onChange={e => handleUpdate(key, e)}
-                  value={expenses[key].payer}
+                  value={expenses[key].name}
                 />
               </div>
-            )}
-            <div css={tw`w-4/12 px-2`}>
-              <Currency
-                onValueChange={values =>
-                  handleValueUpdate(key, values.floatValue)
-                }
-                value={expenses[key].value}
-              />
-            </div>
-            <div css={tw`w-1/12 px-1`}>
-              {Object.keys(expenses).length > 1 && (
-                <button
-                  title="Delete expense"
-                  onClick={() => handleDelete(key)}
-                >
-                  <FontAwesomeIcon
-                    icon={faTrashAlt}
-                    css={tw`text-teal fill-current w-4 h-4 hover:text-teal-light`}
+              {isAdhoc && (
+                <div css={tw`w-3/12 px-2`}>
+                  <Select
+                    name="payer"
+                    options={Object.keys(incomes).map(key => ({
+                      name: incomes[key].name,
+                      value: key
+                    }))}
+                    onChange={e => handleUpdate(key, e)}
+                    value={expenses[key].payer}
                   />
-                </button>
+                </div>
               )}
-            </div>
-          </Row>
-        ))}
+              <div css={tw`w-4/12 px-2`}>
+                <Currency
+                  onValueChange={values =>
+                    handleValueUpdate(key, values.floatValue)
+                  }
+                  value={expenses[key].value}
+                />
+              </div>
+              <div css={tw`w-1/12 px-1`}>
+                {Object.keys(expenses).length > 1 && (
+                  <button
+                    title="Delete expense"
+                    onClick={() => handleDelete(key)}
+                  >
+                    <FontAwesomeIcon
+                      icon={faTrashAlt}
+                      css={tw`text-teal fill-current w-4 h-4 hover:text-teal-light`}
+                    />
+                  </button>
+                )}
+              </div>
+            </Row>
+          ))}
       </TransitionGroup>
       <Button onClick={handleAdd} outline>
         <FontAwesomeIcon

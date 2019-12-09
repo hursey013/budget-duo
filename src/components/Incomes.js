@@ -21,32 +21,34 @@ const Incomes = ({ incomes, split, onUpdateIncome }) => {
   return (
     <>
       <h3 css={tw`text-white text-2xl font-normal mt-8 mb-6`}>Annual income</h3>
-      {Object.keys(incomes).map(key => (
-        <div css={tw`mb-8`} key={key}>
-          <Row css={tw`-mx-1`}>
-            <div css={tw`w-6/12 sm:w-7/12 px-1 uppercase text-white`}>
-              {incomes[key].name}
-            </div>
-            <Label css={tw`w-5/12 sm:w-4/12 px-1 mr-auto text-right`}>
-              Gross income
-            </Label>
-          </Row>
-          <Row css={tw`-mx-2`}>
-            <div css={tw`w-6/12 sm:w-7/12 px-2`}>
-              <Slider
-                onChange={values => handleUpdate(key, values[0])}
-                value={incomes[key].value}
-              />
-            </div>
-            <div css={tw`w-5/12 sm:w-4/12 px-2 mr-auto`}>
-              <Currency
-                onValueChange={values => handleUpdate(key, values.floatValue)}
-                value={incomes[key].value}
-              />
-            </div>
-          </Row>
-        </div>
-      ))}
+      {Object.keys(incomes)
+        .sort()
+        .map(key => (
+          <div css={tw`mb-8`} key={key}>
+            <Row css={tw`-mx-1`}>
+              <div css={tw`w-6/12 sm:w-7/12 px-1 uppercase text-white`}>
+                {incomes[key].name}
+              </div>
+              <Label css={tw`w-5/12 sm:w-4/12 px-1 mr-auto text-right`}>
+                Gross income
+              </Label>
+            </Row>
+            <Row css={tw`-mx-2`}>
+              <div css={tw`w-6/12 sm:w-7/12 px-2`}>
+                <Slider
+                  onChange={values => handleUpdate(key, values[0])}
+                  value={incomes[key].value}
+                />
+              </div>
+              <div css={tw`w-5/12 sm:w-4/12 px-2 mr-auto`}>
+                <Currency
+                  onValueChange={values => handleUpdate(key, values.floatValue)}
+                  value={incomes[key].value}
+                />
+              </div>
+            </Row>
+          </div>
+        ))}
     </>
   );
 };

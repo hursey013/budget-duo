@@ -23,6 +23,7 @@ const Currency = ({ onValueChange, value }) => {
         maxLength="20"
         onValueChange={onValueChange}
         value={value}
+        inputMode="decimal"
       />
     </div>
   );

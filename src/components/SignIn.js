@@ -33,12 +33,16 @@ class SignIn extends Component {
     const { state } = this.props;
     const { expenses, incomes, split, session } = state;
 
+    if (!session.isRedirect && Object.keys(incomes).length < 1) {
+      this.props.history.push('/');
+    }
+
     if (!session.isRedirect) {
       localStorage.setItem(
         'budgetDuoState',
         JSON.stringify({
-          expenses,
           incomes,
+          expenses,
           split
         })
       );
@@ -46,9 +50,9 @@ class SignIn extends Component {
   }
 
   componentWillUnmount() {
-    const { state, onRedirect } = this.props;
+    const { onRedirect } = this.props;
 
-    state.session.isRedirect && onRedirect(false);
+    onRedirect(false);
   }
 
   uiConfig = {
@@ -67,18 +71,12 @@ class SignIn extends Component {
         const isNewUser = authResult.additionalUserInfo.isNewUser;
 
         isNewUser &&
-          this.props.firebase
-            .user(user.uid)
-            .set({
-              ...JSON.parse(localStorage.getItem('budgetDuoState')),
-              lastSaved: this.props.firebase.timestamp()
-            })
-            .then(localStorage.removeItem('budgetDuoState'));
+          this.props.firebase.user(user.uid).set({
+            ...JSON.parse(localStorage.getItem('budgetDuoState')),
+            lastSaved: this.props.firebase.timestamp()
+          });
 
-        this.props.onRedirect(false);
         this.props.history.push('/');
-
-        return false;
       }
     }
   };

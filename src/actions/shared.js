@@ -4,7 +4,7 @@ import { receiveExpenses } from './expenses';
 import { receiveSplit, resetSplit } from './split';
 import { arrayToFirebaseObject } from '../helpers';
 
-export const handleInitialData = (uid, firebase) => {
+export const handleFirebaseData = (uid, firebase) => {
   return dispatch => {
     return firebase.user(uid).once('value', snapshot => {
       const { incomes, expenses, split, lastSaved } = snapshot.val();
