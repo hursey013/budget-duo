@@ -69,7 +69,10 @@ class SignIn extends Component {
         isNewUser &&
           this.props.firebase
             .user(user.uid)
-            .set(JSON.parse(localStorage.getItem('budgetDuoState')))
+            .set({
+              ...JSON.parse(localStorage.getItem('budgetDuoState')),
+              lastSaved: this.props.firebase.timestamp()
+            })
             .then(localStorage.removeItem('budgetDuoState'));
 
         this.props.onRedirect(false);
