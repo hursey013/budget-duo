@@ -35,7 +35,7 @@ const Home = () => (
           Talk with your partner about which method of splitting expenses works
           best for you. Once you've chosen a method, consider creating a shared
           checking account, depositing your contributions from each paycheck,
-          and paying bills using your new account.
+          and paying bills using your new account for complete automation.
         </p>
         <Footer />
       </Column>
