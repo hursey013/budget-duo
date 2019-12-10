@@ -28,27 +28,29 @@ const Report = ({ incomes, expenses, split, theme }) => (
       </Label>
       <Label css={tw`w-5/12 px-2 text-right mr-auto`}>Amount due</Label>
     </div>
-    {Object.keys(incomes).map((key, index) => (
-      <Row
-        color={Object.values(theme.colors.teal).slice(1)[index]}
-        key={key}
-        name={incomes[key].name}
-        percentage={calculatePercentage(
-          key,
-          incomes[key].value,
-          incomes,
-          expenses,
-          split
-        )}
-        amount={calculateAmount(
-          key,
-          incomes[key].value,
-          incomes,
-          expenses,
-          split
-        )}
-      />
-    ))}
+    {Object.keys(incomes)
+      .sort()
+      .map((key, index) => (
+        <Row
+          color={Object.values(theme.colors.teal).slice(1)[index]}
+          key={key}
+          name={incomes[key].name}
+          percentage={calculatePercentage(
+            key,
+            incomes[key].value,
+            incomes,
+            expenses,
+            split
+          )}
+          amount={calculateAmount(
+            key,
+            incomes[key].value,
+            incomes,
+            expenses,
+            split
+          )}
+        />
+      ))}
     <Row
       css={tw`border-none`}
       expanded

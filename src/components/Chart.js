@@ -8,17 +8,19 @@ import { calculatePercentage } from '../helpers';
 
 const Chart = ({ incomes, expenses, split, theme }) => (
   <PieChart
-    data={Object.keys(incomes).map((key, index) => ({
-      title: incomes[key].name,
-      value: calculatePercentage(
-        key,
-        incomes[key].value,
-        incomes,
-        expenses,
-        split
-      ),
-      color: Object.values(theme.colors.teal).slice(1)[index]
-    }))}
+    data={Object.keys(incomes)
+      .sort()
+      .map((key, index) => ({
+        title: incomes[key].name,
+        value: calculatePercentage(
+          key,
+          incomes[key].value,
+          incomes,
+          expenses,
+          split
+        ),
+        color: Object.values(theme.colors.teal).slice(1)[index]
+      }))}
     lineWidth={45}
     paddingAngle={2}
     startAngle={-90}

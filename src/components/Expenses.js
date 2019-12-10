@@ -29,7 +29,7 @@ const Expenses = ({
 }) => {
   const handleAdd = () => {
     const key = firebase.key();
-    const payer = Object.keys(incomes)[0];
+    const payer = Object.keys(incomes).sort()[0];
 
     onAddExpense({ key, payer });
   };
@@ -76,10 +76,12 @@ const Expenses = ({
                 <div css={tw`w-3/12 px-2`}>
                   <Select
                     name="payer"
-                    options={Object.keys(incomes).map(key => ({
-                      name: incomes[key].name,
-                      value: key
-                    }))}
+                    options={Object.keys(incomes)
+                      .sort()
+                      .map(key => ({
+                        name: incomes[key].name,
+                        value: key
+                      }))}
                     onChange={e => handleUpdate(key, e)}
                     value={expenses[key].payer}
                   />
