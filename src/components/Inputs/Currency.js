@@ -19,7 +19,7 @@ const Currency = ({ onValueChange, value }) => {
         allowNegative={false}
         thousandSeparator=","
         decimalScale={2}
-        css={tw`rounded-l-none rounded-r text-right`}
+        css={tw`rounded-l-none rounded-r text-right min-w-0`}
         maxLength="20"
         onValueChange={onValueChange}
         value={value}

@@ -18,7 +18,7 @@ const Split = ({ split, onUpdateSplit }) => {
     <>
       <h2 css={tw`text-2xl font-normal mb-4`}>Divide our expenses</h2>
       <div css={tw`flex -mx-2`}>
-        <ul css={tw`w-2/3 px-2 list-reset mb-8`}>
+        <ul css={tw`w-2/3 px-2 list-none mb-8`}>
           {OPTIONS.map(option => (
             <li key={option.value} css={tw`mb-3`}>
               <Radio
