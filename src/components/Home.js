@@ -5,7 +5,7 @@ import 'styled-components/macro';
 import { connect } from 'react-redux';
 
 import { withFirebase } from './Firebase';
-import { withAuthentication } from './Session';
+import withAuthentication from './withAuthentication';
 import { handleSampleData, handleFirebaseData } from '../actions/shared';
 import withLeaveWarning from './withLeaveWarning';
 import Header from './Header';

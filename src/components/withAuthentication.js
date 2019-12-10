@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { withFirebase } from '../Firebase';
-import { authUserSet } from '../../actions/session';
+import { withFirebase } from './Firebase';
+import { authUserSet } from '../actions/session';
 
 const withAuthentication = Component => {
   class WithAuthentication extends React.Component {
