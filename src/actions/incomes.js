@@ -6,7 +6,7 @@ export const receiveIncomes = (incomes = {}) => ({
   incomes
 });
 
-export const updateIncome = (key, value) => ({
+export const updateIncome = (key, value = 0) => ({
   type: UPDATE_INCOME,
   payload: { key, value }
 });

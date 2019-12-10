@@ -14,7 +14,7 @@ import Currency from './Inputs/Currency';
 const Row = tw.div`flex items-center`;
 
 const Incomes = ({ incomes, split, onUpdateIncome }) => {
-  const handleUpdate = (key, value) => {
+  const handleUpdate = (key, value = 0) => {
     onUpdateIncome(key, value);
   };
 
