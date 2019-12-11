@@ -9,7 +9,7 @@ export const handleFirebaseData = (uid, firebase) => {
     return firebase.user(uid).once('value', snapshot => {
       const { incomes, expenses, split, lastSaved } = snapshot.val();
 
-      dispatch(receiveSplit(split));
+      dispatch(split ? receiveSplit(split) : resetSplit());
       dispatch(
         receiveIncomes(lastSaved ? incomes : convertLegacyIncomes(incomes))
       );

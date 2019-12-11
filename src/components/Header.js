@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import tw from 'tailwind.macro';
-import 'styled-components/macro';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
