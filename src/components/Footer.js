@@ -41,6 +41,9 @@ const Footer = () => (
         <li>
           <a href="https://github.com/hursey013/budget-duo">GitHub</a>
         </li>
+        <li>
+          <a href="https://pages.budgetduo.com/TERMS">Terms</a>
+        </li>
       </List>
     </div>
   </footer>
