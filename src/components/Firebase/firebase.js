@@ -1,5 +1,4 @@
 import app from 'firebase/app';
-import 'firebase/analytics';
 import 'firebase/auth';
 import 'firebase/database';
 
@@ -17,7 +16,6 @@ const config = {
 class Firebase {
   constructor() {
     app.initializeApp(config);
-    app.analytics();
 
     this.auth = app.auth;
     this.authFn = app.auth();
